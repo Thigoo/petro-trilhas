@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 // Aqui está o segredo: carregamos o componente desativando o SSR
-const Map = dynamic(() => import("@/components/map/map"), {
+const Map = dynamic(() => import("@/components/map/map-inner"), {
   ssr: false,
   loading: () => (
     <div className="h-100 w-full bg-muted animate-pulse rounded-lg flex items-center justify-center">
@@ -44,8 +44,10 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Renderiza o nosso componente de mapa dinâmico */}
-            <Map />
+            {/* Adicionamos uma div com altura fixa aqui para garantir que o mapa apareça */}
+            <div className="h-100 w-full">
+              <Map />
+            </div>
           </CardContent>
         </Card>
 

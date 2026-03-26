@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Trilha do Castelinho",
+        "difficulty": "Moderado",
+        "distance": "1.8km (ida)",
+        "gain": "250m",
+        "description": "Uma das vistas mais clássicas de Petrópolis, com visão para a Baía de Guanabara."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-43.1555, -22.5225],
+          [-43.154, -22.523],
+          [-43.153, -22.5245],
+          [-43.1525, -22.526],
+          [-43.151, -22.5275]
+        ]
+      }
+    }
+  ]
+}
