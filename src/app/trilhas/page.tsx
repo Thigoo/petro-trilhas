@@ -1,72 +1,150 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { getTrilhas, type Trilha } from "@/src/lib/trilhas";
 import {
   Card,
-  CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
 } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
+import { Button } from "@/src/components/ui/button";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
-// Aqui está o segredo: carregamos o componente desativando o SSR
-const Map = dynamic(() => import("@/src/components/map/TrailMap"), {
+// Carregamos o seu TrailMap com SSR desativado
+const TrailMap = dynamic(() => import("@/src/components/map/TrailMap"), {
   ssr: false,
-  loading: () => (
-    <div className="h-100 w-full bg-muted animate-pulse rounded-lg flex items-center justify-center">
-      Carregando mapa das trilhas...
-    </div>
-  ),
+  loading: () => <Skeleton className="h-125 w-full rounded-xl" />,
 });
 
-export default function HomePage() {
+export default function TrilhasPage() {
+  const [todasTrilhas, setTodasTrilhas] = useState<Trilha[]>([]);
+  const [trilhasFiltradas, setTrilhasFiltradas] = useState<Trilha[]>([]);
+  const [filtroAtivo, setFiltroAtivo] = useState<string>("todas");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        const dados = await getTrilhas();
+        setTodasTrilhas(dados);
+        setTrilhasFiltradas(dados);
+      } catch (error) {
+        console.error("Erro ao carregar trilhas:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    carregarDados();
+  }, []);
+
+  // Lógica de Filtro
+  const filtrarTrilhas = (dificuldade: string) => {
+    setFiltroAtivo(dificuldade);
+    if (dificuldade === "todas") {
+      setTrilhasFiltradas(todasTrilhas);
+    } else {
+      setTrilhasFiltradas(
+        todasTrilhas.filter((t) => t.dificuldade === dificuldade),
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6 space-y-4">
+        <Skeleton className="h-10 w-62.5" />
+        <Skeleton className="h-125 w-full" />
+      </div>
+    );
+  }
+
   return (
     <main className="container mx-auto p-4 space-y-6">
-      <header className="py-6">
-        <h1 className="text-3xl font-bold tracking-tight text-primary">
-          Petro Trilhas
-        </h1>
-        <p className="text-muted-foreground">
-          Ecoturismo seguro e sustentável na Serra Fluminense.
-        </p>
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-green-900">
+            Explorar Petrópolis
+          </h1>
+          <p className="text-muted-foreground">
+            {trilhasFiltradas.length} trilhas encontradas.
+          </p>
+        </div>
+
+        {/* Filtros de Dificuldade */}
+        <div className="flex gap-2 p-1 bg-muted rounded-lg border">
+          {["todas", "leve", "moderada", "difícil"].map((d) => (
+            <Button
+              key={d}
+              variant={filtroAtivo === d ? "default" : "ghost"}
+              size="sm"
+              onClick={() => filtrarTrilhas(d)}
+              className="capitalize"
+            >
+              {d}
+            </Button>
+          ))}
+        </div>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="col-span-full md:col-span-1">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>Explorar Mapa</CardTitle>
-              <Badge variant="outline">Petrópolis/RJ</Badge>
-            </div>
-            <CardDescription>
-              Visualize as trilhas oficiais e pontos de interesse.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Adicionamos uma div com altura fixa aqui para garantir que o mapa apareça */}
-            <div className="h-100 w-full">
-              <Map />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Mapa - Ocupa 3 colunas */}
+        <div className="lg:col-span-3">
+          <TrailMap
+            height="550px"
+            trails={trilhasFiltradas
+              .filter((t) => t.geojson && t.geojson.coordinates.length > 0) // <--- FILTRO DE SEGURANÇA
+              .map((t) => ({
+                id: t.id,
+                nome: t.nome,
+                dificuldade: t.dificuldade,
+                distancia_km: Number(t.distancia_km),
+                coordinates: t.geojson.coordinates.map((c: any) => [
+                  c[1],
+                  c[0],
+                ]),
+              }))}
+          />
+        </div>
 
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Destaque do Dia</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 bg-secondary rounded-md">
-              <h3 className="font-semibold">Pedra do Cortiço</h3>
-              <p className="text-sm text-muted-foreground">
-                Nível: Moderado • 1h30 de subida
-              </p>
+        {/* Lista Lateral - Ocupa 1 coluna */}
+        <aside className="space-y-4 max-h-137.5 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-green-200">
+          {trilhasFiltradas.map((t) => (
+            <Card
+              key={t.id}
+              className="hover:border-green-500 transition-all cursor-pointer group"
+            >
+              <CardHeader className="p-4">
+                <div className="flex justify-between items-start mb-1">
+                  <CardTitle className="text-base group-hover:text-green-700 transition-colors">
+                    {t.nome}
+                  </CardTitle>
+                  <Badge variant="outline" className="capitalize text-[10px]">
+                    {t.dificuldade}
+                  </Badge>
+                </div>
+                <CardDescription className="text-xs line-clamp-2">
+                  {t.descricao}
+                </CardDescription>
+                <div className="flex items-center gap-3 mt-3 text-[11px] font-semibold text-slate-500">
+                  <span className="flex items-center gap-1">
+                    📏 {t.distancia_km}km
+                  </span>
+                  <span className="flex items-center gap-1">
+                    ⏱️ {t.tempo_estimado_min}min
+                  </span>
+                </div>
+              </CardHeader>
+            </Card>
+          ))}
+          {trilhasFiltradas.length === 0 && (
+            <div className="text-center p-8 text-muted-foreground">
+              Nenhuma trilha encontrada neste nível.
             </div>
-            <p className="text-sm italic text-orange-600 font-medium">
-              ⚠️ Alerta: Possibilidade de chuva isolada à tarde.
-            </p>
-          </CardContent>
-        </Card>
+          )}
+        </aside>
       </div>
     </main>
   );
