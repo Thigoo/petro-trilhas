@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/src/components/ui/badge";
 
 // Aqui está o segredo: carregamos o componente desativando o SSR
-const Map = dynamic(() => import("@/src/components/map/map-inner"), {
+const Map = dynamic(() => import("@/src/components/map/TrailMap"), {
   ssr: false,
   loading: () => (
     <div className="h-100 w-full bg-muted animate-pulse rounded-lg flex items-center justify-center">
