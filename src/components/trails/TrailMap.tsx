@@ -1,12 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ITrailMap } from "@/src/types";
 
-// Correção necessária para ícones do Leaflet no Next.js
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Correção de ícones do Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -15,7 +14,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Import dinâmico para evitar problemas de SSR
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false },
@@ -40,45 +38,48 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
 
+interface MapTrail {
+  id: string;
+  nome: string;
+  dificuldade: string;
+  distancia_km: number;
+  coordinates: [number, number][];
+}
+
 interface TrailMapProps {
-  trails?: ITrailMap[];
-  center?: [number, number];
-  zoom?: number;
+  trails: MapTrail[];
   height?: string;
-  onTrailClick?: (trail: ITrailMap) => void;
+  className?: string;
 }
 
 export default function TrailMap({
-  trails = [],
-  center = [-22.505, -43.178], // Coordenadas aproximadas de Petrópolis
-  zoom = 13,
+  trails,
   height = "500px",
-  onTrailClick,
+  className = "",
 }: TrailMapProps) {
-  // Cor das trilhas baseada na dificuldade
-  const getTrailColor = (dificuldade: string) => {
-    switch (dificuldade.toLowerCase()) {
-      case "leve":
-        return "#22c55e";
-      case "moderada":
-        return "#eab308";
-      case "difícil":
-        return "#ef4444";
-      default:
-        return "#16a34a";
-    }
-  };
+  const mapRef = useRef<L.Map | null>(null);
+
+  // Cleanup importante para evitar erro de "Map container is being reused"
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div
+      className={`rounded-2xl overflow-hidden border border-slate-200 shadow-sm ${className}`}
       style={{ height }}
-      className="rounded-xl overflow-hidden border border-slate-200 shadow-sm"
     >
       <MapContainer
-        center={center}
-        zoom={zoom}
+        center={[-22.505, -43.178]} // Petrópolis
+        zoom={13}
         scrollWheelZoom={true}
         className="h-full w-full"
+        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -87,27 +88,25 @@ export default function TrailMap({
 
         {trails.map((trail) => (
           <div key={trail.id}>
-            {/* Desenha a linha da trilha */}
             <Polyline
               positions={trail.coordinates}
               pathOptions={{
-                color: getTrailColor(trail.dificuldade),
+                color:
+                  trail.dificuldade === "difícil"
+                    ? "#ef4444"
+                    : trail.dificuldade === "moderada"
+                      ? "#eab308"
+                      : "#22c55e",
                 weight: 5,
-                opacity: 0.75,
-              }}
-              eventHandlers={{
-                click: () => onTrailClick?.(trail),
+                opacity: 0.8,
               }}
             />
-
-            {/* Marcador no início da trilha */}
             <Marker position={trail.coordinates[0]}>
               <Popup>
-                <div className="font-sans min-w-45">
-                  <h3 className="font-bold text-base">{trail.nome}</h3>
-                  <p className="text-sm text-slate-600">
-                    {trail.dificuldade} • {trail.distancia_km} km
-                  </p>
+                <div>
+                  <strong>{trail.nome}</strong>
+                  <br />
+                  {trail.dificuldade} • {trail.distancia_km} km
                 </div>
               </Popup>
             </Marker>
