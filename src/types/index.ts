@@ -1,6 +1,6 @@
 // src/types/index.ts
 
-export interface Trail {
+export interface ITrail {
   id: string;
   nome: string;
   slug: string;

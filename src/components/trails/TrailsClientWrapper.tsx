@@ -1,6 +1,6 @@
 "use client";
 
-import { Difficulty, ITrailMap, Trail } from "@/src/types";
+import { Difficulty, ITrailMap, ITrail } from "@/src/types";
 import TrailCard from "./TrailCard";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -12,9 +12,9 @@ const TrailMap = dynamic(() => import("@/src/components/trails/TrailMap"), {
   loading: () => <Skeleton className="h-155 w-full rounded-2xl" />,
 });
 
-export function TrailsClientWrapper({ trails }: { trails: Trail[] }) {
+export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
   const [activeFilter, setActiveFilter] = useState<Difficulty>("todas");
-  const [filteredTrails, setaFilteredTrails] = useState<Trail[]>(trails);
+  const [filteredTrails, setaFilteredTrails] = useState<ITrail[]>(trails);
 
   const filtrarTrilhas = (dificuldade: Difficulty) => {
     setActiveFilter(dificuldade);

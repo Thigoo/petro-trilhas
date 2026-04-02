@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ITrailMap } from "@/src/types";
 
 // Correção necessária para ícones do Leaflet no Next.js
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,20 +40,12 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
 
-interface Trail {
-  id: string;
-  nome: string;
-  dificuldade: string;
-  distancia_km: number;
-  coordinates: [number, number][]; // [lat, lng]
-}
-
 interface TrailMapProps {
-  trails?: Trail[];
+  trails?: ITrailMap[];
   center?: [number, number];
   zoom?: number;
   height?: string;
-  onTrailClick?: (trail: Trail) => void;
+  onTrailClick?: (trail: ITrailMap) => void;
 }
 
 export default function TrailMap({

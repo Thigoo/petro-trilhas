@@ -8,10 +8,10 @@ import {
 } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
 import Link from "next/link";
-import { Trail } from "@/src/types";
+import { ITrail } from "@/src/types";
 
 interface CardTrailProps {
-  trail: Trail;
+  trail: ITrail;
 }
 
 export default function TrailCard({ trail }: CardTrailProps) {
