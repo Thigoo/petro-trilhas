@@ -1,151 +1,139 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { getTrilhas, type Trilha } from "@/src/lib/trilhas";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/src/components/ui/card";
-import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { Button } from "@/src/components/ui/button";
+import { getTrails } from "@/src/lib/trails";
+import type { Trail, TrailMap } from "@/src/types";
+import TrailCard from "@/src/components/trails/TrailCard";
 
-// Carregamos o seu TrailMap com SSR desativado
-const TrailMap = dynamic(() => import("@/src/components/map/TrailMap"), {
+const MapTrail = dynamic(() => import("@/src/components/trails/TrailMap"), {
   ssr: false,
-  loading: () => <Skeleton className="h-125 w-full rounded-xl" />,
+  loading: () => <Skeleton className="h-155 w-full rounded-2xl" />,
 });
 
-export default function TrilhasPage() {
-  const [todasTrilhas, setTodasTrilhas] = useState<Trilha[]>([]);
-  const [trilhasFiltradas, setTrilhasFiltradas] = useState<Trilha[]>([]);
-  const [filtroAtivo, setFiltroAtivo] = useState<string>("todas");
+export default function TrailsPage() {
+  const [allTrails, setAllTrails] = useState<Trail[]>([]);
+  const [filteredTrails, setFilteredTrails] = useState<Trail[]>([]);
+  const [activeFilter, setActiveFilter] = useState<
+    "todas" | "leve" | "moderada" | "difícil"
+  >("todas");
   const [loading, setLoading] = useState(true);
 
+  // Carrega as trilhas do Supabase
   useEffect(() => {
-    async function carregarDados() {
+    async function loadData() {
       try {
-        const dados = await getTrilhas();
-        setTodasTrilhas(dados);
-        setTrilhasFiltradas(dados);
+        const dados = await getTrails();
+        setAllTrails(dados);
+        setFilteredTrails(dados);
       } catch (error) {
         console.error("Erro ao carregar trilhas:", error);
       } finally {
         setLoading(false);
       }
     }
-    carregarDados();
+    loadData();
   }, []);
 
-  // Lógica de Filtro
-  const filtrarTrilhas = (dificuldade: string) => {
-    setFiltroAtivo(dificuldade);
+  // Filtra as trilhas
+  const filtrarTrilhas = (
+    dificuldade: "todas" | "leve" | "moderada" | "difícil",
+  ) => {
+    setActiveFilter(dificuldade);
+
     if (dificuldade === "todas") {
-      setTrilhasFiltradas(todasTrilhas);
+      setFilteredTrails(allTrails);
     } else {
-      setTrilhasFiltradas(
-        todasTrilhas.filter((t) => t.dificuldade === dificuldade),
-      );
+      setFilteredTrails(allTrails.filter((t) => t.dificuldade === dificuldade));
     }
   };
 
+  // Prepara os dados para o mapa (converte geojson para formato [lat, lng])
+  const mapTrails: TrailMap[] = filteredTrails
+    .filter((t) => t.geojson?.coordinates && t.geojson.coordinates.length > 0)
+    .map((t) => ({
+      id: t.id,
+      nome: t.nome,
+      dificuldade: t.dificuldade,
+      distancia_km: t.distancia_km,
+      coordinates: t.geojson!.coordinates.map(
+        ([lng, lat]: [number, number]) => [lat, lng],
+      ),
+    }));
+
   if (loading) {
     return (
-      <div className="container mx-auto p-6 space-y-4">
-        <Skeleton className="h-10 w-62.5" />
-        <Skeleton className="h-125 w-full" />
+      <div className="container mx-auto p-6">
+        <Skeleton className="h-12 w-80 mb-8" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <Skeleton className="lg:col-span-8 h-155 rounded-2xl" />
+          <div className="lg:col-span-4 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-48 w-full rounded-2xl" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="container mx-auto p-4 space-y-6">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-green-900">
-            Explorar Petrópolis
-          </h1>
-          <p className="text-muted-foreground">
-            {trilhasFiltradas.length} trilhas encontradas.
-          </p>
+    <div className="min-h-screen bg-slate-50 pb-12">
+      <div className="container mx-auto p-6">
+        {/* Cabeçalho da página */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-green-900">
+              Explorar Trilhas
+            </h1>
+            <p className="text-muted-foreground mt-2 text-lg">
+              {filteredTrails.length} trilhas disponíveis em Petrópolis
+            </p>
+          </div>
+
+          {/* Filtros */}
+          <div className="flex gap-2 bg-white p-1.5 rounded-2xl border shadow-sm">
+            {(["todas", "leve", "moderada", "difícil"] as const).map((d) => (
+              <Button
+                key={d}
+                variant={activeFilter === d ? "default" : "ghost"}
+                size="sm"
+                onClick={() => filtrarTrilhas(d)}
+                className="capitalize px-8 font-medium"
+              >
+                {d === "todas" ? "Todas" : d}
+              </Button>
+            ))}
+          </div>
         </div>
 
-        {/* Filtros de Dificuldade */}
-        <div className="flex gap-2 p-1 bg-muted rounded-lg border">
-          {["todas", "leve", "moderada", "difícil"].map((d) => (
-            <Button
-              key={d}
-              variant={filtroAtivo === d ? "default" : "ghost"}
-              size="sm"
-              onClick={() => filtrarTrilhas(d)}
-              className="capitalize"
-            >
-              {d}
-            </Button>
-          ))}
-        </div>
-      </header>
+        {/* Layout: Mapa + Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Mapa - 8 colunas no desktop */}
+          <div className="lg:col-span-8">
+            <MapTrail height="620px" trails={mapTrails} />
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Mapa - Ocupa 3 colunas */}
-        <div className="lg:col-span-3">
-          <TrailMap
-            height="550px"
-            trails={trilhasFiltradas
-              .filter((t) => t.geojson && t.geojson.coordinates.length > 0) // <--- FILTRO DE SEGURANÇA
-              .map((t) => ({
-                id: t.id,
-                nome: t.nome,
-                dificuldade: t.dificuldade,
-                distancia_km: Number(t.distancia_km),
-                coordinates: t.geojson.coordinates.map((c: any) => [
-                  c[1],
-                  c[0],
-                ]),
-              }))}
-          />
-        </div>
-
-        {/* Lista Lateral - Ocupa 1 coluna */}
-        <aside className="space-y-4 max-h-137.5 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-green-200">
-          {trilhasFiltradas.map((t) => (
-            <Card
-              key={t.id}
-              className="hover:border-green-500 transition-all cursor-pointer group"
-            >
-              <CardHeader className="p-4">
-                <div className="flex justify-between items-start mb-1">
-                  <CardTitle className="text-base group-hover:text-green-700 transition-colors">
-                    {t.nome}
-                  </CardTitle>
-                  <Badge variant="outline" className="capitalize text-[10px]">
-                    {t.dificuldade}
-                  </Badge>
+          {/* Lista de Cards - 4 colunas no desktop */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-6 space-y-4 max-h-[calc(100vh-140px)] overflow-y-auto pr-3">
+              {filteredTrails.length > 0 ? (
+                filteredTrails.map((trilha) => (
+                  <TrailCard key={trilha.id} trail={trilha} />
+                ))
+              ) : (
+                <div className="text-center py-20 bg-white rounded-2xl border">
+                  <p className="text-muted-foreground">
+                    Nenhuma trilha encontrada com este filtro.
+                  </p>
                 </div>
-                <CardDescription className="text-xs line-clamp-2">
-                  {t.descricao}
-                </CardDescription>
-                <div className="flex items-center gap-3 mt-3 text-[11px] font-semibold text-slate-500">
-                  <span className="flex items-center gap-1">
-                    📏 {t.distancia_km}km
-                  </span>
-                  <span className="flex items-center gap-1">
-                    ⏱️ {t.tempo_estimado_min}min
-                  </span>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-          {trilhasFiltradas.length === 0 && (
-            <div className="text-center p-8 text-muted-foreground">
-              Nenhuma trilha encontrada neste nível.
+              )}
             </div>
-          )}
-        </aside>
+          </div>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

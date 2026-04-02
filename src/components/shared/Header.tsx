@@ -5,10 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mountain, Menu, X } from "lucide-react";
 import { supabase } from "@/src/lib/supabase";
+import type { User } from "@supabase/supabase-js";
 import { Button } from "../ui/button";
 
 export default function Header() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 

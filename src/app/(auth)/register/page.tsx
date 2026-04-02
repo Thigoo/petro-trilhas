@@ -17,7 +17,7 @@ import { Label } from "@/src/components/ui/label";
 import { supabase } from "@/src/lib/supabase";
 import { Loader2, Mountain } from "lucide-react";
 
-export default function CadastroPage() {
+export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
