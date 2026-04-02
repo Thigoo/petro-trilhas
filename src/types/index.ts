@@ -22,10 +22,12 @@ export interface Trail {
 }
 
 // Tipo simplificado para usar no componente TrailMap
-export interface TrailMap {
+export interface ITrailMap {
   id: string;
   nome: string;
   dificuldade: string;
   distancia_km: number;
   coordinates: [number, number][]; // [latitude, longitude] que o Leaflet espera
 }
+
+export type Difficulty = "todas" | "leve" | "moderada" | "difícil";
