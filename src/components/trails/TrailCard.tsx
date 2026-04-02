@@ -17,7 +17,7 @@ interface CardTrailProps {
 export default function TrailCard({ trail }: CardTrailProps) {
   return (
     <Link href={`/trilhas/${trail.slug}`}>
-      <Card className="hover:border-green-500 hover:shadow-md transition-all duration-200 cursor-pointer group h-full">
+      <Card className="border hover:border-green-500 hover:shadow-md transition-all duration-200 cursor-pointer group h-full my-4">
         <CardHeader className="p-5">
           <div className="flex justify-between items-start mb-3">
             <CardTitle className="text-lg leading-tight group-hover:text-green-700 transition-colors">
