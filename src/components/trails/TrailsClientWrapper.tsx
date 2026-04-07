@@ -61,6 +61,7 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
           <TrailMap
             key={`map-${activeFilter}- ${filteredTrails.length}`}
             height="480px" // mobile
+            center={[-22.505, -43.178]} // Petrópolis
             trails={mapTrails}
           />
         </div>

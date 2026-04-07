@@ -112,6 +112,7 @@ export default async function TrilhaDetalhePage({
               <TrailMap
                 trails={[mapTrail]}
                 height="520px"
+                center={mapTrail.coordinates[0]}
                 className="rounded-3xl shadow-md"
               />
             </div>

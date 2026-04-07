@@ -49,12 +49,14 @@ interface MapTrail {
 interface TrailMapProps {
   trails: MapTrail[];
   height?: string;
+  center?: [number, number];
   className?: string;
 }
 
 export default function TrailMap({
   trails,
   height = "500px",
+  center,
   className = "",
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
@@ -75,7 +77,7 @@ export default function TrailMap({
       style={{ height }}
     >
       <MapContainer
-        center={[-22.505, -43.178]} // Petrópolis
+        center={center}
         zoom={13}
         scrollWheelZoom={true}
         className="h-full w-full"
