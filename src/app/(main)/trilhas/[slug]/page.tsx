@@ -91,11 +91,15 @@ export default async function TrilhaDetalhePage({
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button
                 size="lg"
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white text-md cursor-pointer p-2"
               >
                 Iniciar Trilha
               </Button>
-              <Button size="lg" variant="outline" className="flex-1">
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1 text-md p-2"
+              >
                 Salvar nos Favoritos
               </Button>
             </div>
