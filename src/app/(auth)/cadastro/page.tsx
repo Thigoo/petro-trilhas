@@ -14,8 +14,8 @@ import {
 } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { supabase } from "@/src/lib/supabase";
 import { Loader2, Mountain } from "lucide-react";
+import { useAuth } from "@/src/lib/auth/AuthProvider";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { signUp } = useAuth();
 
   const router = useRouter();
 
@@ -31,22 +32,12 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
+    const { error: signUpError } = await signUp(email, password, fullName);
 
     if (signUpError) {
       setError(signUpError.message);
     } else {
-      alert(
-        "Conta criada com sucesso! Verifique seu e-mail para confirmar (se necessário).",
-      );
+      alert("Conta criada com sucesso! Verifique seu e-mail.");
       router.push("/login");
     }
 

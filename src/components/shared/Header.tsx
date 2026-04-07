@@ -1,26 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mountain, Menu, X } from "lucide-react";
 import { supabase } from "@/src/lib/supabase";
-import type { User } from "@supabase/supabase-js";
 import { Button } from "../ui/button";
+import { useAuth } from "@/src/lib/auth/AuthProvider";
 
 export default function Header() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
 
   const navLinks = [
     { name: "Início", href: "/" },
@@ -115,10 +106,7 @@ export default function Header() {
             {user && (
               <Button
                 variant="outline"
-                onClick={() => {
-                  supabase.auth.signOut();
-                  toggleMenu();
-                }}
+                onClick={signOut}
                 className="w-full border-red-200 text-red-600"
               >
                 Sair
