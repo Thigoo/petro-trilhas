@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mountain, Menu, X } from "lucide-react";
-import { supabase } from "@/src/lib/supabase";
 import { Button } from "../ui/button";
 import { useAuth } from "@/src/lib/auth/AuthProvider";
 
@@ -56,7 +55,7 @@ export default function Header() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => supabase.auth.signOut()}
+              onClick={() => signOut()}
               className="text-red-600"
             >
               Sair
@@ -106,7 +105,7 @@ export default function Header() {
             {user && (
               <Button
                 variant="outline"
-                onClick={signOut}
+                onClick={() => signOut()}
                 className="w-full border-red-200 text-red-600"
               >
                 Sair
