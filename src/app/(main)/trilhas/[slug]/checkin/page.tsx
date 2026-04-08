@@ -1,4 +1,3 @@
-// src/app/(main)/trilhas/[slug]/checkin/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
