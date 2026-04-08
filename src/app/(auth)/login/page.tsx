@@ -36,7 +36,9 @@ export default function LoginPage() {
     if (signInError) {
       setError(signInError.message);
     } else {
-      router.push("/trilhas"); // Redireciona para a lista de trilhas após login
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get("redirect") || "/trilhas";
+      router.push(redirectTo);
     }
 
     setLoading(false);
