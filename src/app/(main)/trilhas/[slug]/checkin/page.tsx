@@ -17,6 +17,7 @@ import { ArrowLeft, Upload } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { ITrail } from "@/src/types";
+import { Input } from "@/src/components/ui/input";
 
 export default function CheckinPage() {
   const params = useParams();
@@ -24,18 +25,19 @@ export default function CheckinPage() {
   //   const { user } = useAuth();
 
   const slug = params.slug as string;
-  const [trilha, setTrilha] = useState<ITrail | null>(null);
+  const [trail, setTrail] = useState<ITrail | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [notas, setNotas] = useState("");
+  const [comment, setComment] = useState("");
+  const [rating, setRating] = useState("");
 
   useEffect(() => {
     async function loadTrilha() {
       if (!slug) return;
       const data = await getTrailBySlug(slug);
-      if (data) setTrilha(data);
+      if (data) setTrail(data);
       setLoading(false);
     }
     loadTrilha();
@@ -49,7 +51,7 @@ export default function CheckinPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!photoFile) {
       alert("Por favor, envie uma foto da chegada.");
@@ -66,7 +68,7 @@ export default function CheckinPage() {
 
   if (loading)
     return <div className="text-center py-20">Carregando trilha...</div>;
-  if (!trilha)
+  if (!trail)
     return <div className="text-center py-20">Trilha não encontrada.</div>;
 
   return (
@@ -87,10 +89,10 @@ export default function CheckinPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>{trilha.nome}</CardTitle>
+              <CardTitle>{trail.nome}</CardTitle>
               <p className="text-sm text-slate-500">
-                {trilha.dificuldade} • {trilha.distancia_km} km •{" "}
-                {trilha.tempo_estimado_min} min
+                {trail.dificuldade} • {trail.distancia_km} km •{" "}
+                {trail.tempo_estimado_min} min
               </p>
             </CardHeader>
 
@@ -139,15 +141,27 @@ export default function CheckinPage() {
 
                 {/* Observações */}
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="notas">Observações (opcional)</Label>
+                  <Label htmlFor="comment">Comentário (opcional)</Label>
                   <Textarea
-                    id="notas"
-                    placeholder="Como foi a experiência? Alguma observação?"
-                    value={notas}
+                    id="comment"
+                    placeholder="Como foi a experiência? Deixe seu comentário."
+                    value={comment}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setNotas(e.target.value)
+                      setComment(e.target.value)
                     }
                     rows={4}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="notas">Nota</Label>
+                  <Input
+                    id="notas"
+                    placeholder="Nota (de 0 a 10)"
+                    value={rating}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setRating(e.target.value)
+                    }
                   />
                 </div>
 
