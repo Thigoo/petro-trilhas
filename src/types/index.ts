@@ -26,3 +26,5 @@ export interface ITrailMap {
   distancia_km: number;
   coordinates: [number, number][];
 }
+
+export type Difficulty = "todas" | "leve" | "moderada" | "difícil";
