@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getTrailBySlug } from "@/src/lib/trails";
 import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
 import { Button } from "@/src/components/ui/button";
@@ -18,11 +18,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ITrail } from "@/src/types";
 import { Input } from "@/src/components/ui/input";
+import { useAuth } from "@/src/lib/auth/AuthProvider";
+import postCheckin from "@/src/lib/checkins";
+import { useRouter } from "next/navigation";
 
 export default function CheckinPage() {
   const params = useParams();
   const router = useRouter();
-  //   const { user } = useAuth();
+  const { user } = useAuth();
 
   const slug = params.slug as string;
   const [trail, setTrail] = useState<ITrail | null>(null);
@@ -58,12 +61,34 @@ export default function CheckinPage() {
       return;
     }
 
-    setSubmitting(true);
-    // TODO: Implementar upload + salvamento
-    console.log("Check-in enviado para trilha:", slug);
+    if (!user) {
+      alert("Você precisa estar logado para fazer o check-in.");
+      return;
+    }
 
-    alert("Check-in realizado com sucesso! (Simulação)");
-    router.push(`/trilhas/${slug}`);
+    setSubmitting(true);
+
+    if (!trail) {
+      console.error("Cadê a trilha gente!");
+      return;
+    }
+
+    const result = await postCheckin({
+      trilha_id: trail.id,
+      user_id: user.id,
+      comentario: comment,
+      nota: rating.trim() || null,
+      foto_file: photoFile,
+    });
+
+    setSubmitting(false);
+
+    if (result.success) {
+      alert(result.message);
+      router.push(`/trilhas/${slug}`);
+    } else {
+      alert(result.message);
+    }
   };
 
   if (loading)
@@ -108,12 +133,12 @@ export default function CheckinPage() {
                     {photoPreview ? (
                       <Image
                         src={photoPreview}
-                        alt="Preview"
-                        className="mx-auto max-h-80 rounded-xl"
+                        alt="Preview da foto"
                         width={800}
                         height={600}
-                        loading="lazy"
-                        quality={75}
+                        className="mx-auto max-h-105 w-full object-contain rounded-2xl"
+                        style={{ height: "auto" }}
+                        priority={false}
                       />
                     ) : (
                       <div>

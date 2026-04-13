@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 export interface ITrail {
   id: string;
   nome: string;
@@ -11,7 +9,7 @@ export interface ITrail {
 
   geojson: {
     type: string;
-    coordinates: [number, number][]; // [longitude, latitude] no banco
+    coordinates: [number, number][];
   } | null;
 
   imagem_url?: string | null;
@@ -21,13 +19,10 @@ export interface ITrail {
   updated_at?: string;
 }
 
-// Tipo simplificado para usar no componente TrailMap
 export interface ITrailMap {
   id: string;
   nome: string;
   dificuldade: string;
   distancia_km: number;
-  coordinates: [number, number][]; // [latitude, longitude] que o Leaflet espera
+  coordinates: [number, number][];
 }
-
-export type Difficulty = "todas" | "leve" | "moderada" | "difícil";
