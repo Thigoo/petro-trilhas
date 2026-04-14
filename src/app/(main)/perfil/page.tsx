@@ -12,6 +12,7 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
 import { useProfile } from "@/src/lib/auth/useProfile";
+import LoadingScreen from "@/src/components/shared/LoadingScreen";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
@@ -29,7 +30,7 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <LoadingScreen />;
   }
 
   return (

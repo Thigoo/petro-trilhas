@@ -21,6 +21,7 @@ import { Input } from "@/src/components/ui/input";
 import { useAuth } from "@/src/lib/auth/AuthProvider";
 import postCheckin from "@/src/lib/checkins";
 import { useRouter } from "next/navigation";
+import LoadingScreen from "@/src/components/shared/LoadingScreen";
 
 export default function CheckinPage() {
   const params = useParams();
@@ -91,8 +92,7 @@ export default function CheckinPage() {
     }
   };
 
-  if (loading)
-    return <div className="text-center py-20">Carregando trilha...</div>;
+  if (loading) return <LoadingScreen />;
   if (!trail)
     return <div className="text-center py-20">Trilha não encontrada.</div>;
 
