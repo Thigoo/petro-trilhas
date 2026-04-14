@@ -11,9 +11,11 @@ import {
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
+import { useProfile } from "@/src/lib/auth/useProfile";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
+  const { profile, loading } = useProfile();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -24,6 +26,10 @@ export default function ProfilePage() {
   if (!user) {
     router.push("/trilhas");
     return <div>Redirecionando...</div>;
+  }
+
+  if (loading) {
+    return <div>Carregando...</div>;
   }
 
   return (
@@ -44,6 +50,11 @@ export default function ProfilePage() {
             <div>
               <p className="text-sm text-slate-500">Email</p>
               <p className="text-lg">{user.email}</p>
+            </div>
+
+            <div>
+              <p className="text-sm text-slate-500">Pontos eco</p>
+              <p className="text-lg">{profile?.pontos_eco}</p>
             </div>
 
             <div className="pt-6 border-t">
