@@ -5,6 +5,7 @@ import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ITrailMap } from "@/src/types";
+import FavoriteButton from "@/src/components/shared/FavoriteButton";
 
 export default async function TrilhaDetalhePage({
   params,
@@ -99,13 +100,7 @@ export default async function TrilhaDetalhePage({
                   Fazer Check-in
                 </Link>
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="flex-1 text-md py-2.5"
-              >
-                Salvar nos Favoritos
-              </Button>
+              <FavoriteButton trilhaId={trilha.id} />
             </div>
           </div>
 
