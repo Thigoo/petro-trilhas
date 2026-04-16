@@ -4,14 +4,25 @@ import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ITrailMap } from "@/src/types";
 
 // Correção de ícones do Leaflet
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+const userIcon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [10, 41],
+  popupAnchor: [2, -40],
+  shadowSize: [41, 41],
 });
 
 const MapContainer = dynamic(
@@ -38,19 +49,12 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
 
-interface MapTrail {
-  id: string;
-  nome: string;
-  dificuldade: string;
-  distancia_km: number;
-  coordinates: [number, number][];
-}
-
 interface TrailMapProps {
-  trails: MapTrail[];
+  trails: ITrailMap[];
   height?: string;
   center?: [number, number];
   className?: string;
+  userPosition?: [number, number] | null;
 }
 
 export default function TrailMap({
@@ -58,6 +62,7 @@ export default function TrailMap({
   height = "500px",
   center,
   className = "",
+  userPosition,
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -80,7 +85,7 @@ export default function TrailMap({
         center={center}
         zoom={13}
         scrollWheelZoom={true}
-        className="h-full w-full"
+        className="h-full w-full z-0"
         ref={mapRef}
       >
         <TileLayer
@@ -112,6 +117,15 @@ export default function TrailMap({
                 </div>
               </Popup>
             </Marker>
+            {userPosition && (
+              <Marker position={userPosition} icon={userIcon}>
+                <Popup>
+                  <strong>Você está aqui!</strong>
+                  <br />
+                  Posição atualizada em tempo real
+                </Popup>
+              </Marker>
+            )}
           </div>
         ))}
       </MapContainer>

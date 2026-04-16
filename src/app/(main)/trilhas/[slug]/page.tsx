@@ -90,7 +90,7 @@ export default async function TrilhaDetalhePage({
 
             {/* Ações */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <Button
+              {/* <Button
                 size="lg"
                 variant="default"
                 className="flex-1 bg-orange-700 hover:bg-orange-500 text-white text-md py-2.5"
@@ -98,6 +98,16 @@ export default async function TrilhaDetalhePage({
               >
                 <Link href={`/trilhas/${trilha.slug}/checkin`}>
                   Fazer Check-in
+                </Link>
+              </Button> */}
+              <Button
+                size="lg"
+                variant="default"
+                className="flex-1 bg-green-500 hover:bg-green-700 text-white text-md py-2.5"
+                asChild
+              >
+                <Link href={`/trilhas/${trilha.slug}/active`}>
+                  Iniciar trilha
                 </Link>
               </Button>
               <FavoriteButton trilhaId={trilha.id} />
