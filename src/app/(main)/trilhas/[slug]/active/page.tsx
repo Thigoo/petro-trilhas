@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 import { getTrailBySlug } from "@/src/lib/trails";
 import TrailMap from "@/src/components/trails/TrailMap";
 import { Button } from "@/src/components/ui/button";
-import { ArrowLeft, AlertTriangle, Flag } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Flag,
+  NavigationOff,
+  Navigation,
+} from "lucide-react";
 import Link from "next/link";
 import { ITrail } from "@/src/types";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
@@ -104,7 +110,7 @@ export default function ActiveTrailPage() {
           {!loadingUserPosition && (
             <TrailMap
               height="100%"
-              center={userPosition} // Petrópolis
+              center={userPosition}
               userPosition={userPosition}
               trails={[
                 {
@@ -129,27 +135,46 @@ export default function ActiveTrailPage() {
           )}
         </div>
 
-        {/* Botão flutuante de reporte */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-0">
-          {/* Botão flutuante de reporte - Versão corrigida */}
-          <div className="flex fixed bottom-6 left-1/2 -translate-x-1/2 z-100 pointer-events-auto">
-            <Button
-              onClick={() => setFollowUser(!followUser)}
-              variant={followUser ? "default" : "secondary"}
-              className="bg-green-600 hover:bg-orange-700 shadow-2xl rounded-full px-8 py-7 text-white flex items-center gap-3 text-base font-medium"
-              size="lg"
-            >
-              {followUser ? "Parar de seguir" : "Seguir minha posição"}
-            </Button>
-            <Button
-              size="lg"
-              className="bg-orange-600 hover:bg-orange-700 shadow-2xl rounded-full px-8 py-7 text-white flex items-center gap-3 text-base font-medium"
-              onClick={() => console.log("Reportar problema clicado")}
-            >
-              <AlertTriangle size={24} />
-              Reportar Problema
-            </Button>
-          </div>
+        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50 pointer-events-auto">
+          <Button
+            onClick={() => setFollowUser(!followUser)}
+            variant={followUser ? "default" : "secondary"}
+            size="lg"
+            className={`
+      shadow-2xl rounded-full px-7 py-7 text-base font-medium flex items-center gap-3 
+      transition-all active:scale-95
+      ${
+        followUser
+          ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+          : "bg-slate-700 hover:bg-slate-600 text-white"
+      }
+    `}
+          >
+            {followUser ? (
+              <>
+                <Navigation size={26} />
+                Seguir posição
+              </>
+            ) : (
+              <>
+                <NavigationOff size={26} />
+                Parar de seguir
+              </>
+            )}
+          </Button>
+
+          <Button
+            size="lg"
+            className="bg-orange-600 hover:bg-orange-700 shadow-2xl rounded-full px-7 py-7 text-white flex items-center gap-3 text-base font-medium active:scale-95 transition-all"
+            onClick={() => {
+              // TODO: abrir modal de reporte na próxima etapa
+              console.log("Reportar problema clicado");
+              // alert("Modal de reporte em breve...");
+            }}
+          >
+            <AlertTriangle size={26} />
+            Reportar Problema
+          </Button>
         </div>
       </div>
     </ProtectedRoute>
