@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <div className="relative flex min-h-screen flex-col">
       {/* O Header fica aqui para aparecer em todas as rotas deste grupo */}
-      <Header />
+      {/* <Header /> */}
 
       <main className="flex-1">{children}</main>
     </div>

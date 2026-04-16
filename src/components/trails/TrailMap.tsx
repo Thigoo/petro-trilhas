@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { ITrailMap } from "@/src/types";
+import { useMap } from "react-leaflet";
 
 // Correção de ícones do Leaflet
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,11 +18,11 @@ L.Icon.Default.mergeOptions({
 });
 
 const userIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [25, 41],
-  iconAnchor: [10, 41],
-  popupAnchor: [2, -40],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
 
@@ -55,6 +56,27 @@ interface TrailMapProps {
   center?: [number, number];
   className?: string;
   userPosition?: [number, number] | null;
+  followUser?: boolean;
+}
+
+function AutoFollow({
+  userPosition,
+  followUser,
+}: {
+  userPosition: [number, number] | null;
+  followUser: boolean;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (userPosition && followUser) {
+      map.flyTo(userPosition, map.getZoom(), {
+        animate: true,
+        duration: 1.2,
+      });
+    }
+  }, [userPosition, followUser, map]);
+  return null;
 }
 
 export default function TrailMap({
@@ -63,6 +85,7 @@ export default function TrailMap({
   center,
   className = "",
   userPosition,
+  followUser = false,
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -128,6 +151,10 @@ export default function TrailMap({
             )}
           </div>
         ))}
+        <AutoFollow
+          userPosition={userPosition ?? null}
+          followUser={followUser}
+        />
       </MapContainer>
     </div>
   );

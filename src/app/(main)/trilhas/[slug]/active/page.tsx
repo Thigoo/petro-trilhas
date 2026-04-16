@@ -22,6 +22,7 @@ export default function ActiveTrailPage() {
   const [loading, setLoading] = useState(true);
   const [loadingUserPosition, setLoadingUserPosition] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
+  const [followUser, setFollowUser] = useState(true);
 
   useEffect(() => {
     async function loadTrilha() {
@@ -116,6 +117,7 @@ export default function ActiveTrailPage() {
                     : [],
                 },
               ]}
+              followUser={followUser}
             />
           )}
           {isTracking && userPosition && (
@@ -130,7 +132,15 @@ export default function ActiveTrailPage() {
         {/* Botão flutuante de reporte */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-0">
           {/* Botão flutuante de reporte - Versão corrigida */}
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 pointer-events-auto">
+          <div className="flex fixed bottom-6 left-1/2 -translate-x-1/2 z-100 pointer-events-auto">
+            <Button
+              onClick={() => setFollowUser(!followUser)}
+              variant={followUser ? "default" : "secondary"}
+              className="bg-green-600 hover:bg-orange-700 shadow-2xl rounded-full px-8 py-7 text-white flex items-center gap-3 text-base font-medium"
+              size="lg"
+            >
+              {followUser ? "Parar de seguir" : "Seguir minha posição"}
+            </Button>
             <Button
               size="lg"
               className="bg-orange-600 hover:bg-orange-700 shadow-2xl rounded-full px-8 py-7 text-white flex items-center gap-3 text-base font-medium"
