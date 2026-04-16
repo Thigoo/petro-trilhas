@@ -16,6 +16,7 @@ import Link from "next/link";
 import { ITrail } from "@/src/types";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
 import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
+import ActiveTrailTimer from "@/src/components/trails/ActiveTrailTimer";
 
 export default function ActiveTrailPage() {
   const params = useParams();
@@ -29,6 +30,8 @@ export default function ActiveTrailPage() {
   const [loadingUserPosition, setLoadingUserPosition] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
   const [followUser, setFollowUser] = useState(true);
+  const [isTrailActive, setIstrailActive] = useState(true);
+  const [totalSeconds, setTotalSeconds] = useState(0);
 
   useEffect(() => {
     async function loadTrilha() {
@@ -72,8 +75,14 @@ export default function ActiveTrailPage() {
     };
   }, []);
 
-  const handleFinalizarTrilha = () => {
+  const handleFinishTrail = () => {
+    setIstrailActive(false);
+    alert(`Trilha concluida em: ${totalSeconds} segundos`);
     router.push(`/trilhas/${slug}/checkin`);
+  };
+
+  const handleTimeUpdate = (seconds: number) => {
+    setTotalSeconds(seconds);
   };
 
   if (loading) return <LoadingScreen />;
@@ -84,25 +93,33 @@ export default function ActiveTrailPage() {
     <ProtectedRoute>
       <div className="fixed inset-0 bg-slate-950 z-50 flex flex-col">
         {/* Header superior */}
-        <div className="bg-black/80 backdrop-blur-md p-4 flex items-center justify-between text-white z-10">
-          <Link href={`/trilhas/${slug}`} className="flex items-center gap-2">
+        <div className="bg-black/80 backdrop-blur-md p-4 flex items-center justify-between text-white z-50 border-b border-white/10">
+          {/* Esquerda - Voltar */}
+          <Link
+            href={`/trilhas/${slug}`}
+            className="flex items-center gap-2 shrink-0"
+          >
             <ArrowLeft size={24} />
-            <span className="font-medium">Voltar</span>
+            <span className="font-medium hidden sm:inline">Voltar</span>
           </Link>
 
-          <div className="text-center">
-            <p className="text-sm text-slate-400">Modo Trilha Ativa</p>
-            <p className="font-semibold">{trail.nome}</p>
+          {/* Centro - Nome da trilha */}
+          <div className="flex flex-col items-center flex-1 px-4 min-w-0">
+            <p className="text-xs text-slate-400 tracking-widest">
+              MODO TRILHA ATIVA
+            </p>
+            <p className="font-semibold text-base truncate max-w-55">
+              {trail.nome}
+            </p>
           </div>
 
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleFinalizarTrilha}
-          >
-            <Flag className="mr-2" size={18} />
-            Finalizar
-          </Button>
+          {/* Direita - Timer */}
+          <div className="shrink-0">
+            <ActiveTrailTimer
+              isActive={isTrailActive}
+              onTimeUpdate={handleTimeUpdate}
+            />
+          </div>
         </div>
 
         {/* Mapa em tela cheia */}
@@ -136,6 +153,15 @@ export default function ActiveTrailPage() {
         </div>
 
         <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50 pointer-events-auto">
+          <Button
+            variant="default"
+            size="lg"
+            onClick={handleFinishTrail}
+            className="shadow-2xl rounded-full px-8 py-7 text-base font-medium flex items-center gap-3 active:scale-95"
+          >
+            <Flag size={26} />
+            Finalizar Trilha
+          </Button>
           <Button
             onClick={() => setFollowUser(!followUser)}
             variant={followUser ? "default" : "secondary"}
