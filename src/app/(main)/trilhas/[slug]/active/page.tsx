@@ -16,7 +16,6 @@ import Link from "next/link";
 import { ITrail } from "@/src/types";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
 import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
-import ActiveTrailTimer from "@/src/components/trails/ActiveTrailTimer";
 
 export default function ActiveTrailPage() {
   const params = useParams();
@@ -30,8 +29,6 @@ export default function ActiveTrailPage() {
   const [loadingUserPosition, setLoadingUserPosition] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
   const [followUser, setFollowUser] = useState(true);
-  const [isTrailActive, setIstrailActive] = useState(true);
-  const [totalSeconds, setTotalSeconds] = useState(0);
 
   useEffect(() => {
     async function loadTrilha() {
@@ -76,13 +73,7 @@ export default function ActiveTrailPage() {
   }, []);
 
   const handleFinishTrail = () => {
-    setIstrailActive(false);
-    alert(`Trilha concluida em: ${totalSeconds} segundos`);
     router.push(`/trilhas/${slug}/checkin`);
-  };
-
-  const handleTimeUpdate = (seconds: number) => {
-    setTotalSeconds(seconds);
   };
 
   if (loading) return <LoadingScreen />;
@@ -114,12 +105,12 @@ export default function ActiveTrailPage() {
           </div>
 
           {/* Direita - Timer */}
-          <div className="shrink-0">
+          {/* <div className="shrink-0">
             <ActiveTrailTimer
               isActive={isTrailActive}
               onTimeUpdate={handleTimeUpdate}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Mapa em tela cheia */}
