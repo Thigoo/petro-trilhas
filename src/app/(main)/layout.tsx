@@ -1,14 +1,19 @@
+"use client";
+
 import Header from "@/src/components/shared/Header";
+import { usePathname } from "next/navigation";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isActiveTrailPage =
+    pathname?.includes("/trilhas/") && pathname?.includes("/active");
   return (
     <div className="relative flex min-h-screen flex-col">
-      {/* O Header fica aqui para aparecer em todas as rotas deste grupo */}
-      {/* <Header /> */}
+      {!isActiveTrailPage && <Header />}
 
       <main className="flex-1">{children}</main>
     </div>
