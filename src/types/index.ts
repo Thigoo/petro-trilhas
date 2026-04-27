@@ -6,7 +6,10 @@ export interface ITrail {
   distancia_km: number;
   tempo_estimado_min: number;
   descricao: string | null;
-
+  descricao_curta: string | null;
+  localizacao: string | null;
+  desnivel_m: string | null;
+  fonte: string | null;
   geojson: {
     type: string;
     coordinates: [number, number][];

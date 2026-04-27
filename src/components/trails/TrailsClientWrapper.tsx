@@ -67,8 +67,8 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
         </div>
 
         {/* Lista de Cards */}
-        <div className="lg:col-span-4">
-          <div className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-160px)] lg:overflow-y-auto lg:pr-3">
+        <div className="flex p-2 lg:col-span-4">
+          <div className="space-y-4 lg:sticky lg:max-h-[calc(100vh-160px)] lg:overflow-y-auto lg:pr-3">
             {filteredTrails.length > 0 ? (
               filteredTrails.map((trail) => (
                 <TrailCard key={trail.id} trail={trail} />
