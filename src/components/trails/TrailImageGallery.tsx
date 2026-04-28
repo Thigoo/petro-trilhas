@@ -99,14 +99,14 @@ export default function TrailImageGallery({
               <>
                 <button
                   onClick={goToPrevious}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-4 rounded-full transition-all"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full transition-all"
                 >
                   <ChevronLeft size={28} />
                 </button>
 
                 <button
                   onClick={goToNext}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-4 rounded-full transition-all"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full transition-all"
                 >
                   <ChevronRight size={28} />
                 </button>
