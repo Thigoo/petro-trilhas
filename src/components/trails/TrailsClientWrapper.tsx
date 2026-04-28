@@ -57,7 +57,7 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
       {/* Mapa + Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* Mapa */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7 p-4">
           <TrailMap
             key={`map-${activeFilter}- ${filteredTrails.length}`}
             height="480px" // mobile
@@ -67,8 +67,8 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
         </div>
 
         {/* Lista de Cards */}
-        <div className="flex p-2 lg:col-span-4">
-          <div className="space-y-4 lg:sticky lg:max-h-[calc(100vh-160px)] lg:overflow-y-auto lg:pr-3">
+        <div className="flex p-2 lg:col-span-5">
+          <div className="w-full space-y-4 lg:sticky lg:max-h-[calc(100vh-160px)] lg:overflow-y-auto lg:pr-3">
             {filteredTrails.length > 0 ? (
               filteredTrails.map((trail) => (
                 <TrailCard key={trail.id} trail={trail} />

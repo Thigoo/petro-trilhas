@@ -24,6 +24,7 @@ export default function TrailCard({ trail }: CardTrailProps) {
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 40vw"
+              loading="eager"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-slate-800 to-slate-900">
