@@ -8,6 +8,7 @@ import { ITrailMap } from "@/src/types";
 import FavoriteButton from "@/src/components/shared/FavoriteButton";
 import Image from "next/image";
 import { ArrowLeft, Clock, MapPin, Ruler } from "lucide-react";
+import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
 
 export default async function TrilhaDetalhePage({
   params,
@@ -112,28 +113,10 @@ export default async function TrilhaDetalhePage({
             )}
 
             {/* Galeria de Imagens */}
-            <div>
-              <h2 className="text-2xl font-semibold mb-4 text-slate-800">
-                Fotos da trilha
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {trilha?.imagens?.map((img, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-sm"
-                  >
-                    <Image
-                      src={img}
-                      alt={`${trilha.nome} - foto ${index + 1}`}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
-                      priority
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+            <TrailImageGallery
+              images={trilha.imagens || []}
+              trailName={trilha.nome}
+            />
 
             {/* Botões de Ação */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
