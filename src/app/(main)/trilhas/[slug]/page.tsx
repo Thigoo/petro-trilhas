@@ -29,14 +29,6 @@ export default async function TrilhaDetalhePage({
       : [],
   };
 
-  // Imagens fake para demonstração de layout (substitua depois por trilha.imagens)
-  const fakeImages = [
-    trilha.imagem_url,
-    "https://picsum.photos/id/1015/800/600",
-    "https://picsum.photos/id/1016/800/600",
-    "https://picsum.photos/id/133/800/600",
-  ].filter(Boolean) as string[];
-
   return (
     <div className="min-h-screen bg-slate-50 pb-12">
       {/* Hero Section */}
@@ -125,7 +117,7 @@ export default async function TrilhaDetalhePage({
                 Fotos da trilha
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {fakeImages.map((img, index) => (
+                {trilha?.imagens?.map((img, index) => (
                   <div
                     key={index}
                     className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-sm"
@@ -133,6 +125,7 @@ export default async function TrilhaDetalhePage({
                     <Image
                       src={img}
                       alt={`${trilha.nome} - foto ${index + 1}`}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-300"
                       priority

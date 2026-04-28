@@ -16,6 +16,7 @@ export interface ITrail {
   } | null;
 
   imagem_url?: string | null;
+  imagens?: string[] | null;
   altitude_max?: number | null;
 
   created_at?: string;
