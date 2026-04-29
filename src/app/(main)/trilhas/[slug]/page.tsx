@@ -157,6 +157,7 @@ export default async function TrilhaDetalhePage({
                 trails={[mapTrail]}
                 height="480px"
                 center={mapTrail.coordinates[0] || [-22.505, -43.178]}
+                withRoute={false}
               />
             </div>
           </div>

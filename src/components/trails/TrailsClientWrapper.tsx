@@ -64,6 +64,7 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
             height="480px" // mobile
             center={[-22.505, -43.178]} // Petrópolis
             trails={mapTrails}
+            withRoute={true}
           />
         </div>
 

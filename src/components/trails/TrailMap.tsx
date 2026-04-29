@@ -59,6 +59,7 @@ interface TrailMapProps {
   className?: string;
   userPosition?: [number, number] | null;
   followUser?: boolean;
+  withRoute?: boolean;
 }
 
 function AutoFollow({
@@ -88,6 +89,7 @@ export default function TrailMap({
   className = "",
   userPosition,
   followUser = false,
+  withRoute = false,
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -140,15 +142,17 @@ export default function TrailMap({
 
                   <div className="flex items-center justify-between w-full pt-2">
                     {trail.dificuldade} • {trail.distancia_km} km
-                    <Link
-                      href={`/trilhas/${trail.slug}`}
-                      className="font-medium text-md group"
-                    >
-                      <ArrowRight
-                        size={18}
-                        className="text-green-600 hover:text-green-700 group-hover:translate-x-0.5 transition-transform bg-slate-100 rounded-full -p-2"
-                      />
-                    </Link>
+                    {withRoute && (
+                      <Link
+                        href={`/trilhas/${trail.slug}`}
+                        className="font-medium text-md group"
+                      >
+                        <ArrowRight
+                          size={18}
+                          className="text-green-600 hover:text-green-700 group-hover:translate-x-0.5 transition-transform bg-slate-100 rounded-full -p-2"
+                        />
+                      </Link>
+                    )}
                   </div>
                 </div>
               </Popup>
