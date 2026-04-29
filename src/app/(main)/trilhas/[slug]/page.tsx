@@ -18,6 +18,9 @@ export default async function TrilhaDetalhePage({
   const { slug } = await params;
   const trilha = await getTrailBySlug(slug);
 
+  const lat = trilha?.geojson?.coordinates?.[0]?.[1] || 0;
+  const lng = trilha?.geojson?.coordinates?.[0]?.[0] || 0;
+
   if (!trilha) notFound();
 
   const mapTrail: ITrailMap = {
@@ -117,6 +120,17 @@ export default async function TrilhaDetalhePage({
               images={trilha.imagens || []}
               trailName={trilha.nome}
             />
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-[#4285F4] hover:bg-[#3367D6] text-white font-medium py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-colors"
+              >
+                <span>Como chegar?</span>
+              </a>
+            </div>
 
             {/* Botões de Ação */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
