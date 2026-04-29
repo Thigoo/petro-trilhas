@@ -134,17 +134,15 @@ export default async function TrilhaDetalhePage({
 
           {/* Mapa - Coluna Lateral */}
           <div className="lg:col-span-5">
-            <div className="sticky top-8">
-              <h3 className="font-semibold text-slate-700 mb-3 px-1">
-                Mapa da Trilha
-              </h3>
-              <div className="rounded-3xl overflow-hidden shadow-md bg-white p-2">
-                <TrailMap
-                  trails={[mapTrail]}
-                  height="480px"
-                  center={mapTrail.coordinates[0] || [-22.505, -43.178]}
-                />
-              </div>
+            <h3 className="font-semibold text-slate-700 mb-3 px-1">
+              Mapa da Trilha
+            </h3>
+            <div className="rounded-3xl overflow-hidden shadow-md bg-white p-2">
+              <TrailMap
+                trails={[mapTrail]}
+                height="480px"
+                center={mapTrail.coordinates[0] || [-22.505, -43.178]}
+              />
             </div>
           </div>
         </div>
