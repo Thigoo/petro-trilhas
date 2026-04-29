@@ -7,7 +7,8 @@ import "leaflet/dist/leaflet.css";
 import { ITrailMap } from "@/src/types";
 import { useMap } from "react-leaflet";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, RotateCw } from "lucide-react";
+import { Button } from "../ui/button";
 
 // Correção de ícones do Leaflet
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,6 +94,16 @@ export default function TrailMap({
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
+  const goToCenter = () => {
+    if (mapRef.current) {
+      if (!center) return;
+      mapRef.current.flyTo(center, mapRef.current.getZoom(), {
+        animate: true,
+        duration: 1.2,
+      });
+    }
+  };
+
   // Cleanup importante para evitar erro de "Map container is being reused"
   useEffect(() => {
     return () => {
@@ -119,6 +130,15 @@ export default function TrailMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={goToCenter}
+          className="absolute bottom-10 right-5 z-1000 h-12 w-12 rounded-full shadow-md bg-white hover:bg-slate-50 border-slate-200"
+          title="Centralizar mapa"
+        >
+          <RotateCw size={24} className="text-green-700" />
+        </Button>
 
         {trails.map((trail) => (
           <div key={trail.id}>
@@ -137,7 +157,7 @@ export default function TrailMap({
             />
             <Marker position={trail.coordinates[0]}>
               <Popup className="custom-popup">
-                <div className="">
+                <div className="min-w-35">
                   <strong className="block text-base">{trail.nome}</strong>
 
                   <div className="flex items-center justify-between w-full pt-2">
