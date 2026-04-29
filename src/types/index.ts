@@ -26,7 +26,7 @@ export interface ITrail {
 export interface ITrailMap {
   id: string;
   nome: string;
-  slug: string;
+  slug?: string;
   dificuldade: string;
   distancia_km: number;
   coordinates: [number, number][];
