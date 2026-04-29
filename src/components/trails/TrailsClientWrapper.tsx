@@ -30,6 +30,7 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
     .map((t) => ({
       id: t.id,
       nome: t.nome,
+      slug: t.slug,
       dificuldade: t.dificuldade,
       distancia_km: t.distancia_km,
       coordinates: t.geojson!.coordinates.map(([lng, lat]) => [lat, lng]),

@@ -6,6 +6,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { ITrailMap } from "@/src/types";
 import { useMap } from "react-leaflet";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 // Correção de ícones do Leaflet
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,11 +134,22 @@ export default function TrailMap({
               }}
             />
             <Marker position={trail.coordinates[0]}>
-              <Popup>
-                <div>
-                  <strong>{trail.nome}</strong>
-                  <br />
-                  {trail.dificuldade} • {trail.distancia_km} km
+              <Popup className="custom-popup">
+                <div className="">
+                  <strong className="block text-base">{trail.nome}</strong>
+
+                  <div className="flex items-center justify-between w-full pt-2">
+                    {trail.dificuldade} • {trail.distancia_km} km
+                    <Link
+                      href={`/trilhas/${trail.slug}`}
+                      className="font-medium text-md group"
+                    >
+                      <ArrowRight
+                        size={18}
+                        className="text-green-600 hover:text-green-700 group-hover:translate-x-0.5 transition-transform bg-slate-100 rounded-full -p-2"
+                      />
+                    </Link>
+                  </div>
                 </div>
               </Popup>
             </Marker>

@@ -26,6 +26,7 @@ export default async function TrilhaDetalhePage({
   const mapTrail: ITrailMap = {
     id: trilha.id,
     nome: trilha.nome,
+    slug: trilha.slug,
     dificuldade: trilha.dificuldade,
     distancia_km: trilha.distancia_km,
     coordinates: trilha.geojson?.coordinates
@@ -76,7 +77,7 @@ export default async function TrilhaDetalhePage({
           {/* Coluna Principal */}
           <div className="lg:col-span-7 space-y-10">
             {/* Informações Técnicas */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <InfoCard
                 icon={<Ruler className="w-5 h-5" />}
                 label="Distância"
