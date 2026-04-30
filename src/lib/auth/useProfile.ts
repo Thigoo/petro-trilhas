@@ -7,6 +7,7 @@ export function useProfile() {
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<IProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     async function loadProfileData() {
@@ -26,6 +27,9 @@ export function useProfile() {
         console.error("Erro ao buscar perfil:", error.message);
       } else {
         setProfile(data);
+        if (data?.role === "admin") {
+          setIsAdmin(true);
+        }
       }
       setLoading(false);
     }
@@ -38,5 +42,6 @@ export function useProfile() {
     profile,
     loading: authLoading || loading,
     isLoggedIn: !!user,
+    isAdmin,
   };
 }

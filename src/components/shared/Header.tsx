@@ -6,17 +6,23 @@ import { usePathname } from "next/navigation";
 import { Mountain, Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/src/lib/auth/AuthProvider";
+import { useProfile } from "@/src/lib/auth/useProfile";
 
 export default function Header() {
   const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { isAdmin } = useProfile();
 
   const navLinks = [
     { name: "Início", href: "/" },
     { name: "Trilhas", href: "/trilhas" },
     { name: "Perfil", href: "/perfil" },
   ];
+
+  if (isAdmin) {
+    navLinks.push({ name: "Admin", href: "/trilhas-admin" });
+  }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 

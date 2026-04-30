@@ -38,6 +38,7 @@ export interface IProfile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  role: "user" | "admin";
   pontos_eco: number;
   created_at: string;
   updated_at: string;
