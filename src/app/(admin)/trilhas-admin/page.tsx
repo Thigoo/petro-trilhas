@@ -3,6 +3,7 @@ import { Badge } from "@/src/components/ui/badge";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { getTrails } from "@/src/lib/trails";
+import TrailsTable from "@/src/components/admin/TrailsTable";
 
 export default async function AdminTrilhasPage() {
   const trails = await getTrails();
@@ -44,6 +45,10 @@ export default async function AdminTrilhasPage() {
             {trails.length - published.length}
           </span>
         </Badge>
+      </div>
+      {/* Listagem de trilhas */}
+      <div>
+        <TrailsTable trails={trails} />
       </div>
     </div>
   );
