@@ -10,6 +10,7 @@ export interface ITrail {
   localizacao: string | null;
   desnivel_m: string | null;
   fonte: string | null;
+  publicada: boolean;
   geojson: {
     type: string;
     coordinates: [number, number][];
