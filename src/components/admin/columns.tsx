@@ -14,18 +14,24 @@ export const columns: ColumnDef<ITrail>[] = [
     accessorKey: "imagem_url",
     header: "Imagem",
     cell: ({ row }) => {
-      const imagemUrl = row.original.imagem_url;
-      return imagemUrl ? (
-        <div className="relative w-12 h-12 rounded-md overflow-hidden border">
-          <Image
-            src={imagemUrl}
-            alt={row.original.nome}
-            fill
-            className="object-cover"
-          />
-        </div>
+      return row.original.imagem_url ? (
+        <Link
+          href={row.original.imagem_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block group"
+        >
+          <div className="relative w-12 h-12 rounded-md overflow-hidden border transition-opacity group-hover:opacity-80">
+            <Image
+              src={row.original.imagem_url}
+              alt={row.original.nome}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </Link>
       ) : (
-        <div className="w-12 h-12 bg-slate-200 rounded-md flex items-center justify-center text-slate-400">
+        <div className="w-12 h-12 bg-slate-100 rounded-md flex items-center justify-center text-slate-400 border border-dashed">
           🏔️
         </div>
       );
