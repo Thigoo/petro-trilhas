@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/src/components/ui/sidebar";
-import { Map, LogOut } from "lucide-react";
+import { Map, LogOut, Mountain } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -51,14 +51,12 @@ export function AdminSidebar({
     <Sidebar {...props}>
       <SidebarHeader className="border-b border-slate-800 p-6">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold text-2xl">P</span>
-          </div>
+          <Mountain className="h-6 w-6 text-green-700" />
           <div>
-            <p className="font-bold text-white text-xl tracking-tight">
+            <p className="font-bold text-xl text-green-700 tracking-tight">
               Petro Trilhas
             </p>
-            <p className="text-xs text-slate-500 -mt-1">Administração</p>
+            <p className="text-xs text-800-500 -mt-1">Admin</p>
           </div>
         </div>
       </SidebarHeader>
@@ -97,10 +95,13 @@ export function AdminSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <button className="w-full flex items-center gap-3 text-slate-400 hover:text-white">
+              <Link
+                href={"/trilhas"}
+                className="w-full flex items-center gap-3 text-slate-400 hover:text-white"
+              >
                 <LogOut className="w-5 h-5" />
-                <span>Sair</span>
-              </button>
+                <span>Voltar para o app</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
