@@ -1,5 +1,5 @@
 export interface ITrail {
-  id: string;
+  id?: string;
   nome: string;
   slug: string;
   dificuldade: "leve" | "moderada" | "difícil";
@@ -8,9 +8,9 @@ export interface ITrail {
   descricao: string | null;
   descricao_curta: string | null;
   localizacao: string | null;
-  desnivel_m: string | null;
+  desnivel_m: number | null;
   fonte: string | null;
-  publicada: boolean;
+  publicada?: boolean;
   geojson: {
     type: string;
     coordinates: [number, number][];

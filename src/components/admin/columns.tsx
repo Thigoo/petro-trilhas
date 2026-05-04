@@ -26,6 +26,7 @@ export const columns: ColumnDef<ITrail>[] = [
               src={row.original.imagem_url}
               alt={row.original.nome}
               fill
+              sizes="(max-width: 768px) 100vw, 40vw"
               className="object-cover"
             />
           </div>

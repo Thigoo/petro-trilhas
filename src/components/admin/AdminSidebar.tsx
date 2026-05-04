@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 const menuItems = [
   {
     title: "Trilhas",
-    url: "/admin/trilhas",
+    url: "/trilhas-admin",
     icon: Map,
   },
   //   {

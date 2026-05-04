@@ -21,7 +21,7 @@ export default async function AdminTrilhasPage() {
         </div>
 
         <Button asChild className="shrink-0">
-          <Link href="/admin/trilhas/new">
+          <Link href="trilhas-admin/new">
             <Plus className="mr-2 h-4 w-4" />
             Nova Trilha
           </Link>
