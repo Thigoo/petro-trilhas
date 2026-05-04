@@ -1,5 +1,5 @@
 export interface ITrail {
-  id?: string;
+  id: string;
   nome: string;
   slug: string;
   dificuldade: "leve" | "moderada" | "difícil";
