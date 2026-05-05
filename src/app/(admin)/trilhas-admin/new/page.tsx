@@ -12,13 +12,14 @@ import Link from "next/link";
 import { TrailForm } from "@/src/components/admin/TrailForm";
 import { Button } from "@/src/components/ui/button";
 import { registerTrail } from "@/src/actions/admin/trails";
+import { useRouter } from "next/navigation";
 
 export default function AddTrailPage() {
+  const router = useRouter();
   const handleCreate = async (data: FormData) => {
     const response = await registerTrail(data);
     if (response.success) {
-      alert("Trilha criada com sucesso!");
-      // Aqui você pode redirecionar usando o router do Next
+      router.push("/trilhas-admin");
     } else {
       alert(response.message);
     }

@@ -23,6 +23,7 @@ interface TrailFormProps {
 }
 
 export interface ITrailFormState {
+  id?: string;
   nome: string;
   slug: string;
   dificuldade: "leve" | "moderada" | "difícil";
@@ -133,6 +134,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
 
     try {
       const dataToSend = new FormData();
+      if (isEdit) dataToSend.append("id", initialData?.id || "");
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "imagens") {
           formData.imagens.forEach((file) =>
@@ -372,6 +374,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
                   src={formData.imagem_preview}
                   alt="Preview"
                   fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
                 />
                 <button
@@ -421,6 +424,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
                   src={preview}
                   alt={`Preview galeria ${index}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
                 />
                 <button

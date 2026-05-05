@@ -6,7 +6,7 @@ export async function getTrails(): Promise<ITrail[]> {
   const { data, error } = await supabase
     .from("trilhas")
     .select("*")
-    .order("nome", { ascending: true });
+    .order("updated_at", { ascending: false });
 
   if (error) {
     console.error("Erro ao buscar trilhas:", error.message);

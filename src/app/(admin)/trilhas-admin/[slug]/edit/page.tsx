@@ -12,7 +12,7 @@ import { getTrailBySlug } from "@/src/lib/trails";
 import { mapTrailToFormState } from "@/src/utils/formatter";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function UpdateTrailPage({
   params,
@@ -30,9 +30,13 @@ export default async function UpdateTrailPage({
 
   const handleUpdate = async (data: FormData) => {
     "use server";
-    console.log("clicou no update");
     const response = await updateTrail(trail.id, data);
-    console.log("response", response);
+
+    if (response.success) {
+      redirect("/trilhas-admin");
+    } else {
+      console.error(response.message);
+    }
   };
 
   return (

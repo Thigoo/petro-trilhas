@@ -104,7 +104,7 @@ export const columns: ColumnDef<ITrail>[] = [
           </Button>
 
           <Button variant="ghost" size="icon" asChild>
-            <Link href={`/trilhas/${trail.slug}`} target="_blank">
+            <Link href={`/trilhas/${trail.slug}`}>
               <Eye className="h-4 w-4" />
             </Link>
           </Button>

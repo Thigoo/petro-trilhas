@@ -141,7 +141,7 @@ export async function updateTrail(id: string, formData: FormData) {
       }
     }
 
-    const { error: dbError } = await supabase
+    const { error: dbError, data } = await supabase
       .from("trilhas")
       .update({
         nome: validatedData.nome,
@@ -159,7 +159,15 @@ export async function updateTrail(id: string, formData: FormData) {
         imagem_url: mainPublicUrl,
         imagens: galleryUrls,
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select();
+
+    if (!data || data.length === 0) {
+      return {
+        success: false,
+        message: "Nenhuma trilha foi encontrada com este ID para atualização.",
+      };
+    }
 
     if (dbError) throw dbError;
 
