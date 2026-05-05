@@ -98,7 +98,7 @@ export const columns: ColumnDef<ITrail>[] = [
       return (
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" asChild>
-            <Link href={`/admin/trilhas/${trail.id}/edit`}>
+            <Link href={`/trilhas-admin/${trail.slug}/edit`}>
               <Edit className="h-4 w-4" />
             </Link>
           </Button>

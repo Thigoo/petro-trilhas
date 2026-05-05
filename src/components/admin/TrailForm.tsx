@@ -125,6 +125,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
         const path = issue.path[0] as string;
         formattedErrors[path] = issue.message;
       });
+      console.log("ERROS DE VALIDAÇÃO:", formattedErrors);
       setErrors(formattedErrors);
       setIsPending(false);
       return;
