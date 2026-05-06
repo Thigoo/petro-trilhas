@@ -35,12 +35,15 @@ export const trailSchema = z.object({
   }, "O GeoJSON deve ser um JSON válido"),
 
   imagem_url: z
-    .any()
-    .refine((file) => file instanceof File, "A imagem principal é obrigatória")
-    .refine(
-      (file) => file?.size <= 5 * 1024 * 1024,
-      "A imagem deve ter no máximo 5MB",
-    ),
+    .union([
+      z
+        .instanceof(File)
+        .refine((file) => file.size <= 5 * 1024 * 1024, "Máximo 5MB"),
+      z.string().min(1, "URL da imagem é obrigatória"),
+      z.null(),
+      z.any(),
+    ])
+    .optional(),
 
   imagens: z.array(z.any()).optional().default([]),
 });

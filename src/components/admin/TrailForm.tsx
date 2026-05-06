@@ -118,7 +118,12 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
     setIsPending(true);
     setErrors({});
 
-    const result = trailSchema.safeParse(formData);
+    const dataToValidate = {
+      ...formData,
+      imagem_url: formData.imagem_url || formData.imagem_preview,
+    };
+
+    const result = trailSchema.safeParse(dataToValidate);
 
     if (!result.success) {
       const formattedErrors: Record<string, string> = {};
@@ -133,19 +138,29 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
     }
 
     try {
+      // TODO: Verificar e resolver bug ao atualizar imagens
       const dataToSend = new FormData();
       if (isEdit) dataToSend.append("id", initialData?.id || "");
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "imagens") {
-          formData.imagens.forEach((file) =>
-            dataToSend.append("imagens", file),
-          );
+          formData.imagens.forEach((file) => {
+            if (file instanceof File) dataToSend.append("imagens", file);
+          });
+        } else if (key === "galeria_previews") {
+          formData.galeria_previews.forEach((url) => {
+            if (url.startsWith("http") && !url.includes("blob:")) {
+              dataToSend.append("galeria_existente", url);
+            }
+          });
         } else if (key === "imagem_url") {
-          dataToSend.append("imagem_url", value);
+          const valueToSend = value || formData.imagem_preview;
+          dataToSend.append("imagem_url", valueToSend);
         } else {
-          dataToSend.append(key, value);
+          dataToSend.append(key, value as string);
         }
       });
+
+      console.log("Form Data:", formData);
 
       await onSubmit(dataToSend);
     } catch (error) {

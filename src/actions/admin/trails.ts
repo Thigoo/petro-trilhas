@@ -105,13 +105,11 @@ export async function updateTrail(id: string, formData: FormData) {
   const validatedData = result.data;
 
   try {
-    let mainPublicUrl = validatedData.imagem_url;
-
+    let mainPublicUrl = formData.get("imagem_url") as string | File;
     const mainFile = formData.get("imagem_url") as File;
 
-    if (mainFile && mainFile.size > 0) {
-      const mainFilePath = `trilhas/${validatedData.slug}/main-${Date.now()}`;
-
+    if (mainFile instanceof File && mainFile.size > 0) {
+      const mainFilePath = `trilhas/${validatedData.slug}/capa-${Date.now()}`;
       const { error: uploadError } = await supabase.storage
         .from("trails-photos")
         .upload(mainFilePath, mainFile);
@@ -123,11 +121,13 @@ export async function updateTrail(id: string, formData: FormData) {
         .getPublicUrl(mainFilePath).data.publicUrl;
     }
 
-    const galleryFiles = formData.getAll("imagens") as File[];
-    const galleryUrls: string[] = [];
+    const galeriaExistente = formData.getAll("galeria_existente") as string[];
+    const imagensNovas = formData.getAll("imagens") as File[];
+    const novasUrls: string[] = [];
 
-    for (const file of galleryFiles) {
-      if (file.size === 0) continue;
+    // Upload das novas fotos, se houver
+    for (const file of imagensNovas) {
+      if (!(file instanceof File) || file.size === 0) continue;
 
       const path = `trilhas/${validatedData.slug}/galeria-${Date.now()}-${file.name}`;
       const { error: galError } = await supabase.storage
@@ -137,9 +137,12 @@ export async function updateTrail(id: string, formData: FormData) {
       if (!galError) {
         const url = supabase.storage.from("trails-photos").getPublicUrl(path)
           .data.publicUrl;
-        galleryUrls.push(url);
+        novasUrls.push(url);
       }
     }
+
+    // A galeria final é a união das que já estavam lá + os novos uploads
+    const galeriaFinal = [...galeriaExistente, ...novasUrls];
 
     const { error: dbError, data } = await supabase
       .from("trilhas")
@@ -155,21 +158,19 @@ export async function updateTrail(id: string, formData: FormData) {
         descricao: validatedData.descricao,
         descricao_curta: validatedData.descricao_curta,
         fonte: validatedData.fonte,
-        geojson: JSON.parse(validatedData.geojson),
+        geojson:
+          typeof validatedData.geojson === "string"
+            ? JSON.parse(validatedData.geojson)
+            : validatedData.geojson,
         imagem_url: mainPublicUrl,
-        imagens: galleryUrls,
+        imagens: galeriaFinal,
       })
       .eq("id", id)
       .select();
 
-    if (!data || data.length === 0) {
-      return {
-        success: false,
-        message: "Nenhuma trilha foi encontrada com este ID para atualização.",
-      };
-    }
-
     if (dbError) throw dbError;
+    if (!data || data.length === 0)
+      throw new Error("Falha ao localizar trilha.");
 
     revalidatePath("/trilhas");
     revalidatePath(`/trilhas/${validatedData.slug}`);
