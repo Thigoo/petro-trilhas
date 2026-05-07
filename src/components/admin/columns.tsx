@@ -1,4 +1,3 @@
-// src/components/admin/trilhas/columns.tsx
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -6,8 +5,18 @@ import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { Edit, Trash2, Eye } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Lock, Globe } from "lucide-react";
 import { ITrail } from "@/src/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
+import { toggleTrailPublishStatus } from "@/src/actions/admin/trails";
+import { DeleteTrailDialog } from "./DeleteTrailDialog";
 
 export const columns: ColumnDef<ITrail>[] = [
   {
@@ -95,28 +104,72 @@ export const columns: ColumnDef<ITrail>[] = [
     header: "Ações",
     cell: ({ row }) => {
       const trail = row.original;
+
+      const currentStatus = trail.publicada;
+
       return (
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/trilhas-admin/${trail.slug}/edit`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Abrir menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
 
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/trilhas/${trail.slug}`}>
-              <Eye className="h-4 w-4" />
-            </Link>
-          </Button>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/trilhas-admin/${trail.slug}/edit`}
+                className="flex items-center cursor-pointer"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Editar
+              </Link>
+            </DropdownMenuItem>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-red-600 hover:text-red-700"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/trilhas/${trail.slug}`}
+                className="flex items-center cursor-pointer"
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Visualizar no app
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onClick={() => {
+                if (currentStatus !== undefined) {
+                  toggleTrailPublishStatus(trail.id, currentStatus);
+                }
+              }}
+              className="cursor-pointer"
+            >
+              {trail.publicada ? (
+                <div className="flex items-center">
+                  <Lock className="mr-2 h-4 w-4" />
+                  Despublicar
+                </div>
+              ) : (
+                <>
+                  <Globe className="mr-2 h-4 w-4" />
+                  Publicar
+                </>
+              )}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DeleteTrailDialog
+              id={trail.id}
+              slug={trail.slug}
+              trailName={trail.nome}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

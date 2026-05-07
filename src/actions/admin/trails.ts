@@ -183,3 +183,62 @@ export async function updateTrail(id: string, formData: FormData) {
     return { success: false, message: error.message };
   }
 }
+
+export async function toggleTrailPublishStatus(
+  id: string,
+  currentStatus: boolean,
+) {
+  try {
+    const { error } = await supabase
+      .from("trilhas")
+      .update({ publicada: !currentStatus })
+      .eq("id", id);
+
+    if (error) throw error;
+
+    revalidatePath("/trilhas");
+    revalidatePath("/trilhas-admin");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Toggle Error:", error);
+  }
+}
+
+export async function deleteTrail(id: string, slug: string) {
+  const folderPath = `trilhas/${slug}`;
+
+  try {
+    const { data: files, error: listError } = await supabase.storage
+      .from("trails-photos")
+      .list(folderPath);
+
+    if (listError) {
+      console.error("Erro ao listar arquivos:", listError);
+    }
+
+    if (files && files.length > 0) {
+      const filesToDelete = files.map((file) => `${folderPath}/${file.name}`);
+      const { error: storageError } = await supabase.storage
+        .from("trails-photos")
+        .remove(filesToDelete);
+
+      if (storageError) {
+        console.error("Erro ao deletar arquivos do storage:", storageError);
+      }
+    }
+
+    const { error: dbError } = await supabase
+      .from("trilhas")
+      .delete()
+      .eq("id", id);
+
+    if (dbError) {
+      throw new Error("Erro ao excluir a trilha do banco de dados.");
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+
+  revalidatePath("/trilhas-admin");
+  revalidatePath("/trilhas");
+}
