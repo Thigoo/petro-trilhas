@@ -2,7 +2,7 @@ import { supabase } from "@/src/lib/supabase";
 import { ITrail } from "../types";
 
 // Função para buscar todas as trilhas
-export async function getTrails(): Promise<ITrail[]> {
+export async function getAllTrails(): Promise<ITrail[]> {
   const { data, error } = await supabase
     .from("trilhas")
     .select("*")
@@ -21,6 +21,21 @@ export async function getTrails(): Promise<ITrail[]> {
     tempo_estimado_min: Number(trilha.tempo_estimado_min) || 0,
     altitude_max: trilha.altitude_max ? Number(trilha.altitude_max) : null,
   })) as ITrail[];
+}
+
+export async function getPublishedTrails(): Promise<ITrail[]> {
+  const { data, error } = await supabase
+    .from("trilhas")
+    .select("*")
+    .eq("publicada", true)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    console.error("Erro ao buscar trilhas publicadas:", error.message);
+    return [];
+  }
+
+  return data || [];
 }
 
 // Função auxiliar para buscar uma trilha específica por slug (útil na página de detalhes)

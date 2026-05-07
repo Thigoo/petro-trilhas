@@ -2,11 +2,11 @@ import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { getTrails } from "@/src/lib/trails";
+import { getAllTrails } from "@/src/lib/trails";
 import TrailsTable from "@/src/components/admin/TrailsTable";
 
 export default async function AdminTrilhasPage() {
-  const trails = await getTrails();
+  const trails = await getAllTrails();
   const published = trails.filter((t) => t.publicada === true);
 
   return (

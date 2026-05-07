@@ -1,8 +1,8 @@
 import { TrailsClientWrapper } from "@/src/components/trails/TrailsClientWrapper";
-import { getTrails } from "@/src/lib/trails";
+import { getPublishedTrails } from "@/src/lib/trails";
 
 export default async function TrailsPage() {
-  const allTrails = await getTrails();
+  const allTrails = await getPublishedTrails();
 
   return (
     <div className="min-h-screen bg-slate-50">
