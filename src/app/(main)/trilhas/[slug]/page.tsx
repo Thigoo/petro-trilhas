@@ -37,23 +37,27 @@ export default async function TrilhaDetalhePage({
   return (
     <div className="min-h-screen bg-slate-50 pb-12">
       {/* Hero Section */}
-      <div className="relative h-95 md:h-115 w-full">
+      <div className="relative h-87.5 md:h-125 w-full overflow-hidden">
         <Link
           href="/trilhas"
-          className="z-10 absolute top-6 left-6 inline-flex items-center text-green-900 mb-6"
+          className="z-20 absolute top-6 left-6 inline-flex items-center gap-2 px-4 py-2 
+                 bg-white/90 backdrop-blur-sm hover:bg-white text-green-900 
+                 rounded-full shadow-sm transition-all font-medium text-sm"
         >
-          <ArrowLeft className="mr-2 h-5 w-5" /> Voltar
+          <ArrowLeft className="h-4 w-4" />
+          Voltar para trilhas
         </Link>
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
         {trilha.imagem_url && (
           <Image
             src={trilha.imagem_url}
             alt={trilha.nome}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
             priority
           />
         )}
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
 
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
           <div className="max-w-5xl mx-auto">
