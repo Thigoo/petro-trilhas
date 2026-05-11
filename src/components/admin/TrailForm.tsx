@@ -367,6 +367,7 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
                 src={imagemPreview}
                 alt="Preview"
                 fill
+                sizes="(max-width: 768px) 100vw, 40vw"
                 className="object-cover"
               />
               <button
@@ -404,6 +405,7 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
                   src={preview}
                   alt={`galeria-${index}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
                 />
                 <button
