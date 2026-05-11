@@ -51,7 +51,7 @@ export default function TrailCard({ trail }: CardTrailProps) {
             </h3>
 
             {trail.descricao_curta && (
-              <p className="text-slate-600 text-[15px] line-clamp-2 mb-5">
+              <p className="text-slate-600 text-[15px] mb-5">
                 {trail.descricao_curta}
               </p>
             )}
