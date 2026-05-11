@@ -3,25 +3,21 @@ import { z } from "zod";
 export const trailSchema = z.object({
   nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
   slug: z.string().min(3, "O slug deve ser preenchido"),
-  dificuldade: z.custom((dificuldade) =>
-    ["leve", "moderada", "difícil"].includes(dificuldade as string),
-  ),
+  dificuldade: z.enum(["leve", "moderada", "difícil"]),
+
   distancia_km: z.coerce
     .number()
-    .min(0.1, "A distância deve ser maior que zero"),
+    .min(0.1, "Distância deve ser maior que 0.1 km"),
   tempo_estimado_min: z.coerce
     .number()
     .int()
-    .min(1, "O tempo deve ser pelo menos 1 minuto"),
+    .min(1, "Tempo deve ser pelo menos 1 minuto"),
+
   desnivel_m: z.coerce.number().min(0).nullable().optional(),
   altitude_max: z.coerce.number().min(0).nullable().optional(),
 
-  localizacao: z.string().min(1, "A localização é obrigatória"),
-  descricao_curta: z
-    .string()
-    .max(150, "A descrição curta deve ter no máximo 150 caracteres")
-    .nullable()
-    .optional(),
+  localizacao: z.string().min(1, "Localização é obrigatória"),
+  descricao_curta: z.string().max(150).nullable().optional(),
   descricao: z.string().nullable().optional(),
   fonte: z.string().nullable().optional(),
 
@@ -36,16 +32,18 @@ export const trailSchema = z.object({
 
   imagem_url: z
     .union([
-      z
-        .instanceof(File)
-        .refine((file) => file.size <= 5 * 1024 * 1024, "Máximo 5MB"),
-      z.string().min(1, "URL da imagem é obrigatória"),
+      z.instanceof(File), // Nova imagem enviada
+      z.string().min(1), // URL existente (string)
+      z.string().url(), // URL válida
+      z.literal(""), // String vazia (comum no update)
       z.null(),
-      z.any(),
+      z.undefined(),
     ])
-    .optional(),
+    .optional()
+    .nullable(),
 
-  imagens: z.array(z.any()).optional().default([]),
+  imagens: z
+    .union([z.array(z.any()), z.array(z.instanceof(File))])
+    .optional()
+    .default([]),
 });
-
-export type TrailFormData = z.infer<typeof trailSchema>;

@@ -19,6 +19,7 @@ export default function AddTrailPage() {
   const handleCreate = async (data: FormData) => {
     const response = await registerTrail(data);
     if (response.success) {
+      alert("Trilha cadastrada com sucesso!");
       router.push("/trilhas-admin");
     } else {
       alert(response.message);
