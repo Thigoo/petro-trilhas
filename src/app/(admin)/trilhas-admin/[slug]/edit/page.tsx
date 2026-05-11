@@ -1,18 +1,9 @@
-import { updateTrail } from "@/src/actions/admin/trails";
-import { TrailForm } from "@/src/components/admin/TrailForm";
+import TrailEditForm from "@/src/components/admin/TrailEditForm";
 import { Button } from "@/src/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
 import { getTrailBySlug } from "@/src/lib/trails";
-import { mapTrailToFormState } from "@/src/utils/formatter";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function UpdateTrailPage({
   params,
@@ -22,22 +13,7 @@ export default async function UpdateTrailPage({
   const { slug } = await params;
   const trail = await getTrailBySlug(slug);
 
-  if (!trail) {
-    notFound();
-  }
-
-  const formInitialData = mapTrailToFormState(trail);
-
-  const handleUpdate = async (data: FormData) => {
-    "use server";
-    const response = await updateTrail(trail.id, data);
-
-    if (response.success) {
-      redirect("/trilhas-admin");
-    } else {
-      console.error(response.message);
-    }
-  };
+  if (!trail) notFound();
 
   return (
     <div>
@@ -49,27 +25,11 @@ export default async function UpdateTrailPage({
         </Button>
         <div>
           <h1 className="text-3xl font-bold">Editar Trilha</h1>
-          <p className="text-muted-foreground">
-            Edite os dados de: {trail.nome}
-          </p>
+          <p className="text-muted-foreground">Editando: {trail.nome}</p>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações da Trilha</CardTitle>
-          <CardDescription>
-            Os campos marcados com * são obrigatórios
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TrailForm
-            initialData={formInitialData}
-            onSubmit={handleUpdate}
-            isEdit
-          />
-        </CardContent>
-      </Card>
+      <TrailEditForm initialData={trail} />
     </div>
   );
 }

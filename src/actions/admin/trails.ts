@@ -13,106 +13,99 @@ export async function registerTrail(formData: FormData) {
   });
 
   if (!result.success) {
-    const errorMessage = result.error.issues[0].message;
-    return { success: false, message: `Erro de validação: ${errorMessage}` };
+    console.log("❌ Validação falhou:", result.error.issues);
+    return { success: false, message: result.error.issues[0].message };
   }
 
-  const validatedData = result.data;
+  const data = result.data;
 
   try {
-    const mainFile = formData.get("imagem_url") as File;
-    const mainFilePath = `trilhas/${validatedData.slug}/capa-${Date.now()}-${mainFile.name}`;
+    let imagemUrl = "";
+    const mainFile = formData.get("imagem_principal") as File | null;
 
-    const { error: mainError } = await supabase.storage
-      .from("trails-photos")
-      .upload(mainFilePath, mainFile);
-
-    if (mainError)
-      throw new Error(`Erro no upload da capa: ${mainError.message}`);
-
-    const mainPublicUrl = supabase.storage
-      .from("trails-photos")
-      .getPublicUrl(mainFilePath).data.publicUrl;
-
-    const galleryFiles = formData.getAll("imagens") as File[];
-    const galleryUrls: string[] = [];
-
-    for (const file of galleryFiles) {
-      if (file.size === 0) continue;
-
-      const path = `trilhas/${validatedData.slug}/galeria-${Date.now()}-${file.name}`;
-      const { error: galError } = await supabase.storage
+    if (mainFile instanceof File) {
+      const filePath = `trilhas/${data.slug}/capa-${Date.now()}-${mainFile.name}`;
+      const { error: uploadError } = await supabase.storage
         .from("trails-photos")
-        .upload(path, file);
+        .upload(filePath, mainFile);
 
-      if (!galError) {
-        const url = supabase.storage.from("trails-photos").getPublicUrl(path)
-          .data.publicUrl;
-        galleryUrls.push(url);
-      }
+      if (uploadError) throw uploadError;
+
+      imagemUrl = supabase.storage.from("trails-photos").getPublicUrl(filePath)
+        .data.publicUrl;
     }
 
-    const { error: dbError } = await supabase.from("trilhas").insert({
-      nome: validatedData.nome,
-      slug: validatedData.slug,
-      dificuldade: validatedData.dificuldade,
-      distancia_km: validatedData.distancia_km,
-      tempo_estimado_min: validatedData.tempo_estimado_min,
-      desnivel_m: validatedData.desnivel_m,
-      altitude_max: validatedData.altitude_max,
-      localizacao: validatedData.localizacao,
-      descricao: validatedData.descricao,
-      descricao_curta: validatedData.descricao_curta,
-      fonte: validatedData.fonte,
-      geojson: JSON.parse(validatedData.geojson),
-      imagem_url: mainPublicUrl,
-      imagens: galleryUrls,
+    // === UPLOAD GALERIA ===
+    const novasImagens = formData.getAll("imagens_novas") as File[];
+    const imagensUrls: string[] = [];
+
+    for (const file of novasImagens) {
+      if (!(file instanceof File)) continue;
+
+      const filePath = `trilhas/${data.slug}/galeria-${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage
+        .from("trails-photos")
+        .upload(filePath, file);
+
+      if (!error) {
+        const publicUrl = supabase.storage
+          .from("trails-photos")
+          .getPublicUrl(filePath).data.publicUrl;
+        imagensUrls.push(publicUrl);
+      }
+    }
+    const { error } = await supabase.from("trilhas").insert({
+      nome: data.nome,
+      slug: data.slug,
+      dificuldade: data.dificuldade,
+      distancia_km: data.distancia_km,
+      tempo_estimado_min: data.tempo_estimado_min,
+      desnivel_m: data.desnivel_m,
+      altitude_max: data.altitude_max,
+      localizacao: data.localizacao,
+      descricao_curta: data.descricao_curta,
+      descricao: data.descricao,
+      fonte: data.fonte,
+      geojson:
+        typeof data.geojson === "string"
+          ? JSON.parse(data.geojson)
+          : data.geojson,
+      imagem_url: imagemUrl,
+      imagens: imagensUrls,
     });
 
-    if (dbError) throw dbError;
+    if (error) throw error;
 
     revalidatePath("/trilhas");
     revalidatePath("/trilhas-admin");
 
-    return {
-      success: true,
-      message: "Trilha e fotos cadastradas com sucesso!",
-    };
+    return { success: true, message: "Trilha cadastrada com sucesso!" };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Critical Error:", error);
-    return {
-      success: false,
-      message:
-        error.message || "Ocorreu um erro inesperado ao salvar a trilha.",
-    };
+    console.error("Erro ao salvar trilha:", error);
+    return { success: false, message: error.message };
   }
 }
 
 export async function updateTrail(id: string, formData: FormData) {
-  const rawEntries = Object.fromEntries(formData.entries());
-  const result = trailSchema.safeParse({
-    ...rawEntries,
-    imagem_url: formData.get("imagem_url"),
-    imagens_galeria: formData.getAll("imagens"),
-  });
+  const slug = formData.get("slug") as string;
 
-  if (!result.success) {
-    const errorMessage = result.error.issues[0].message;
-    return { success: false, message: `Erro de validação: ${errorMessage}` };
+  if (!id || !slug) {
+    return { success: false, message: "ID e slug são obrigatórios" };
   }
 
-  const validatedData = result.data;
-
   try {
-    let mainPublicUrl = formData.get("imagem_url") as string | File;
-    const mainFile = formData.get("imagem_url") as File;
+    // === IMAGEM PRINCIPAL ===
+    let mainPublicUrl = formData.get("imagem_url_existente") as string | null;
+
+    const mainFile = formData.get("imagem_principal") as File | null;
 
     if (mainFile instanceof File && mainFile.size > 0) {
-      const mainFilePath = `trilhas/${validatedData.slug}/capa-${Date.now()}`;
+      const mainFilePath = `trilhas/${slug}/capa-${Date.now()}-${mainFile.name}`;
+
       const { error: uploadError } = await supabase.storage
         .from("trails-photos")
-        .upload(mainFilePath, mainFile);
+        .upload(mainFilePath, mainFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 
@@ -121,66 +114,70 @@ export async function updateTrail(id: string, formData: FormData) {
         .getPublicUrl(mainFilePath).data.publicUrl;
     }
 
-    const galeriaExistente = formData.getAll("galeria_existente") as string[];
-    const imagensNovas = formData.getAll("imagens") as File[];
+    // === GALERIA ===
+    const novasImagens = formData.getAll("imagens_novas") as File[];
     const novasUrls: string[] = [];
 
-    // Upload das novas fotos, se houver
-    for (const file of imagensNovas) {
+    for (const file of novasImagens) {
       if (!(file instanceof File) || file.size === 0) continue;
 
-      const path = `trilhas/${validatedData.slug}/galeria-${Date.now()}-${file.name}`;
-      const { error: galError } = await supabase.storage
-        .from("trails-photos")
-        .upload(path, file);
+      const filePath = `trilhas/${slug}/galeria-${Date.now()}-${file.name}`;
 
-      if (!galError) {
-        const url = supabase.storage.from("trails-photos").getPublicUrl(path)
-          .data.publicUrl;
-        novasUrls.push(url);
+      const { error } = await supabase.storage
+        .from("trails-photos")
+        .upload(filePath, file);
+
+      if (!error) {
+        const publicUrl = supabase.storage
+          .from("trails-photos")
+          .getPublicUrl(filePath).data.publicUrl;
+        novasUrls.push(publicUrl);
       }
     }
 
-    // A galeria final é a união das que já estavam lá + os novos uploads
-    const galeriaFinal = [...galeriaExistente, ...novasUrls];
+    // URLs das imagens que o usuário NÃO removeu
+    const imagensExistentes = formData.getAll("imagens_existentes") as string[];
 
-    const { error: dbError, data } = await supabase
+    const galeriaFinal = [...imagensExistentes, ...novasUrls];
+
+    // === ATUALIZAR NO BANCO ===
+    const { error: dbError } = await supabase
       .from("trilhas")
       .update({
-        nome: validatedData.nome,
-        slug: validatedData.slug,
-        dificuldade: validatedData.dificuldade,
-        distancia_km: validatedData.distancia_km,
-        tempo_estimado_min: validatedData.tempo_estimado_min,
-        desnivel_m: validatedData.desnivel_m,
-        altitude_max: validatedData.altitude_max,
-        localizacao: validatedData.localizacao,
-        descricao: validatedData.descricao,
-        descricao_curta: validatedData.descricao_curta,
-        fonte: validatedData.fonte,
-        geojson:
-          typeof validatedData.geojson === "string"
-            ? JSON.parse(validatedData.geojson)
-            : validatedData.geojson,
+        nome: formData.get("nome"),
+        slug: slug,
+        dificuldade: formData.get("dificuldade"),
+        distancia_km: Number(formData.get("distancia_km")),
+        tempo_estimado_min: Number(formData.get("tempo_estimado_min")),
+        desnivel_m: Number(formData.get("desnivel_m")),
+        altitude_max: Number(formData.get("altitude_max")),
+        localizacao: formData.get("localizacao"),
+        descricao_curta: formData.get("descricao_curta"),
+        descricao: formData.get("descricao"),
+        fonte: formData.get("fonte"),
+        geojson: formData.get("geojson")
+          ? JSON.parse(formData.get("geojson") as string)
+          : null,
         imagem_url: mainPublicUrl,
         imagens: galeriaFinal,
+        updated_at: new Date().toISOString(),
       })
-      .eq("id", id)
-      .select();
+      .eq("id", id);
 
     if (dbError) throw dbError;
-    if (!data || data.length === 0)
-      throw new Error("Falha ao localizar trilha.");
 
     revalidatePath("/trilhas");
-    revalidatePath(`/trilhas/${validatedData.slug}`);
+    revalidatePath(`/trilhas/${slug}`);
     revalidatePath("/trilhas-admin");
 
     return { success: true, message: "Trilha atualizada com sucesso!" };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Update Error:", error);
-    return { success: false, message: error.message };
+    console.error("💥 ERRO ao atualizar trilha:", error);
+    return {
+      success: false,
+      message: error.message || "Erro inesperado ao atualizar trilha",
+    };
   }
 }
 

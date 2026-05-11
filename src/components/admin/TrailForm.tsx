@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { trailSchema } from "@/src/validations/trail";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Button } from "@/src/components/ui/button";
@@ -17,40 +16,14 @@ import { Textarea } from "../ui/textarea";
 import Image from "next/image";
 
 interface TrailFormProps {
-  initialData?: Partial<ITrailFormState>;
-  onSubmit: (data: FormData) => Promise<void>;
-  isEdit?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initialData?: any; // TODO: Definir tipagem
+  onSubmit: (formData: FormData) => Promise<void>;
 }
 
-export interface ITrailFormState {
-  id?: string;
-  nome: string;
-  slug: string;
-  dificuldade: "leve" | "moderada" | "difícil";
-  localizacao: string;
-  descricao_curta: string;
-  descricao: string;
-  fonte: string;
-
-  distancia_km: string | number;
-  tempo_estimado_min: string | number;
-  desnivel_m: string | number;
-  altitude_max: string | number;
-
-  geojson: string;
-
-  imagem_url: File | null;
-  imagem_preview: string;
-
-  imagens: File[];
-  galeria_previews: string[];
-}
-
-export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
-  const [isPending, setIsPending] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [formData, setFormData] = useState<ITrailFormState>({
+export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
+  const isEdit = !!initialData?.id;
+  const [formData, setFormData] = useState({
     nome: initialData?.nome || "",
     slug: initialData?.slug || "",
     dificuldade: initialData?.dificuldade || "leve",
@@ -62,18 +35,34 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
     descricao_curta: initialData?.descricao_curta || "",
     descricao: initialData?.descricao || "",
     fonte: initialData?.fonte || "",
-    geojson: initialData?.geojson || "",
-    imagem_url: null,
-    imagem_preview: initialData?.imagem_preview || "",
-    imagens: [],
-    galeria_previews: initialData?.galeria_previews || [],
+    geojson: initialData?.geojson
+      ? JSON.stringify(initialData.geojson, null, 2)
+      : "",
   });
+
+  // Imagens
+  const [imagemPrincipal, setImagemPrincipal] = useState<File | null>(null);
+  const [imagemPreview, setImagemPreview] = useState<string>(
+    initialData?.imagem_url || "",
+  );
+
+  const [novasImagensGaleria, setNovasImagensGaleria] = useState<File[]>([]);
+  const [galeriaExistente, setGaleriaExistente] = useState<string[]>(
+    initialData?.imagens || [],
+  );
+  const [galeriaPreviews, setGaleriaPreviews] = useState<string[]>(
+    initialData?.imagens || [],
+  );
+
+  const [isPending, setIsPending] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -83,88 +72,76 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
     }
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      dificuldade: value as ITrailFormState["dificuldade"],
-    }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        imagem_url: file,
-        imagem_preview: URL.createObjectURL(file),
-      }));
+      setImagemPrincipal(file);
+      setImagemPreview(URL.createObjectURL(file));
     }
   };
 
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
+    setNovasImagensGaleria((prev) => [...prev, ...files]);
     const newPreviews = files.map((file) => URL.createObjectURL(file));
-
-    setFormData((prev) => ({
-      ...prev,
-      imagens: [...prev.imagens, ...files],
-      galeria_previews: [...prev.galeria_previews, ...newPreviews],
-    }));
+    setGaleriaPreviews((prev) => [...prev, ...newPreviews]);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsPending(true);
-    setErrors({});
+  const removeMainImage = () => {
+    setImagemPrincipal(null);
+    setImagemPreview("");
+  };
 
-    const dataToValidate = {
-      ...formData,
-      imagem_url: formData.imagem_url || formData.imagem_preview,
-    };
+  const removeGalleryImage = (index: number) => {
+    const isExisting = index < galeriaExistente.length;
 
-    const result = trailSchema.safeParse(dataToValidate);
-
-    if (!result.success) {
-      const formattedErrors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const path = issue.path[0] as string;
-        formattedErrors[path] = issue.message;
-      });
-      console.log("ERROS DE VALIDAÇÃO:", formattedErrors);
-      setErrors(formattedErrors);
-      setIsPending(false);
-      return;
+    if (isExisting) {
+      setGaleriaExistente((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      const newIndex = index - galeriaExistente.length;
+      setNovasImagensGaleria((prev) => prev.filter((_, i) => i !== newIndex));
     }
 
+    setGaleriaPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsPending(true);
+
+    const dataToSend = new FormData();
+
+    // Campos textuais
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        dataToSend.append(key, String(value));
+      }
+    });
+
+    // Imagem Principal
+    if (imagemPrincipal) {
+      dataToSend.append("imagem_principal", imagemPrincipal);
+    } else if (isEdit && initialData?.imagem_url) {
+      dataToSend.append("imagem_url_existente", initialData.imagem_url);
+    }
+
+    // Galeria - Novas imagens
+    novasImagensGaleria.forEach((file) => {
+      dataToSend.append("imagens_novas", file);
+    });
+
+    // Galeria - Imagens que já existiam (não foram removidas)
+    galeriaExistente.forEach((url) => {
+      dataToSend.append("imagens_existentes", url);
+    });
+
     try {
-      // TODO: Verificar e resolver bug ao atualizar imagens
-      const dataToSend = new FormData();
-      if (isEdit) dataToSend.append("id", initialData?.id || "");
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key === "imagens") {
-          formData.imagens.forEach((file) => {
-            if (file instanceof File) dataToSend.append("imagens", file);
-          });
-        } else if (key === "galeria_previews") {
-          formData.galeria_previews.forEach((url) => {
-            if (url.startsWith("http") && !url.includes("blob:")) {
-              dataToSend.append("galeria_existente", url);
-            }
-          });
-        } else if (key === "imagem_url") {
-          const valueToSend = value || formData.imagem_preview;
-          dataToSend.append("imagem_url", valueToSend);
-        } else {
-          dataToSend.append(key, value as string);
-        }
-      });
-
-      console.log("Form Data:", formData);
-
       await onSubmit(dataToSend);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao salvar trilha");
     } finally {
       setIsPending(false);
     }
@@ -172,11 +149,11 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
 
   useEffect(() => {
     return () => {
-      if (formData.imagem_preview) {
-        URL.revokeObjectURL(formData.imagem_preview);
+      if (imagemPreview) {
+        URL.revokeObjectURL(imagemPreview);
       }
     };
-  }, [formData.imagem_preview]);
+  }, [imagemPreview]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -225,7 +202,9 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
         <div className="space-y-2">
           <Label>Dificuldade *</Label>
           <Select
-            onValueChange={handleSelectChange}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, dificuldade: value }))
+            }
             defaultValue={formData.dificuldade}
           >
             <SelectTrigger>
@@ -378,35 +357,25 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
             id="imagem_url"
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            onChange={handleFileChange}
+            onChange={handleMainImageChange}
             className="cursor-pointer"
           />
 
-          {formData.imagem_preview && (
-            <div className="relative group">
-              <div className="relative w-48 h-32 rounded-lg overflow-hidden border-2 border-slate-200">
-                <Image
-                  src={formData.imagem_preview}
-                  alt="Preview"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  className="object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      imagem_url: null,
-                      imagem_preview: "",
-                    }))
-                  }
-                  className="absolute top-0 right-0 text-white rounded-full p-1 shadow-sm"
-                >
-                  <span className="sr-only">Remover</span>
-                  <X size={14} />
-                </button>
-              </div>
+          {imagemPreview && (
+            <div className="relative w-64 h-44 rounded-xl overflow-hidden border">
+              <Image
+                src={imagemPreview}
+                alt="Preview"
+                fill
+                className="object-cover"
+              />
+              <button
+                type="button"
+                onClick={removeMainImage}
+                className="absolute top-2 right-2 bg-black/70 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+              >
+                <X size={16} />
+              </button>
             </div>
           )}
         </div>
@@ -415,49 +384,34 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
         </p>
       </div>
       <div className="space-y-3">
-        <Label>Galeria de Fotos</Label>
-
-        {/* Input de arquivos múltiplos */}
+        {/* Grid de Previews da Galeria */}
+        <Label>Fotos da Galeria (opcional)</Label>
         <Input
-          id="galeria"
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           onChange={handleGalleryChange}
-          className="cursor-pointer"
         />
 
-        {/* Grid de Previews da Galeria */}
-        {formData.galeria_previews.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {formData.galeria_previews.map((preview, index) => (
+        {galeriaPreviews.length > 0 && (
+          <div className="grid grid-cols-3 gap-3">
+            {galeriaPreviews.map((preview, index) => (
               <div
                 key={index}
-                className="relative group aspect-video rounded-md overflow-hidden border"
+                className="relative aspect-video rounded-lg overflow-hidden border group"
               >
                 <Image
                   src={preview}
-                  alt={`Preview galeria ${index}`}
+                  alt={`galeria-${index}`}
                   fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
                 />
                 <button
                   type="button"
-                  onClick={() => {
-                    const newFiles = [...formData.imagens];
-                    const newPreviews = [...formData.galeria_previews];
-                    newFiles.splice(index, 1);
-                    newPreviews.splice(index, 1);
-                    setFormData((prev) => ({
-                      ...prev,
-                      imagens: newFiles,
-                      galeria_previews: newPreviews,
-                    }));
-                  }}
-                  className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeGalleryImage(index)}
+                  className="absolute top-2 right-2 bg-black/70 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                 >
-                  <X size={12} />
+                  <X size={16} />
                 </button>
               </div>
             ))}
@@ -481,7 +435,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
         <Textarea
           id="geojson"
           name="geojson"
-          value={formData.geojson.trim()}
+          value={formData.geojson}
           onChange={handleChange}
           placeholder='{ "type": "LineString", "coordinates": [...] }'
           className="font-mono h-48 bg-slate-50 resize-y text-sm focus-visible:ring-green-700"
@@ -506,7 +460,7 @@ export function TrailForm({ initialData, onSubmit, isEdit }: TrailFormProps) {
           ) : (
             <Save className="mr-2" />
           )}
-          {isEdit ? "Atualizar Trilha" : "Salvar Trilha"}
+          {initialData ? "Atualizar Trilha" : "Salvar Trilha"}
         </Button>
       </div>
     </form>
