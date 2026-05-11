@@ -162,6 +162,7 @@ export default async function TrilhaDetalhePage({
                 height="480px"
                 center={mapTrail.coordinates[0] || [-22.505, -43.178]}
                 withRoute={false}
+                zoom={14}
               />
             </div>
           </div>

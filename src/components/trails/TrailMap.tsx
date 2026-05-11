@@ -61,6 +61,7 @@ interface TrailMapProps {
   userPosition?: [number, number] | null;
   followUser?: boolean;
   withRoute?: boolean;
+  zoom?: number;
 }
 
 function AutoFollow({
@@ -91,13 +92,14 @@ export default function TrailMap({
   userPosition,
   followUser = false,
   withRoute = false,
+  zoom = 11,
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
   const goToCenter = () => {
     if (mapRef.current) {
       if (!center) return;
-      mapRef.current.flyTo(center, mapRef.current.getZoom(), {
+      mapRef.current.flyTo(center, zoom, {
         animate: true,
         duration: 1.2,
       });
@@ -121,7 +123,7 @@ export default function TrailMap({
     >
       <MapContainer
         center={center}
-        zoom={13}
+        zoom={zoom}
         scrollWheelZoom={true}
         className="h-full w-full z-0"
         ref={mapRef}
