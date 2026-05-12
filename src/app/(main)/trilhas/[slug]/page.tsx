@@ -7,8 +7,9 @@ import { notFound } from "next/navigation";
 import { ITrailMap } from "@/src/types";
 import FavoriteButton from "@/src/components/shared/FavoriteButton";
 import Image from "next/image";
-import { ArrowLeft, Clock, MapPin, Ruler } from "lucide-react";
+import { ArrowLeft, Clock, MapPin, Play, Ruler } from "lucide-react";
 import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
+import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
 export default async function TrilhaDetalhePage({
   params,
@@ -126,28 +127,46 @@ export default async function TrilhaDetalhePage({
               trailName={trilha.nome}
             />
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 bg-[#4285F4] hover:bg-[#3367D6] text-white font-medium py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-colors"
-              >
-                <span>Como chegar?</span>
-              </a>
-            </div>
+            {/* Ações da Trilha */}
+            <div className="pt-8 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Button
+                  size="lg"
+                  className="h-14 text-base font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-lg shadow-emerald-500/30 transition-all duration-200"
+                  disabled
+                >
+                  <Play className="mr-3 h-5 w-5" />
+                  Iniciar Trilha
+                  <span className="ml-2 text-xs opacity-75">(em breve)</span>
+                </Button>
 
-            {/* Botões de Ação */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <Button
-                size="lg"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-6 text-lg"
-                disabled
-              >
-                Iniciar Trilha (em breve)
-              </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-14 text-base font-semibold rounded-2xl border-2 bg-blue-100 text-blue-500 hover:bg-blue-200 hover:text-blue-500 transition-all"
+                >
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MapPin className="mr-3 h-5 w-5" />
+                    Como Chegar
+                  </a>
+                </Button>
+              </div>
 
-              <FavoriteButton trilhaId={trilha.id} />
+              <div className="flex gap-3 pt-2">
+                <FavoriteButton trilhaId={trilha.id} />
+
+                <ShareButton
+                  title={trilha.nome}
+                  url={
+                    typeof window !== "undefined" ? window.location.href : ""
+                  }
+                />
+              </div>
             </div>
           </div>
 
