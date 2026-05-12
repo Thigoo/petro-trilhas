@@ -15,7 +15,7 @@ export default function FavoriteButton({ trilhaId }: FavoriteButtonProps) {
     <Button
       size="lg"
       variant="outline"
-      className="flex-1 text-md py-4"
+      className="flex-1 text-md py-5"
       onClick={() => toggleFavorite(trilhaId)}
     >
       {isFavorite(trilhaId) ? (
