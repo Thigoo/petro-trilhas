@@ -38,7 +38,7 @@ export async function getPublishedTrails(): Promise<ITrail[]> {
   return data || [];
 }
 
-// Função auxiliar para buscar uma trilha específica por slug (útil na página de detalhes)
+// Função auxiliar para buscar uma trilha específica por slug
 export async function getTrailBySlug(slug: string): Promise<ITrail | null> {
   const { data, error } = await supabase
     .from("trilhas")
