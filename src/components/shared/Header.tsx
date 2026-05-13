@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mountain, Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { useAuth } from "@/src/lib/auth/AuthProvider";
-import { useProfile } from "@/src/lib/auth/useProfile";
+import { useProfile } from "@/src/hooks/useProfile";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function Header() {
   const { user, signOut } = useAuth();

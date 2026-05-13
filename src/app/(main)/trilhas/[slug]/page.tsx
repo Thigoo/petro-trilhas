@@ -1,4 +1,4 @@
-import { getTrailBySlug } from "@/src/lib/trails";
+import { getTrailBySlug } from "@/src/api/trails";
 import TrailMap from "@/src/components/trails/TrailMap";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useFavorites } from "@/src/lib/hooks/useFavorites";
+import { useFavorites } from "@/src/hooks/useFavorites";
 import { Button } from "@/src/components/ui/button";
 import { Star } from "lucide-react";
 

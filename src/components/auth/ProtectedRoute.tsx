@@ -1,5 +1,5 @@
+import { useAuth } from "@/src/providers/AuthProvider";
 import { useRouter } from "next/navigation";
-import { useAuth } from "./AuthProvider";
 import { useEffect } from "react";
 
 export default function ProtectedRoute({

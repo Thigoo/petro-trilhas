@@ -1,5 +1,5 @@
 import { TrailsClientWrapper } from "@/src/components/trails/TrailsClientWrapper";
-import { getPublishedTrails } from "@/src/lib/trails";
+import { getPublishedTrails } from "@/src/api/trails";
 
 export default async function TrailsPage() {
   const allTrails = await getPublishedTrails();

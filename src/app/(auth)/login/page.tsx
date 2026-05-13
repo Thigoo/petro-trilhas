@@ -15,7 +15,7 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { Loader2, Mountain } from "lucide-react";
 import { Label } from "@/src/components/ui/label";
-import { useAuth } from "@/src/lib/auth/AuthProvider";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

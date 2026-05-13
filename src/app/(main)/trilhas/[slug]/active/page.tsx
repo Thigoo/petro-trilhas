@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getTrailBySlug } from "@/src/lib/trails";
+import { getTrailBySlug } from "@/src/api/trails";
 import TrailMap from "@/src/components/trails/TrailMap";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { ITrail } from "@/src/types";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
-import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
+import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
 
 export default function ActiveTrailPage() {
   const params = useParams();
