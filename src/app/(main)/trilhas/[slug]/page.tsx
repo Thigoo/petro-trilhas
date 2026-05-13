@@ -152,7 +152,6 @@ export default async function TrilhaDetalhePage({
               <TrailWeather
                 latitude={mapTrail.coordinates[0][0]}
                 longitude={mapTrail.coordinates[0][1]}
-                trailName={trilha.nome}
               />
             )}
 
