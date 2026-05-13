@@ -11,6 +11,44 @@ import { ArrowLeft, Clock, MapPin, Play, Ruler } from "lucide-react";
 import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
 import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
+import { Metadata } from "next";
+import TrailWeather from "@/src/components/trails/TrailWeather";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const trail = await getTrailBySlug(slug);
+
+  if (!trail) return { title: "Petro Trilhas" };
+
+  const url = `https://petro-trilhas-git-thiago-thigoos-projects.vercel.app/trilhas/${trail.slug}`;
+
+  return {
+    title: `${trail.nome} | PetroTrilhas`,
+    description: "Explore esta trilha incrível em Petrópolis.",
+    openGraph: {
+      title: trail.nome,
+      description:
+        "Confira fotos, mapa e detalhes desta trilha no PetroTrilhas.",
+      url: url,
+      siteName: "PetroTrilhas",
+      images: [
+        {
+          url: trail.imagem_url ?? "/logo-petro.png",
+          width: 1200,
+          height: 630,
+          alt: `Foto da trilha ${trail.nome}`,
+        },
+      ],
+      locale: "pt_BR",
+      type: "website",
+    },
+  };
+}
+
 export default async function TrilhaDetalhePage({
   params,
 }: {
@@ -108,6 +146,15 @@ export default async function TrilhaDetalhePage({
                 />
               )}
             </div>
+
+            {/* Seção de Clima */}
+            {mapTrail.coordinates && mapTrail.coordinates.length > 0 && (
+              <TrailWeather
+                latitude={mapTrail.coordinates[0][0]}
+                longitude={mapTrail.coordinates[0][1]}
+                trailName={trilha.nome}
+              />
+            )}
 
             {/* Descrição */}
             {trilha.descricao && (
