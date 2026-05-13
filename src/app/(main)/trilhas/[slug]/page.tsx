@@ -12,6 +12,7 @@ import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
 import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
 import { Metadata } from "next";
+import TrailWeather from "@/src/components/trails/TrailWeather";
 
 export async function generateMetadata({
   params,
@@ -145,6 +146,15 @@ export default async function TrilhaDetalhePage({
                 />
               )}
             </div>
+
+            {/* Seção de Clima */}
+            {mapTrail.coordinates && mapTrail.coordinates.length > 0 && (
+              <TrailWeather
+                latitude={mapTrail.coordinates[0][0]}
+                longitude={mapTrail.coordinates[0][1]}
+                trailName={trilha.nome}
+              />
+            )}
 
             {/* Descrição */}
             {trilha.descricao && (
