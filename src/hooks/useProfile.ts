@@ -1,7 +1,7 @@
 import { IProfile } from "@/src/types";
 import { useEffect, useState } from "react";
-import { useAuth } from "./AuthProvider";
-import { supabase } from "../supabase";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../providers/AuthProvider";
 
 export function useProfile() {
   const { user, loading: authLoading } = useAuth();

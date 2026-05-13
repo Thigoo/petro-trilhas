@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { User } from "@supabase/supabase-js";
@@ -8,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { supabase } from "../supabase";
+import { supabase } from "../lib/supabase";
 
 interface AuthContextType {
   user: User | null;

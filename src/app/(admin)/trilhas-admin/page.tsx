@@ -2,7 +2,7 @@ import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { getAllTrails } from "@/src/lib/trails";
+import { getAllTrails } from "@/src/api/trails";
 import TrailsTable from "@/src/components/admin/TrailsTable";
 
 export default async function AdminTrilhasPage() {

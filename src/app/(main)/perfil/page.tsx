@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/src/lib/auth/AuthProvider";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -10,9 +9,10 @@ import {
 } from "@/src/components/ui/card";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
-import { useProfile } from "@/src/lib/auth/useProfile";
+import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
+import { useProfile } from "@/src/hooks/useProfile";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();

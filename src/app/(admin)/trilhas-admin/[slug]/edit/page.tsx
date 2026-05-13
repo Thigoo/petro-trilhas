@@ -1,6 +1,6 @@
 import TrailEditForm from "@/src/components/admin/TrailEditForm";
 import { Button } from "@/src/components/ui/button";
-import { getTrailBySlug } from "@/src/lib/trails";
+import { getTrailBySlug } from "@/src/api/trails";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

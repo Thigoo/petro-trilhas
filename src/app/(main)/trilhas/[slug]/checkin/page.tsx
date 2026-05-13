@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { getTrailBySlug } from "@/src/lib/trails";
-import ProtectedRoute from "@/src/lib/auth/ProtectedRoute";
+import { getTrailBySlug } from "@/src/api/trails";
+import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -18,10 +18,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { ITrail } from "@/src/types";
 import { Input } from "@/src/components/ui/input";
-import { useAuth } from "@/src/lib/auth/AuthProvider";
-import postCheckin from "@/src/lib/checkins";
+import postCheckin from "@/src/api/checkins";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function CheckinPage() {
   const params = useParams();
