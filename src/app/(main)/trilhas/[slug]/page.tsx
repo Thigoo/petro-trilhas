@@ -23,7 +23,7 @@ export async function generateMetadata({
 
   if (!trail) return { title: "Petro Trilhas" };
 
-  const url = `https://petro-trilhas.vercel.app/trilhas/${trail.slug}`;
+  const url = `https://petro-trilhas-git-thiago-thigoos-projects.vercel.app/trilhas/${trail.slug}`;
 
   return {
     title: `${trail.nome} | PetroTrilhas`,
