@@ -45,7 +45,7 @@ export default function LandingPage() {
               </Button>
             </Link>
 
-            <Link href="/login">
+            {/* <Link href="/login">
               <Button
                 size="lg"
                 variant="outline"
@@ -53,7 +53,7 @@ export default function LandingPage() {
               >
                 Entrar na minha conta
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
 
