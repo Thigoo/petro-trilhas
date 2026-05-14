@@ -2,33 +2,44 @@
 
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
+import { Mountain } from "lucide-react";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-500 to-blue-500">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background */}
         <div className="absolute inset-0 bg-[url('/hero-trilhas.jpg')] bg-cover bg-center">
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/65" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-16">
+          {/* Logo */}
+          <div className="flex items-center justify-center gap-3 mb-12 md:mb-16">
+            <Mountain className="h-12 w-12 md:h-14 md:w-14 text-green-400" />
+            <span className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+              Petro<span className="text-green-400">Trilhas</span>
+            </span>
+          </div>
+
+          {/* Título */}
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-6">
             Descubra as trilhas
             <br />
             de <span className="text-green-400">Petrópolis</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto">
-            Mapas seguros, alertas de risco e check-ins. O app que transforma
-            sua experiência nas trilhas da Serra Imperial.
+            O app que transforma sua experiência nas trilhas da Serra Imperial.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Botões */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/trilhas">
               <Button
                 size="lg"
-                className="bg-green-600 hover:bg-green-700 text-white px-10 py-7 text-lg cursor-pointer"
+                className="bg-green-600 hover:bg-green-700 text-white px-10 py-7 text-lg w-full sm:w-auto"
               >
                 Explorar Trilhas
               </Button>
@@ -46,8 +57,8 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce">
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce hidden md:block">
           ↓ Role para conhecer
         </div>
       </section>
@@ -55,7 +66,7 @@ export default function LandingPage() {
       {/* Benefícios / Features */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
             Por que usar o Petro Trilhas?
           </h2>
 
@@ -64,33 +75,36 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
                 🗺️
               </div>
-              <h3 className="text-2xl font-semibold mb-3">Mapas Seguros</h3>
+              <h3 className="text-2xl font-semibold mb-3">Mapas Detalhados</h3>
               <p className="text-slate-600">
-                Trilhas mapeadas com alertas de risco climático e deslizamento
-                em tempo real.
+                Trilhas mapeadas com precisão, rotas claras, dificuldade e
+                informações técnicas completas.
               </p>
             </div>
 
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
-                🏆
+                🌤️
               </div>
               <h3 className="text-2xl font-semibold mb-3">
-                Check-ins e Certificados
+                Clima em Tempo Real
               </h3>
               <p className="text-slate-600">
-                Registre suas conquistas e ganhe certificados.
+                Consulte as condições climáticas atuais e previsão diretamente
+                na página de cada trilha antes de sair.
               </p>
             </div>
 
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
-                🌱
+                📸
               </div>
-              <h3 className="text-2xl font-semibold mb-3">Impacto Real</h3>
+              <h3 className="text-2xl font-semibold mb-3">
+                Galeria e Favoritos
+              </h3>
               <p className="text-slate-600">
-                Colete lixo, ganhe pontos e ajude a preservar as trilhas da
-                nossa serra.
+                Fotos reais das trilhas, galeria organizada e a possibilidade de
+                salvar suas trilhas favoritas.
               </p>
             </div>
           </div>
