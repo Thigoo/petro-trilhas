@@ -18,34 +18,43 @@ import ExpandableDescription from "@/src/components/shared/ExpandableDescription
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const trail = await getTrailBySlug(slug);
+  const trilha = await getTrailBySlug(slug);
 
-  if (!trail) return { title: "Petro Trilhas" };
-
-  const url = `https://petro-trilhas.vercel.app/trilhas/${trail.slug}`;
+  if (!trilha) {
+    return {
+      title: "Trilha não encontrada | Petro Trilhas",
+    };
+  }
 
   return {
-    title: `${trail.nome} | PetroTrilhas`,
-    description: "Explore esta trilha incrível em Petrópolis.",
+    title: `${trilha.nome} - Petro Trilhas`,
+    description: trilha.descricao_curta || trilha.descricao?.substring(0, 160),
+
     openGraph: {
-      title: trail.nome,
+      title: trilha.nome,
       description:
-        "Confira fotos, mapa e detalhes desta trilha no PetroTrilhas.",
-      url: url,
-      siteName: "PetroTrilhas",
+        trilha.descricao_curta || trilha.descricao?.substring(0, 160),
       images: [
         {
-          url: trail.imagem_url ?? "/logo-petro.png",
+          url: trilha.imagem_url || "logo-petro.png",
           width: 1200,
           height: 630,
-          alt: `Foto da trilha ${trail.nome}`,
+          alt: trilha.nome,
         },
       ],
+      type: "article",
+      siteName: "Petro Trilhas",
       locale: "pt_BR",
-      type: "website",
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: trilha.nome,
+      description: trilha.descricao_curta || "",
+      images: [trilha.imagem_url || ""],
     },
   };
 }
