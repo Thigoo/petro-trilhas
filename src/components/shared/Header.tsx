@@ -20,7 +20,7 @@ export default function Header() {
     { name: "Perfil", href: "/perfil" },
   ];
 
-  if (isAdmin) {
+  if (user && isAdmin) {
     navLinks.push({ name: "Admin", href: "/trilhas-admin" });
   }
 
