@@ -29,32 +29,25 @@ export async function generateMetadata({
     };
   }
 
+  const description =
+    trilha.descricao_curta || trilha.descricao?.substring(0, 155) || "";
+
   return {
-    title: `${trilha.nome} - Petro Trilhas`,
-    description: trilha.descricao_curta || trilha.descricao?.substring(0, 160),
+    title: `${trilha.nome} | Petro Trilhas`,
+    description: description,
 
     openGraph: {
       title: trilha.nome,
-      description:
-        trilha.descricao_curta || trilha.descricao?.substring(0, 160),
+      description: description,
       images: [
         {
-          url: trilha.imagem_url || "logo-petro.png",
+          url: trilha.imagem_url || "/og-image.jpg",
           width: 1200,
           height: 630,
           alt: trilha.nome,
         },
       ],
       type: "article",
-      siteName: "Petro Trilhas",
-      locale: "pt_BR",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: trilha.nome,
-      description: trilha.descricao_curta || "",
-      images: [trilha.imagem_url || ""],
     },
   };
 }
