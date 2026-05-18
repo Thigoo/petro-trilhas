@@ -16,20 +16,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Petro Trilhas",
   description: "Explore as trilhas de Petrópolis com segurança e informação.",
+
   openGraph: {
     title: "Petro Trilhas",
     description: "O guia completo das trilhas de Petrópolis",
+    url: "https://petro-trilhas.vercel.app",
+    siteName: "Petro Trilhas",
+    locale: "pt_BR",
+    type: "website",
     images: [
       {
         url: "https://petro-trilhas.vercel.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Petro Trilhas",
+        alt: "Petro Trilhas - Guia de Trilhas de Petrópolis",
       },
     ],
-    siteName: "Petro Trilhas",
-    locale: "pt_BR",
-    type: "website",
   },
 };
 
