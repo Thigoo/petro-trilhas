@@ -13,18 +13,19 @@ import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
 import { Metadata } from "next";
 import TrailWeather from "@/src/components/trails/TrailWeather";
+import ExpandableDescription from "@/src/components/shared/ExpandableDescription";
 
 export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const trail = await getTrailBySlug(slug);
 
   if (!trail) return { title: "Petro Trilhas" };
 
-  const url = `https://petro-trilhas-git-thiago-thigoos-projects.vercel.app/trilhas/${trail.slug}`;
+  const url = `https://petro-trilhas.vercel.app/trilhas/${trail.slug}`;
 
   return {
     title: `${trail.nome} | PetroTrilhas`,
@@ -157,14 +158,7 @@ export default async function TrilhaDetalhePage({
 
             {/* Descrição */}
             {trilha.descricao && (
-              <div className="prose prose-slate max-w-none">
-                <h2 className="text-2xl font-semibold mb-4 text-slate-800">
-                  Sobre a trilha
-                </h2>
-                <p className="text-lg leading-relaxed text-slate-700">
-                  {trilha.descricao}
-                </p>
-              </div>
+              <ExpandableDescription description={trilha.descricao} />
             )}
 
             {/* Galeria de Imagens */}
