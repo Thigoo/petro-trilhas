@@ -20,7 +20,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const trail = await getTrailBySlug(slug);
 
   if (!trail) return { title: "Petro Trilhas" };
