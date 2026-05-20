@@ -2,18 +2,18 @@ import { getTrailBySlug } from "@/src/api/trails";
 import TrailMap from "@/src/components/trails/TrailMap";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ITrailMap } from "@/src/types";
 import FavoriteButton from "@/src/components/shared/FavoriteButton";
 import Image from "next/image";
-import { ArrowLeft, Clock, MapPin, Play, Ruler } from "lucide-react";
+import { Clock, MapPin, Play, Ruler } from "lucide-react";
 import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
 import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
 import { Metadata } from "next";
 import TrailWeather from "@/src/components/trails/TrailWeather";
 import ExpandableDescription from "@/src/components/shared/ExpandableDescription";
+import BackButton from "@/src/components/shared/BackButton";
 
 export async function generateMetadata({
   params,
@@ -80,15 +80,7 @@ export default async function TrilhaDetalhePage({
     <div className="min-h-screen bg-slate-50 pb-12">
       {/* Hero Section */}
       <div className="relative h-87.5 md:h-125 w-full overflow-hidden">
-        <Link
-          href="/trilhas"
-          className="z-20 absolute top-6 left-6 inline-flex items-center gap-2 px-4 py-2 
-                 bg-white/90 backdrop-blur-sm hover:bg-white text-green-900 
-                 rounded-full shadow-sm transition-all font-medium text-sm"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Voltar para trilhas
-        </Link>
+        <BackButton />
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
         {trilha.imagem_url && (
           <Image
