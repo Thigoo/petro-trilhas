@@ -14,6 +14,7 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
+import { processGPX } from "@/src/actions/admin/trails";
 
 interface TrailFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -426,33 +427,43 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
           <p className="text-red-500 text-xs font-medium">{errors.galeria}</p>
         )}
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="geojson" className="flex items-center gap-2">
-          Dados GeoJSON (Rota) *
-          <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 uppercase font-bold">
-            JSON Obrigatório
-          </span>
-        </Label>
+      {/* Upload de GPX */}
+      <div className="space-y-3">
+        <Label>Arquivo GPX da Trilha</Label>
+        <Input
+          type="file"
+          accept=".gpx"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
 
-        <Textarea
-          id="geojson"
-          name="geojson"
-          value={formData.geojson}
-          onChange={handleChange}
-          placeholder='{ "type": "LineString", "coordinates": [...] }'
-          className="font-mono h-48 bg-slate-50 resize-y text-sm focus-visible:ring-green-700"
-          required
+            const uploadForm = new FormData();
+            uploadForm.append("gpx", file);
+            uploadForm.append("slug", formData.slug);
+
+            const response = await processGPX(uploadForm);
+
+            if (!response.data) {
+              alert("Erro ao processar o arquivo GPX");
+              return;
+            }
+
+            if (response.success) {
+              setFormData((prev) => ({
+                ...prev,
+                geojson: JSON.stringify(response.data.geojson, null, 2),
+              }));
+              alert(
+                `GPX processado! ${response.data.coordinatesCount} pontos e ${response.data.waypointsCount} POIs extraídos.`,
+              );
+            } else {
+              alert(response.message);
+            }
+          }}
         />
-
-        <div className="flex justify-between items-start">
-          <p className="text-xs text-slate-500 max-w-[80%]">
-            Cole o conteúdo do arquivo .json ou .geojson exportado de
-            ferramentas como geojson.io.
-          </p>
-        </div>
-        {errors.geojson && (
-          <p className="text-red-500 text-xs font-medium">{errors.geojson}</p>
-        )}
+        <p className="text-xs text-slate-500">
+          Arquivo .gpx exportado do OsmAnd, Wikiloc ou Gaia GPS
+        </p>
       </div>
 
       <div className="pt-6">

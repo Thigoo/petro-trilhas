@@ -16,6 +16,7 @@ import Link from "next/link";
 import { ITrail } from "@/src/types";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
 import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
+import { getCoordinates } from "@/src/utils/getCoordinates";
 
 export default function ActiveTrailPage() {
   const params = useParams();
@@ -29,6 +30,8 @@ export default function ActiveTrailPage() {
   const [loadingUserPosition, setLoadingUserPosition] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
   const [followUser, setFollowUser] = useState(true);
+
+  const coordinates = getCoordinates(trail?.geojson || {});
 
   useEffect(() => {
     async function loadTrilha() {
@@ -126,9 +129,8 @@ export default function ActiveTrailPage() {
                   nome: trail.nome,
                   dificuldade: trail.dificuldade,
                   distancia_km: trail.distancia_km,
-                  coordinates: trail.geojson?.coordinates
-                    ? trail.geojson.coordinates.map(([lng, lat]) => [lat, lng])
-                    : [],
+                  coordinates: coordinates,
+                  geojson: trail.geojson,
                 },
               ]}
               followUser={followUser}
