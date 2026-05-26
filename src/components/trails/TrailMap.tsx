@@ -29,6 +29,29 @@ const userIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+const poiIcon = new L.DivIcon({
+  className: "custom-poi",
+  html: `
+    <div style="
+      background-color: #3b82f6; 
+      width: 18px; 
+      height: 18px; 
+      border-radius: 50%; 
+      border: 3px solid white; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    "></div>
+  `,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
+const finishIcon = new L.DivIcon({
+  className: "finish-flag",
+  html: `<div style="font-size: 18px; line-height: 1;">🏁</div>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false },
@@ -179,6 +202,33 @@ export default function TrailMap({
 
               {geojson?.features &&
                 showPoi &&
+                (() => {
+                  const lineFeature = geojson.features.find(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (f: any) => f.geometry?.type === "LineString",
+                  );
+                  const coords = lineFeature?.geometry?.coordinates;
+
+                  if (coords && coords.length > 1) {
+                    const lastPoint = coords[coords.length - 1];
+                    if (Array.isArray(lastPoint)) {
+                      const [lng, lat] = lastPoint;
+
+                      return (
+                        <Marker position={[lat, lng]} icon={finishIcon}>
+                          <Popup>
+                            <strong>🏁 Chegada</strong>
+                            <p className="text-sm">Fim da trilha</p>
+                          </Popup>
+                        </Marker>
+                      );
+                    }
+                  }
+                  return null;
+                })()}
+
+              {geojson?.features &&
+                showPoi &&
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 geojson.features.map((feature: any, idx: number) => {
                   if (feature.geometry?.type === "Point") {
@@ -191,6 +241,7 @@ export default function TrailMap({
                       <Marker
                         key={`${trail.id}-poi-${idx}`}
                         position={[lat, lng]}
+                        icon={poiIcon}
                       >
                         <Popup>
                           <strong>{name}</strong>
