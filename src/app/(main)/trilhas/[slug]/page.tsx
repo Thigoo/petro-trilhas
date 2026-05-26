@@ -14,6 +14,7 @@ import { Metadata } from "next";
 import TrailWeather from "@/src/components/trails/TrailWeather";
 import ExpandableDescription from "@/src/components/shared/ExpandableDescription";
 import BackButton from "@/src/components/shared/BackButton";
+import { getCoordinates } from "@/src/utils/getCoordinates";
 
 export async function generateMetadata({
   params,
@@ -60,10 +61,28 @@ export default async function TrilhaDetalhePage({
   const { slug } = await params;
   const trilha = await getTrailBySlug(slug);
 
-  const lat = trilha?.geojson?.coordinates?.[0]?.[1] || 0;
-  const lng = trilha?.geojson?.coordinates?.[0]?.[0] || 0;
-
   if (!trilha) notFound();
+
+  let lat = -22.505;
+  let lng = -43.178;
+
+  if (trilha.geojson?.type === "FeatureCollection" && trilha.geojson.features) {
+    const lineFeature = trilha.geojson.features.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (f: any) => f.geometry?.type === "LineString",
+    );
+
+    if (lineFeature?.geometry?.coordinates?.length ?? 0 > 0) {
+      const firstPoint = lineFeature?.geometry.coordinates[0] as [
+        number,
+        number,
+      ];
+      if (firstPoint) {
+        lng = firstPoint[0]; // longitude
+        lat = firstPoint[1]; // latitude
+      }
+    }
+  }
 
   const mapTrail: ITrailMap = {
     id: trilha.id,
@@ -71,9 +90,8 @@ export default async function TrilhaDetalhePage({
     slug: trilha.slug,
     dificuldade: trilha.dificuldade,
     distancia_km: trilha.distancia_km,
-    coordinates: trilha.geojson?.coordinates
-      ? trilha.geojson.coordinates.map(([lng, lat]) => [lat, lng])
-      : [],
+    coordinates: getCoordinates(trilha.geojson),
+    geojson: trilha.geojson,
   };
 
   return (
@@ -213,9 +231,10 @@ export default async function TrilhaDetalhePage({
               <TrailMap
                 trails={[mapTrail]}
                 height="480px"
-                center={mapTrail.coordinates[0] || [-22.505, -43.178]}
+                center={[lat, lng]}
                 withRoute={false}
                 zoom={14}
+                showPoi
               />
             </div>
           </div>

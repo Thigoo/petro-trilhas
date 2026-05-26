@@ -6,6 +6,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { getCoordinates } from "@/src/utils/getCoordinates";
 
 const TrailMap = dynamic(() => import("@/src/components/trails/TrailMap"), {
   ssr: false,
@@ -14,27 +15,43 @@ const TrailMap = dynamic(() => import("@/src/components/trails/TrailMap"), {
 
 export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
   const [activeFilter, setActiveFilter] = useState<Difficulty>("todas");
-  const [filteredTrails, setaFilteredTrails] = useState<ITrail[]>(trails);
+  const [filteredTrails, setFilteredTrails] = useState<ITrail[]>(trails);
 
   const filtrarTrilhas = (dificuldade: Difficulty) => {
     setActiveFilter(dificuldade);
     if (dificuldade === "todas") {
-      setaFilteredTrails(trails);
+      setFilteredTrails(trails);
     } else {
-      setaFilteredTrails(trails.filter((t) => t.dificuldade === dificuldade));
+      setFilteredTrails(trails.filter((t) => t.dificuldade === dificuldade));
     }
   };
 
   const mapTrails: ITrailMap[] = filteredTrails
-    .filter((t) => t.geojson && t.geojson?.coordinates?.length > 0)
-    .map((t) => ({
-      id: t.id,
-      nome: t.nome,
-      slug: t.slug,
-      dificuldade: t.dificuldade,
-      distancia_km: t.distancia_km,
-      coordinates: t.geojson!.coordinates.map(([lng, lat]) => [lat, lng]),
-    }));
+    .filter(
+      (t) =>
+        t.geojson?.type === "FeatureCollection" &&
+        t.geojson.features?.length > 0,
+    )
+    .map((t) => {
+      const geojson = t.geojson!;
+
+      const lineFeature = geojson.features.find(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (f: any) => f.geometry?.type === "LineString",
+      );
+
+      const coordinates = getCoordinates(lineFeature?.geometry);
+
+      return {
+        id: t.id,
+        nome: t.nome,
+        slug: t.slug,
+        dificuldade: t.dificuldade,
+        distancia_km: t.distancia_km,
+        coordinates: coordinates,
+        geojson: geojson, // mantemos completo para usar POIs na página de detalhes
+      };
+    });
 
   return (
     <>
@@ -60,9 +77,9 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
         {/* Mapa */}
         <div className="lg:col-span-7 p-4">
           <TrailMap
-            key={`map-${activeFilter}- ${filteredTrails.length}`}
-            height="480px" // mobile
-            center={[-22.505, -43.178]} // Petrópolis
+            key={`map-${activeFilter}-${filteredTrails.length}`}
+            height="480px"
+            center={[-22.505, -43.178]}
             trails={mapTrails}
             withRoute={true}
           />

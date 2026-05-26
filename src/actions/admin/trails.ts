@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { supabase } from "@/src/lib/supabase";
 import { trailSchema } from "@/src/validations/trail";
 import { revalidatePath } from "next/cache";
+import { XMLParser } from "fast-xml-parser";
 
 export async function registerTrail(formData: FormData) {
   const rawEntries = Object.fromEntries(formData.entries());
@@ -80,7 +82,6 @@ export async function registerTrail(formData: FormData) {
     revalidatePath("/trilhas-admin");
 
     return { success: true, message: "Trilha cadastrada com sucesso!" };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Erro ao salvar trilha:", error);
     return { success: false, message: error.message };
@@ -171,7 +172,6 @@ export async function updateTrail(id: string, formData: FormData) {
     revalidatePath("/trilhas-admin");
 
     return { success: true, message: "Trilha atualizada com sucesso!" };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("💥 ERRO ao atualizar trilha:", error);
     return {
@@ -195,7 +195,6 @@ export async function toggleTrailPublishStatus(
 
     revalidatePath("/trilhas");
     revalidatePath("/trilhas-admin");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Toggle Error:", error);
   }
@@ -238,4 +237,95 @@ export async function deleteTrail(id: string, slug: string) {
 
   revalidatePath("/trilhas-admin");
   revalidatePath("/trilhas");
+}
+
+export async function processGPX(formData: FormData) {
+  const file = formData.get("gpx") as File;
+
+  console.log("Arquivo GPX:", file);
+  const slug = formData.get("slug") as string;
+
+  if (!file) {
+    return { success: false, message: "Nenhum arquivo GPX enviado" };
+  }
+
+  try {
+    const gpxText = await file.text();
+
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: "@_",
+    });
+
+    const gpxData = parser.parse(gpxText);
+
+    // Extrai a rota principal (trkseg)
+    const track = gpxData.gpx.trk;
+    const segments = Array.isArray(track.trkseg)
+      ? track.trkseg
+      : [track.trkseg];
+
+    const coordinates: [number, number][] = [];
+
+    segments.forEach((seg: any) => {
+      const points = Array.isArray(seg.trkpt) ? seg.trkpt : [seg.trkpt];
+      points.forEach((pt: any) => {
+        if (pt && pt["@_lat"] && pt["@_lon"]) {
+          coordinates.push([parseFloat(pt["@_lon"]), parseFloat(pt["@_lat"])]);
+        }
+      });
+    });
+
+    // Extrai Waypoints (POIs)
+    const waypoints = gpxData.gpx.wpt
+      ? Array.isArray(gpxData.gpx.wpt)
+        ? gpxData.gpx.wpt
+        : [gpxData.gpx.wpt]
+      : [];
+
+    const features = [
+      {
+        type: "Feature",
+        properties: {
+          name: file.name.split(".")[0] || slug,
+        },
+        geometry: {
+          type: "LineString",
+          coordinates: coordinates,
+        },
+      },
+      ...waypoints.map((wp: any) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [parseFloat(wp["@_lon"]), parseFloat(wp["@_lat"])],
+        },
+        properties: {
+          name: wp.name || "Ponto de interesse",
+          description: wp.desc || "",
+          cmt: wp.cmt || "",
+        },
+      })),
+    ];
+
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: features,
+    };
+
+    return {
+      success: true,
+      data: {
+        geojson: featureCollection,
+        coordinatesCount: coordinates.length,
+        waypointsCount: waypoints.length,
+      },
+    };
+  } catch (error: any) {
+    console.error("Erro ao processar GPX:", error);
+    return {
+      success: false,
+      message: "Erro ao processar arquivo GPX: " + error.message,
+    };
+  }
 }

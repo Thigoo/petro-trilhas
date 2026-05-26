@@ -62,6 +62,7 @@ interface TrailMapProps {
   followUser?: boolean;
   withRoute?: boolean;
   zoom?: number;
+  showPoi?: boolean;
 }
 
 function AutoFollow({
@@ -93,6 +94,7 @@ export default function TrailMap({
   followUser = false,
   withRoute = false,
   zoom = 11,
+  showPoi = false,
 }: TrailMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -132,6 +134,7 @@ export default function TrailMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
         <Button
           variant="outline"
           size="icon"
@@ -142,54 +145,98 @@ export default function TrailMap({
           <RotateCw size={24} className="text-green-700" />
         </Button>
 
-        {trails.map((trail) => (
-          <div key={trail.id}>
-            <Polyline
-              positions={trail.coordinates}
-              pathOptions={{
-                color:
-                  trail.dificuldade === "difícil"
-                    ? "#ef4444"
-                    : trail.dificuldade === "moderada"
-                      ? "#eab308"
-                      : "#22c55e",
-                weight: 5,
-                opacity: 0.8,
-              }}
-            />
-            <Marker position={trail.coordinates[0]}>
-              <Popup className="custom-popup">
-                <div className="min-w-35">
-                  <strong className="block text-base">{trail.nome}</strong>
+        {trails.map((trail) => {
+          const geojson = trail.geojson;
 
-                  <div className="flex items-center justify-between w-full pt-2">
-                    {trail.dificuldade} • {trail.distancia_km} km
-                    {withRoute && (
-                      <Link
-                        href={`/trilhas/${trail.slug}`}
-                        className="font-medium text-md group"
+          return (
+            <div key={trail.id}>
+              {geojson?.features &&
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                geojson.features.map((feature: any, idx: number) => {
+                  if (feature.geometry?.type === "LineString") {
+                    const coords = feature.geometry.coordinates.map(
+                      ([lng, lat]: [number, number]) => [lat, lng],
+                    );
+                    return (
+                      <Polyline
+                        key={`${trail.id}-line-${idx}`}
+                        positions={coords}
+                        pathOptions={{
+                          color:
+                            trail.dificuldade === "difícil"
+                              ? "#ef4444"
+                              : trail.dificuldade === "moderada"
+                                ? "#eab308"
+                                : "#22c55e",
+                          weight: 6,
+                          opacity: 0.85,
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+
+              {geojson?.features &&
+                showPoi &&
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                geojson.features.map((feature: any, idx: number) => {
+                  if (feature.geometry?.type === "Point") {
+                    const [lng, lat] = feature.geometry.coordinates;
+                    const name =
+                      feature.properties?.name || "Ponto de interesse";
+                    const desc = feature.properties?.description || "";
+
+                    return (
+                      <Marker
+                        key={`${trail.id}-poi-${idx}`}
+                        position={[lat, lng]}
                       >
-                        <ArrowRight
-                          size={18}
-                          className="text-green-600 hover:text-green-700 group-hover:translate-x-0.5 transition-transform bg-slate-100 rounded-full -p-2"
-                        />
-                      </Link>
-                    )}
+                        <Popup>
+                          <strong>{name}</strong>
+                          {desc && <p className="text-sm mt-1">{desc}</p>}
+                        </Popup>
+                      </Marker>
+                    );
+                  }
+                  return null;
+                })}
+
+              <Marker position={trail.coordinates?.[0] || [0, 0]}>
+                <Popup className="custom-popup">
+                  <div className="min-w-35">
+                    <strong className="block text-base">{trail.nome}</strong>
+                    <div className="flex items-center justify-between w-full pt-2">
+                      {trail.dificuldade} • {trail.distancia_km} km
+                      {withRoute && (
+                        <Link
+                          href={`/trilhas/${trail.slug}`}
+                          className="font-medium text-md group"
+                        >
+                          <ArrowRight
+                            size={18}
+                            className="text-green-600 hover:text-green-700 group-hover:translate-x-0.5 transition-transform bg-slate-100 rounded-full -p-2"
+                          />
+                        </Link>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Popup>
-            </Marker>
-            {userPosition && (
-              <Marker position={userPosition} icon={userIcon}>
-                <Popup>
-                  <strong>Você está aqui!</strong>
-                  <br />
-                  Posição atualizada em tempo real
                 </Popup>
               </Marker>
-            )}
-          </div>
-        ))}
+
+              {userPosition && (
+                <Marker position={userPosition} icon={userIcon}>
+                  <Popup>
+                    <strong>Você está aqui!</strong>
+                    <br />
+                    Posição atualizada em tempo real
+                  </Popup>
+                </Marker>
+              )}
+            </div>
+          );
+        })}
+
         <AutoFollow
           userPosition={userPosition ?? null}
           followUser={followUser}
