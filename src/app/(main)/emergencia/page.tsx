@@ -36,13 +36,13 @@ const emergencyContacts = [
   },
   {
     name: "Defesa Civil Petrópolis",
-    number: "(24) 2246-9100",
+    number: "199",
     icon: <AlertTriangle className="w-5 h-5" />,
     color: "orange",
   },
   {
     name: "Disque Denúncia Ambiental",
-    number: "0800 282 2323",
+    number: "0000 000 0000",
     icon: <MapPin className="w-5 h-5" />,
     color: "emerald",
   },
