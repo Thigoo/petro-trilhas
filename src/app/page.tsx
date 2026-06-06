@@ -146,11 +146,24 @@ export default function LandingPage() {
 
       {/* Footer simples */}
       <footer className="bg-slate-900 text-slate-400 py-12">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <p>
-            Petro Trilhas © 2026 • Apoio à Lei Municipal das Trilhas nº
-            9.214/2026
-          </p>
+        <div className="flex flex-col gap-2 max-w-6xl mx-auto px-6 text-center">
+          <p>Petro Trilhas © 2026</p>
+          <a
+            className="text-green-400 hover:text-slate-300 underline underline-offset-2"
+            href="https://www.petropolis.rj.gov.br/turispetro/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sectretaria de Turismo
+          </a>
+          <a
+            className="text-green-400 hover:text-slate-300 underline"
+            href="https://www.petropolis.rj.gov.br/pmp/index.php/meio-ambiente/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sectretaria de Meio Ambiente
+          </a>
           <p className="text-sm mt-2">
             Feito com ❤️ para quem ama a serra imperial
           </p>
