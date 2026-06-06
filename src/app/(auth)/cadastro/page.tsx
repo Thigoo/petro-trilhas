@@ -37,7 +37,7 @@ export default function RegisterPage() {
     if (signUpError) {
       setError(signUpError.message);
     } else {
-      alert("Conta criada com sucesso! Verifique seu e-mail.");
+      alert("Conta criada com sucesso!");
       router.push("/login");
     }
 
