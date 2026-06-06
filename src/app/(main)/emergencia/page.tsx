@@ -112,9 +112,8 @@ export default function EmergenciaPage() {
             >
               <AccordionTrigger>Desorientação ou Perda</AccordionTrigger>
               <AccordionContent className="text-slate-600">
-                Fique calmo. Tente voltar pelo mesmo caminho. Use o GPS do app.
-                Se possível, suba para um ponto alto para ter melhor sinal e
-                visão.
+                Fique calmo. Tente voltar pelo mesmo caminho. Se possível, suba
+                para um ponto alto para ter melhor sinal e visão.
               </AccordionContent>
             </AccordionItem>
 
