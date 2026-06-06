@@ -18,6 +18,7 @@ export default function Header() {
     { name: "Início", href: "/" },
     { name: "Trilhas", href: "/trilhas" },
     { name: "Perfil", href: "/perfil" },
+    { name: "Emergência", href: "/emergencia" },
   ];
 
   if (user && isAdmin) {
