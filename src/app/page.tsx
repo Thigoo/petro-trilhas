@@ -31,7 +31,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto">
-            O app que transforma sua experiência nas trilhas da Serra Imperial.
+            A natureza de Petrópolis na palma da sua mão.
           </p>
 
           {/* Botões */}
