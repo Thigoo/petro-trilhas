@@ -25,6 +25,8 @@ export function useProfile() {
 
       if (error) {
         console.error("Erro ao buscar perfil:", error.message);
+        setProfile(null);
+        setLoading(false);
       } else {
         setProfile(data);
         if (data?.role === "admin") {
