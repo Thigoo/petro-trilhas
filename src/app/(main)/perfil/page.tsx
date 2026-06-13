@@ -25,7 +25,7 @@ export default function ProfilePage() {
   };
 
   if (!user) {
-    router.push("/trilhas");
+    router.push("/login");
     return <div>Redirecionando...</div>;
   }
 

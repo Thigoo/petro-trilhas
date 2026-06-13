@@ -151,13 +151,13 @@ export default async function TrilhaDetalhePage({
                   value={`${trilha.desnivel_m} m`}
                 />
               )}
-              {trilha.altitude_max && (
+              {trilha.altitude_max ? (
                 <InfoCard
                   icon="🏔️"
                   label="Altitude máx."
                   value={`${trilha.altitude_max} m`}
                 />
-              )}
+              ) : null}
             </div>
 
             {/* Seção de Clima */}

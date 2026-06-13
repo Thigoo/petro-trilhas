@@ -18,6 +18,7 @@ export default function Header() {
     { name: "Início", href: "/" },
     { name: "Trilhas", href: "/trilhas" },
     { name: "Perfil", href: "/perfil" },
+    { name: "Emergência", href: "/emergencia" },
   ];
 
   if (user && isAdmin) {
@@ -57,6 +58,14 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
+          <a
+            href="https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold transition-colors hover:text-green-700 text-slate-600"
+          >
+            Encontre seu guia
+          </a>
           {user ? (
             <Button
               variant="ghost"
@@ -101,6 +110,14 @@ export default function Header() {
                 {link.name}
               </Link>
             ))}
+            <a
+              href="https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base font-medium transition-colors hover:text-green-700 text-slate-600"
+            >
+              Encontre seu guia
+            </a>
             {!user && (
               <Link href="/login" onClick={toggleMenu}>
                 <Button className="w-full bg-green-700">

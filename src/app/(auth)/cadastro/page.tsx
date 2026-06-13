@@ -37,7 +37,7 @@ export default function RegisterPage() {
     if (signUpError) {
       setError(signUpError.message);
     } else {
-      alert("Conta criada com sucesso! Verifique seu e-mail.");
+      alert("Conta criada com sucesso!");
       router.push("/login");
     }
 
@@ -50,10 +50,10 @@ export default function RegisterPage() {
         {/* Logo / Header */}
         <div className="flex flex-col items-center mb-4">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
-              <Mountain className="w-7 h-7 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-green-700">Petro Trilhas</h1>
+            <Mountain className="h-13 w-13 text-green-700" />
+            <span className="text-5xl font-bold text-green-900 tracking-tight">
+              Petro<span className="text-green-600">Trilhas</span>
+            </span>
           </div>
         </div>
 
