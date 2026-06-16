@@ -14,14 +14,12 @@ export default function ExpandableDescription({
   const isLong = description.length > 320; // ≈ 4-5 linhas
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4 text-slate-800">
-        Sobre a trilha
-      </h2>
+    <div className="text-muted-foreground">
+      <h2 className="text-2xl font-semibold mb-4">Sobre a trilha</h2>
 
       <div className="prose prose-slate max-w-none">
         <p
-          className={`text-lg leading-relaxed text-slate-700 transition-all duration-300 ${
+          className={`text-lg leading-relaxed transition-all duration-300 ${
             isExpanded ? "" : "line-clamp-4"
           }`}
         >
@@ -32,7 +30,7 @@ export default function ExpandableDescription({
       {isLong && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-4 flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition-colors"
+          className="mt-4 flex items-center gap-2 text-medium-green hover:text-medium-green font-medium transition-colors"
         >
           {isExpanded ? "Mostrar menos" : "Ler mais"}
           <ChevronDown

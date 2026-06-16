@@ -10,7 +10,7 @@ export default function BackButton() {
       variant="outline"
       onClick={() => router.back()}
       className="z-20 absolute top-6 left-6 inline-flex items-center gap-2 px-4 py-2 
-                 bg-white/90 backdrop-blur-sm hover:bg-white text-green-900 
+                 bg-white/90 backdrop-blur-sm hover:text-medium-green text-dark-green 
                  rounded-full shadow-sm transition-all font-medium text-sm"
     >
       <ArrowLeft className="h-4 w-4" />
