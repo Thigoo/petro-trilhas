@@ -111,9 +111,12 @@ export default async function TrilhaDetalhePage({
           />
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-accent">
           <div className="max-w-5xl mx-auto">
-            <Badge variant="secondary" className="mb-3 capitalize">
+            <Badge
+              variant="secondary"
+              className="mb-3 capitalize text-muted-foreground"
+            >
               {trilha.dificuldade}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
@@ -255,12 +258,10 @@ function InfoCard({
   value: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 border shadow-sm">
-      <div className="text-green-600 mb-2">{icon}</div>
-      <p className="text-xs uppercase tracking-widest text-slate-500 font-medium">
-        {label}
-      </p>
-      <p className="text-2xl font-semibold text-slate-800 mt-1">{value}</p>
+    <div className="bg-white rounded-2xl p-5 border shadow-sm text-muted-foreground">
+      <div className="text-medium-green mb-2">{icon}</div>
+      <p className="text-xs uppercase tracking-widest font-medium">{label}</p>
+      <p className="text-2xl font-semibold mt-1">{value}</p>
     </div>
   );
 }

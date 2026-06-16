@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mountain, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useProfile } from "@/src/hooks/useProfile";
 import { useAuth } from "@/src/providers/AuthProvider";
+import { AppLogo } from "./AppLogo";
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -14,7 +15,10 @@ export default function Header() {
   const pathname = usePathname();
   const { isAdmin } = useProfile();
 
-  const navLinks = [
+  const GUIDE_URL =
+    "https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf";
+
+  const navigation = [
     { name: "Início", href: "/" },
     { name: "Trilhas", href: "/trilhas" },
     { name: "Perfil", href: "/perfil" },
@@ -22,63 +26,75 @@ export default function Header() {
   ];
 
   if (user && isAdmin) {
-    navLinks.push({ name: "Admin", href: "/trilhas-admin" });
+    navigation.push({
+      name: "Admin",
+      href: "/trilhas-admin",
+    });
   }
+
+  const getDesktopNavClasses = (href: string) =>
+    `text-sm font-semibold transition-colors hover:text-medium-green ${
+      pathname === href
+        ? "text-medium-green border-b-2 border-medium-green"
+        : "text-muted-foreground"
+    }`;
+
+  const getMobileNavClasses = (href: string) =>
+    `rounded-md px-3 py-2 text-base font-medium transition-colors ${
+      pathname === href
+        ? "bg-accent text-medium-green"
+        : "text-muted-foreground hover:bg-accent"
+    }`;
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     // z-[1000] garante que fique acima dos controles do Leaflet (que usam z-index 400-1000)
-    <header className="sticky top-0 z-1001 w-full border-b bg-white shadow-sm">
+    <header className="sticky top-0 z-1001 w-full border-b bg-background shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center"
           onClick={() => setIsMenuOpen(false)}
         >
-          <Mountain className="h-6 w-6 text-green-700" />
-          <span className="text-xl font-bold text-green-900 tracking-tight">
-            Petro<span className="text-green-600">Trilhas</span>
-          </span>
+          <AppLogo size="sm" />
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {navigation.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm font-semibold transition-colors hover:text-green-700 ${
-                pathname === link.href
-                  ? "text-green-700 border-b-2 border-green-700"
-                  : "text-slate-600"
-              }`}
+              className={getDesktopNavClasses(link.href)}
             >
               {link.name}
             </Link>
           ))}
+
           <a
-            href="https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf"
+            href={GUIDE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-semibold transition-colors hover:text-green-700 text-slate-600"
+            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-medium-green"
           >
             Encontre seu guia
           </a>
+
           {user ? (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => signOut()}
-              className="text-red-600"
+              className="text-destructive"
             >
               Sair
             </Button>
           ) : (
             <Link href="/login">
-              <Button size="sm" className="bg-green-700 hover:bg-green-800">
-                Login
+              <Button size="sm" className="bg-medium-green hover:bg-dark-green">
+                Entrar
               </Button>
             </Link>
           )}
@@ -98,38 +114,41 @@ export default function Header() {
 
       {/* Mobile Menu Dropdown (Expansível) */}
       {isMenuOpen && (
-        <div className="md:hidden border-t bg-white animate-in slide-in-from-top duration-300">
-          <nav className="flex flex-col p-4 gap-4">
-            {navLinks.map((link) => (
+        <div className="md:hidden border-t bg-card animate-in slide-in-from-top duration-300">
+          <nav className="flex flex-col gap-1 p-4">
+            {navigation.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={toggleMenu}
-                className="text-base font-medium text-slate-700 border-b pb-2 last:border-0"
+                className={getMobileNavClasses(link.href)}
               >
                 {link.name}
               </Link>
             ))}
+
             <a
-              href="https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf"
+              href={GUIDE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-base font-medium transition-colors hover:text-green-700 text-slate-600"
+              className="rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-medium-green"
             >
               Encontre seu guia
             </a>
+
             {!user && (
               <Link href="/login" onClick={toggleMenu}>
-                <Button className="w-full bg-green-700">
-                  Login / Cadastro
+                <Button className="mt-2 w-full bg-medium-green hover:bg-dark-green">
+                  Entrar
                 </Button>
               </Link>
             )}
+
             {user && (
               <Button
                 variant="outline"
                 onClick={() => signOut()}
-                className="w-full border-red-200 text-red-600"
+                className="mt-2 w-full"
               >
                 Sair
               </Button>

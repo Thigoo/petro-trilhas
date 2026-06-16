@@ -83,7 +83,7 @@ export default function TrailWeather({
   if (!weather) return null;
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden text-muted-foreground">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <ThermometerSun className="w-5 h-5 text-amber-500" />
@@ -99,11 +99,11 @@ export default function TrailWeather({
               <p className="text-5xl font-light leading-none">
                 {weather.temperature}°C
               </p>
-              <p className="text-slate-600 mt-1">{weather.condition}</p>
+              <p className="mt-1">{weather.condition}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 text-sm text-slate-600">
+          <div className="grid grid-cols-3 gap-4 text-sm">
             <div className="text-center">
               <Droplet className="w-5 h-5 mx-auto mb-1" />
               <p>{weather.humidity}%</p>

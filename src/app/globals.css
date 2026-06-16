@@ -48,9 +48,18 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-light-green: var(--light-green);
+  --color-medium-green: var(--medium-green);
+  --color-dark-green: var(--dark-green);
 }
 
 :root {
+  /* testando cores exclusivas para o pt */
+  --light-green: oklch(79.2% 0.209 151.711);
+  --medium-green: oklch(59.2% 0.209 152.535);
+  --dark-green: oklch(39.3% 0.095 152.535);
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -62,7 +71,7 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(37.2% 0.044 257.287);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
