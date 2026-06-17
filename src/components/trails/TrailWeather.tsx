@@ -9,26 +9,30 @@ import {
 } from "@/src/components/ui/card";
 import {
   Sun,
-  Cloud,
   CloudRain,
   Wind,
   Droplet,
   AlertTriangle,
   ThermometerSun,
-  Moon,
-  CloudSnow,
-  CloudFog,
-  CloudMoon,
-  CloudSun,
 } from "lucide-react";
+import { getCondition, isNightTime } from "@/src/utils/weather";
+import { WeatherIcon } from "./WeatherIcon";
 
 interface WeatherData {
   temperature: number;
-  condition: string;
-  icon: React.ReactNode;
+  maxTemperature: number;
+  minTemperature: number;
+
+  weatherCode: number;
+
   humidity: number;
   windSpeed: number;
   rainChance: number;
+
+  sunrise: string;
+  sunset: string;
+
+  lastUpdated: string;
 }
 
 interface TrailWeatherProps {
@@ -47,10 +51,11 @@ export default function TrailWeather({
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America/Sao_Paulo`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=America/Sao_Paulo`;
 
         const res = await fetch(url, { next: { revalidate: 3600 } });
         const data = await res.json();
+        console.log("dados climáticos", data);
 
         if (!data.current) throw new Error();
 
@@ -58,11 +63,21 @@ export default function TrailWeather({
 
         setWeather({
           temperature: Math.round(current.temperature_2m),
-          condition: getCondition(current.weather_code),
-          icon: getWeatherIcon(current.weather_code),
-          humidity: current.relative_humidity_2m,
+          maxTemperature: Math.round(data.daily.temperature_2m_max[0]),
+          minTemperature: Math.round(data.daily.temperature_2m_min[0]),
+
+          weatherCode: current.weather_code,
+
+          humidity: Math.round(current.relative_humidity_2m),
           windSpeed: Math.round(current.wind_speed_10m),
-          rainChance: data.daily.precipitation_probability_max[0] || 0,
+          rainChance: Math.round(
+            data.daily.precipitation_probability_max[0] ?? 0,
+          ),
+
+          sunrise: data.daily.sunrise[0],
+          sunset: data.daily.sunset[0],
+
+          lastUpdated: current.time,
         });
       } catch {
         setError("Não foi possível carregar o clima.");
@@ -94,12 +109,17 @@ export default function TrailWeather({
         {/* Clima Atual */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 rounded-2xl p-5 md:p-6 gap-4">
           <div className="flex items-center gap-5">
-            <div className="text-6xl">{weather.icon}</div>
+            <div className="text-6xl">
+              <WeatherIcon
+                code={weather.weatherCode}
+                isNight={isNightTime(weather.sunrise, weather.sunset)}
+              />
+            </div>
             <div>
               <p className="text-5xl font-light leading-none">
                 {weather.temperature}°C
               </p>
-              <p className="mt-1">{weather.condition}</p>
+              <p className="mt-1">{getCondition(weather.weatherCode)}</p>
             </div>
           </div>
 
@@ -147,69 +167,4 @@ export default function TrailWeather({
       </CardContent>
     </Card>
   );
-}
-
-// Funções auxiliares
-function getCondition(code: number): string {
-  const hour = new Date().getHours();
-  const isNight = hour < 6 || hour > 18;
-
-  // Precipitação
-  if ([51, 61, 80].includes(code)) return "Chuva leve";
-  if ([53, 63, 81].includes(code)) return "Chuva moderada";
-  if ([55, 65, 82].includes(code)) return "Chuva forte";
-
-  if ([71, 73, 75].includes(code)) return "Neve";
-
-  // Neblina
-  if ([45, 48].includes(code)) return "Neblina";
-
-  if (isNight) {
-    if ([0, 1].includes(code)) return "Céu limpo";
-    return "Nublado";
-  } else {
-    if ([0, 1].includes(code)) return "Ensolarado";
-    if ([2, 3].includes(code)) return "Parcialmente nublado";
-    return "Nublado";
-  }
-}
-
-function getWeatherIcon(code: number) {
-  const hour = new Date().getHours();
-  const isNight = hour < 6 || hour > 18;
-
-  // Chuva leve
-  if ([51, 61, 80].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-500" />;
-
-  // Chuva moderada
-  if ([53, 63, 81].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-600" />;
-
-  // Chuva forte
-  if ([55, 65, 82].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-700" />;
-
-  // Neve
-  if ([71, 73, 75].includes(code))
-    return <CloudSnow className="w-16 h-16 text-slate-300" />;
-
-  // Neblina
-  if ([45, 48].includes(code))
-    return <CloudFog className="w-16 h-16 text-slate-400" />;
-
-  // Noite
-  if (isNight) {
-    if ([0, 1].includes(code))
-      return <Moon className="w-16 h-16 text-slate-300" />;
-    return <CloudMoon className="w-16 h-16 text-slate-400" />;
-  }
-
-  // Dia
-  if ([0, 1].includes(code))
-    return <Sun className="w-16 h-16 text-amber-500" />;
-  if ([2, 3].includes(code))
-    return <CloudSun className="w-16 h-16 text-amber-500" />;
-
-  return <Cloud className="w-16 h-16 text-slate-500" />;
 }
