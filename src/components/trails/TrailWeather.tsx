@@ -17,23 +17,7 @@ import {
 } from "lucide-react";
 import { getCondition, isNightTime } from "@/src/utils/weather";
 import { WeatherIcon } from "./WeatherIcon";
-
-interface WeatherData {
-  temperature: number;
-  maxTemperature: number;
-  minTemperature: number;
-
-  weatherCode: number;
-
-  humidity: number;
-  windSpeed: number;
-  rainChance: number;
-
-  sunrise: string;
-  sunset: string;
-
-  lastUpdated: string;
-}
+import { WeatherData } from "@/src/types/weather";
 
 interface TrailWeatherProps {
   latitude: number;
@@ -61,6 +45,17 @@ export default function TrailWeather({
 
         const current = data.current;
 
+        const forecast = data.daily.time
+          .slice(0, 5)
+          .map((date: string, i: number) => ({
+            date,
+            temperatureMax: Math.round(data.daily.temperature_2m_max[i]),
+            temperatureMin: Math.round(data.daily.temperature_2m_min[i]),
+            weatherCode: data.daily.weather_code[i],
+            rainChance:
+              Math.round(data.daily.precipitation_probability_max[i]) ?? 0,
+          }));
+
         setWeather({
           temperature: Math.round(current.temperature_2m),
           maxTemperature: Math.round(data.daily.temperature_2m_max[0]),
@@ -76,6 +71,8 @@ export default function TrailWeather({
 
           sunrise: data.daily.sunrise[0],
           sunset: data.daily.sunset[0],
+
+          forecast,
 
           lastUpdated: current.time,
         });
@@ -113,6 +110,7 @@ export default function TrailWeather({
               <WeatherIcon
                 code={weather.weatherCode}
                 isNight={isNightTime(weather.sunrise, weather.sunset)}
+                size="w-16 h-16"
               />
             </div>
             <div>
@@ -138,7 +136,6 @@ export default function TrailWeather({
             </div>
           </div>
         </div>
-
         {/* Aviso Inteligente */}
         <div
           className={`p-4 rounded-2xl text-sm flex items-start gap-3 border ${
@@ -163,6 +160,54 @@ export default function TrailWeather({
                 ? `Possibilidade de chuva.`
                 : `Boas condições climáticas para fazer a trilha.`}
           </span>
+        </div>
+        {/* Forecast */}
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">
+            Previsão para os próximos dias
+          </h3>
+
+          <div className="flex justify-between gap-1">
+            {weather.forecast.map((day, index) => {
+              const label =
+                index === 0
+                  ? "Hoje"
+                  : new Date(day.date + "T00:00:00").toLocaleDateString(
+                      "pt-BR",
+                      {
+                        weekday: "short",
+                      },
+                    );
+
+              return (
+                <div
+                  key={day.date}
+                  className={`flex flex-col items-center gap-2 rounded-xl w-full p-2 transition-colors border ${
+                    index === 0
+                      ? "bg-muted border-b-5 border-b-medium-green"
+                      : "hover:bg-muted/50"
+                  }`}
+                >
+                  <span className="text-sm font-medium capitalize">
+                    {label}
+                  </span>
+
+                  <WeatherIcon
+                    code={day.weatherCode}
+                    isNight={false}
+                    size="w-7 h-7"
+                  />
+
+                  <div className="flex gap-1 text-sm">
+                    <span className="font-medium">{day.temperatureMax}°</span>
+                    <span className="text-muted-foreground">
+                      {day.temperatureMin}°
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </CardContent>
     </Card>

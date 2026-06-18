@@ -13,16 +13,17 @@ import {
 interface WeatherIconProps {
   code: number;
   isNight: boolean;
+  size?: string;
 }
 
-export function WeatherIcon({ code, isNight }: WeatherIconProps) {
+export function WeatherIcon({ code, isNight, size }: WeatherIconProps) {
   // Tempestades
   if ([95, 96, 99].includes(code))
-    return <CloudLightning className="w-16 h-16 text-yellow-500" />;
+    return <CloudLightning className={`${size} text-yellow-500`} />;
 
   // Neblina
   if ([45, 48].includes(code))
-    return <CloudFog className="w-16 h-16 text-slate-400" />;
+    return <CloudFog className={`${size} text-slate-400`} />;
 
   // Chuvisco, chuva, chuva congelante e pancadas de chuva
   if (
@@ -42,7 +43,7 @@ export function WeatherIcon({ code, isNight }: WeatherIconProps) {
       82, // Pancadas de chuva
     ].includes(code)
   ) {
-    return <CloudRain className="w-16 h-16 text-blue-500" />;
+    return <CloudRain className={`${size} text-blue-500`} />;
   }
 
   // Neve, grãos de neve e pancadas de neve
@@ -56,31 +57,31 @@ export function WeatherIcon({ code, isNight }: WeatherIconProps) {
       86, // Pancadas de neve
     ].includes(code)
   ) {
-    return <CloudSnow className="w-16 h-16 text-slate-300" />;
+    return <CloudSnow className={`${size} text-slate-300`} />;
   }
 
   // Céu limpo / predominantemente limpo
   if ([0, 1].includes(code)) {
     return isNight ? (
-      <Moon className="w-16 h-16 text-slate-300" />
+      <Moon className={`${size} text-slate-300`} />
     ) : (
-      <Sun className="w-16 h-16 text-amber-500" />
+      <Sun className={`${size} text-amber-500`} />
     );
   }
 
   // Parcialmente nublado
   if (code === 2) {
     return isNight ? (
-      <CloudMoon className="w-16 h-16 text-slate-400" />
+      <CloudMoon className={`${size} text-slate-400`} />
     ) : (
-      <CloudSun className="w-16 h-16 text-amber-500" />
+      <CloudSun className={`${size} text-amber-500`} />
     );
   }
 
   // Encoberto
   if (code === 3) {
-    return <Cloud className="w-16 h-16 text-slate-500" />;
+    return <Cloud className={`${size} text-slate-500`} />;
   }
 
-  return <Cloud className="w-16 h-16 text-slate-500" />;
+  return <Cloud className={`${size} text-slate-500`} />;
 }
