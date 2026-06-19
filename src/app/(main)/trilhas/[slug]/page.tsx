@@ -163,14 +163,6 @@ export default async function TrilhaDetalhePage({
               ) : null}
             </div>
 
-            {/* Seção de Clima */}
-            {mapTrail.coordinates && mapTrail.coordinates.length > 0 && (
-              <TrailWeather
-                latitude={mapTrail.coordinates[0][0]}
-                longitude={mapTrail.coordinates[0][1]}
-              />
-            )}
-
             {/* Descrição */}
             {trilha.descricao && (
               <ExpandableDescription description={trilha.descricao} />
@@ -223,12 +215,20 @@ export default async function TrilhaDetalhePage({
                 />
               </div>
             </div>
+
+            {/* Seção de Clima */}
+            {mapTrail.coordinates && mapTrail.coordinates.length > 0 && (
+              <TrailWeather
+                latitude={mapTrail.coordinates[0][0]}
+                longitude={mapTrail.coordinates[0][1]}
+              />
+            )}
           </div>
 
           {/* Mapa - Coluna Lateral */}
           <div className="lg:col-span-5">
-            <h3 className="font-semibold text-slate-700 mb-3 px-1">
-              Mapa da Trilha
+            <h3 className="font-semibold text-muted-foreground mb-3 px-1">
+              Mapa detalhado da trilha
             </h3>
             <div className="rounded-3xl overflow-hidden shadow-md bg-white p-2">
               <TrailMap

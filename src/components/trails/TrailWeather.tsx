@@ -9,27 +9,17 @@ import {
 } from "@/src/components/ui/card";
 import {
   Sun,
-  Cloud,
   CloudRain,
   Wind,
   Droplet,
   AlertTriangle,
   ThermometerSun,
-  Moon,
-  CloudSnow,
-  CloudFog,
-  CloudMoon,
-  CloudSun,
+  Sunrise,
+  Sunset,
 } from "lucide-react";
-
-interface WeatherData {
-  temperature: number;
-  condition: string;
-  icon: React.ReactNode;
-  humidity: number;
-  windSpeed: number;
-  rainChance: number;
-}
+import { formatTime, getCondition, isNightTime } from "@/src/utils/weather";
+import { WeatherIcon } from "./WeatherIcon";
+import { WeatherData } from "@/src/types/weather";
 
 interface TrailWeatherProps {
   latitude: number;
@@ -47,22 +37,46 @@ export default function TrailWeather({
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America/Sao_Paulo`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=America/Sao_Paulo`;
 
         const res = await fetch(url, { next: { revalidate: 3600 } });
         const data = await res.json();
+        console.log("dados climáticos", data);
 
         if (!data.current) throw new Error();
 
         const current = data.current;
 
+        const forecast = data.daily.time
+          .slice(0, 5)
+          .map((date: string, i: number) => ({
+            date,
+            temperatureMax: Math.round(data.daily.temperature_2m_max[i]),
+            temperatureMin: Math.round(data.daily.temperature_2m_min[i]),
+            weatherCode: data.daily.weather_code[i],
+            rainChance:
+              Math.round(data.daily.precipitation_probability_max[i]) ?? 0,
+          }));
+
         setWeather({
           temperature: Math.round(current.temperature_2m),
-          condition: getCondition(current.weather_code),
-          icon: getWeatherIcon(current.weather_code),
-          humidity: current.relative_humidity_2m,
+          maxTemperature: Math.round(data.daily.temperature_2m_max[0]),
+          minTemperature: Math.round(data.daily.temperature_2m_min[0]),
+
+          weatherCode: current.weather_code,
+
+          humidity: Math.round(current.relative_humidity_2m),
           windSpeed: Math.round(current.wind_speed_10m),
-          rainChance: data.daily.precipitation_probability_max[0] || 0,
+          rainChance: Math.round(
+            data.daily.precipitation_probability_max[0] ?? 0,
+          ),
+
+          sunrise: data.daily.sunrise[0],
+          sunset: data.daily.sunset[0],
+
+          forecast,
+
+          lastUpdated: current.time,
         });
       } catch {
         setError("Não foi possível carregar o clima.");
@@ -94,31 +108,52 @@ export default function TrailWeather({
         {/* Clima Atual */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 rounded-2xl p-5 md:p-6 gap-4">
           <div className="flex items-center gap-5">
-            <div className="text-6xl">{weather.icon}</div>
+            <div className="text-6xl">
+              <WeatherIcon
+                code={weather.weatherCode}
+                isNight={isNightTime(weather.sunrise, weather.sunset)}
+                size="w-16 h-16"
+              />
+            </div>
             <div>
               <p className="text-5xl font-light leading-none">
                 {weather.temperature}°C
               </p>
-              <p className="mt-1">{weather.condition}</p>
+              <p className="mt-1">{getCondition(weather.weatherCode)}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div className="text-center">
               <Droplet className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.humidity}%</p>
+              <p className="font-medium">{weather.humidity}%</p>
+              <p className="text-xs text-muted-foreground">Umidade</p>
             </div>
+
             <div className="text-center">
               <Wind className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.windSpeed} km/h</p>
+              <p className="font-medium">{weather.windSpeed} km/h</p>
+              <p className="text-xs text-muted-foreground">Vento</p>
             </div>
+
             <div className="text-center">
               <CloudRain className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.rainChance}%</p>
+              <p className="font-medium">{weather.rainChance}%</p>
+              <p className="text-xs text-muted-foreground">Chuva</p>
             </div>
           </div>
         </div>
+        <div className="mt-2 flex items-center justify-center gap-3 text-sm text-muted-foreground w-full py-1 px-3">
+          <span className="flex items-center gap-1">
+            <Sunrise className="w-6 h-6 " />
+            {formatTime(weather.sunrise)}
+          </span>
 
+          <span className="flex items-center gap-1">
+            <Sunset className="w-6 h-6" />
+            {formatTime(weather.sunset)}
+          </span>
+        </div>
         {/* Aviso Inteligente */}
         <div
           className={`p-4 rounded-2xl text-sm flex items-start gap-3 border ${
@@ -138,78 +173,61 @@ export default function TrailWeather({
           )}
           <span>
             {weather.rainChance >= 70
-              ? `Alta chance de chuva forte. Recomendamos adiar a trilha por segurança.`
+              ? `Alta chance de chuva. Pode adiar a trilha por segurança.`
               : weather.rainChance >= 50
                 ? `Possibilidade de chuva.`
                 : `Boas condições climáticas para fazer a trilha.`}
           </span>
         </div>
+        {/* Forecast */}
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">
+            Previsão para os próximos dias
+          </h3>
+
+          <div className="flex justify-between gap-1">
+            {weather.forecast.map((day, index) => {
+              const label =
+                index === 0
+                  ? "Hoje"
+                  : new Date(day.date + "T00:00:00").toLocaleDateString(
+                      "pt-BR",
+                      {
+                        weekday: "short",
+                      },
+                    );
+
+              return (
+                <div
+                  key={day.date}
+                  className={`flex flex-col items-center gap-2 rounded-xl w-full p-2 transition-colors border ${
+                    index === 0
+                      ? "bg-muted border-b-5 border-b-medium-green"
+                      : "hover:bg-muted/50"
+                  }`}
+                >
+                  <span className="text-sm font-medium capitalize">
+                    {label}
+                  </span>
+
+                  <WeatherIcon
+                    code={day.weatherCode}
+                    isNight={false}
+                    size="w-7 h-7"
+                  />
+
+                  <div className="flex gap-1 text-sm">
+                    <span className="font-medium">{day.temperatureMax}°</span>
+                    <span className="text-muted-foreground">
+                      {day.temperatureMin}°
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
-}
-
-// Funções auxiliares
-function getCondition(code: number): string {
-  const hour = new Date().getHours();
-  const isNight = hour < 6 || hour > 18;
-
-  // Precipitação
-  if ([51, 61, 80].includes(code)) return "Chuva leve";
-  if ([53, 63, 81].includes(code)) return "Chuva moderada";
-  if ([55, 65, 82].includes(code)) return "Chuva forte";
-
-  if ([71, 73, 75].includes(code)) return "Neve";
-
-  // Neblina
-  if ([45, 48].includes(code)) return "Neblina";
-
-  if (isNight) {
-    if ([0, 1].includes(code)) return "Céu limpo";
-    return "Nublado";
-  } else {
-    if ([0, 1].includes(code)) return "Ensolarado";
-    if ([2, 3].includes(code)) return "Parcialmente nublado";
-    return "Nublado";
-  }
-}
-
-function getWeatherIcon(code: number) {
-  const hour = new Date().getHours();
-  const isNight = hour < 6 || hour > 18;
-
-  // Chuva leve
-  if ([51, 61, 80].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-500" />;
-
-  // Chuva moderada
-  if ([53, 63, 81].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-600" />;
-
-  // Chuva forte
-  if ([55, 65, 82].includes(code))
-    return <CloudRain className="w-16 h-16 text-blue-700" />;
-
-  // Neve
-  if ([71, 73, 75].includes(code))
-    return <CloudSnow className="w-16 h-16 text-slate-300" />;
-
-  // Neblina
-  if ([45, 48].includes(code))
-    return <CloudFog className="w-16 h-16 text-slate-400" />;
-
-  // Noite
-  if (isNight) {
-    if ([0, 1].includes(code))
-      return <Moon className="w-16 h-16 text-slate-300" />;
-    return <CloudMoon className="w-16 h-16 text-slate-400" />;
-  }
-
-  // Dia
-  if ([0, 1].includes(code))
-    return <Sun className="w-16 h-16 text-amber-500" />;
-  if ([2, 3].includes(code))
-    return <CloudSun className="w-16 h-16 text-amber-500" />;
-
-  return <Cloud className="w-16 h-16 text-slate-500" />;
 }
