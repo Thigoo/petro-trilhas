@@ -3,15 +3,9 @@
 import { Difficulty, ITrailMap, ITrail } from "@/src/types";
 import TrailCard from "./TrailCard";
 import { useState } from "react";
-import dynamic from "next/dynamic";
-import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { getCoordinates } from "@/src/utils/getCoordinates";
-
-const TrailMap = dynamic(() => import("@/src/components/trails/TrailMap"), {
-  ssr: false,
-  loading: () => <Skeleton className="h-155 w-full rounded-2xl" />,
-});
+import TrailMap from "./TrailMapDynamic";
 
 export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
   const [activeFilter, setActiveFilter] = useState<Difficulty>("todas");

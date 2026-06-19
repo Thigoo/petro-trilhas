@@ -1,5 +1,4 @@
 import { getTrailBySlug } from "@/src/api/trails";
-import TrailMap from "@/src/components/trails/TrailMap";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { notFound } from "next/navigation";
@@ -15,6 +14,7 @@ import TrailWeather from "@/src/components/trails/TrailWeather";
 import ExpandableDescription from "@/src/components/shared/ExpandableDescription";
 import BackButton from "@/src/components/shared/BackButton";
 import { getCoordinates } from "@/src/utils/getCoordinates";
+import TrailMap from "@/src/components/trails/TrailMapDynamic";
 
 export async function generateMetadata({
   params,
