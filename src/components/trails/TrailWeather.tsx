@@ -14,8 +14,10 @@ import {
   Droplet,
   AlertTriangle,
   ThermometerSun,
+  Sunrise,
+  Sunset,
 } from "lucide-react";
-import { getCondition, isNightTime } from "@/src/utils/weather";
+import { formatTime, getCondition, isNightTime } from "@/src/utils/weather";
 import { WeatherIcon } from "./WeatherIcon";
 import { WeatherData } from "@/src/types/weather";
 
@@ -124,17 +126,33 @@ export default function TrailWeather({
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div className="text-center">
               <Droplet className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.humidity}%</p>
+              <p className="font-medium">{weather.humidity}%</p>
+              <p className="text-xs text-muted-foreground">Umidade</p>
             </div>
+
             <div className="text-center">
               <Wind className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.windSpeed} km/h</p>
+              <p className="font-medium">{weather.windSpeed} km/h</p>
+              <p className="text-xs text-muted-foreground">Vento</p>
             </div>
+
             <div className="text-center">
               <CloudRain className="w-5 h-5 mx-auto mb-1" />
-              <p>{weather.rainChance}%</p>
+              <p className="font-medium">{weather.rainChance}%</p>
+              <p className="text-xs text-muted-foreground">Chuva</p>
             </div>
           </div>
+        </div>
+        <div className="mt-2 flex items-center justify-center gap-3 text-sm text-muted-foreground w-full py-1 px-3">
+          <span className="flex items-center gap-1">
+            <Sunrise className="w-6 h-6 " />
+            {formatTime(weather.sunrise)}
+          </span>
+
+          <span className="flex items-center gap-1">
+            <Sunset className="w-6 h-6" />
+            {formatTime(weather.sunset)}
+          </span>
         </div>
         {/* Aviso Inteligente */}
         <div

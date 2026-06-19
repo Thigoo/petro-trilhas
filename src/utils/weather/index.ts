@@ -60,3 +60,10 @@ export function isNightTime(sunrise: string, sunset: string): boolean {
 
   return now < sunriseTime || now > sunsetTime;
 }
+
+export function formatTime(dateString: string) {
+  return new Date(dateString).toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
