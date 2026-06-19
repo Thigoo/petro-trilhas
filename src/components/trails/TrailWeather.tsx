@@ -173,7 +173,7 @@ export default function TrailWeather({
           )}
           <span>
             {weather.rainChance >= 70
-              ? `Alta chance de chuva forte. Recomendamos adiar a trilha por segurança.`
+              ? `Alta chance de chuva. Pode adiar a trilha por segurança.`
               : weather.rainChance >= 50
                 ? `Possibilidade de chuva.`
                 : `Boas condições climáticas para fazer a trilha.`}
