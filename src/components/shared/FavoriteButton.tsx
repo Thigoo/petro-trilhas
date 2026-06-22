@@ -36,6 +36,11 @@ export default function FavoriteButton({ trilhaId }: FavoriteButtonProps) {
       <LoginPromptDialog
         open={showLoginPrompt}
         onOpenChange={setShowLoginPrompt}
+        title="Entre para favoritar trilhas"
+        description="Você precisa estar logado para salvar trilhas favoritas e acessá-las
+            depois."
+        confirmText="Fazer login"
+        cancelText="Continuar navegando"
       />
     </>
   );

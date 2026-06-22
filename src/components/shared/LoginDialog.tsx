@@ -14,12 +14,22 @@ import { useRouter } from "next/navigation";
 
 interface LoginPromptDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
+  title: string;
+  description: string;
+  confirmText: string;
+  cancelText: string;
+  onCancel?: () => void;
 }
 
 export function LoginPromptDialog({
   open,
   onOpenChange,
+  title,
+  description,
+  confirmText,
+  cancelText,
+  onCancel,
 }: LoginPromptDialogProps) {
   const router = useRouter();
 
@@ -28,20 +38,23 @@ export function LoginPromptDialog({
     router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
   };
 
+  const handleCancel = () => {
+    onCancel?.();
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Entre para favoritar trilhas</AlertDialogTitle>
-          <AlertDialogDescription>
-            Você precisa estar logado para salvar trilhas favoritas e acessá-las
-            depois.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Continuar navegando</AlertDialogCancel>
+          <AlertDialogCancel onClick={handleCancel}>
+            {cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={handleLogin}>
-            Fazer login
+            {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

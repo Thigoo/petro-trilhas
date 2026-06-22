@@ -1,6 +1,8 @@
-import { useAuth } from "@/src/providers/AuthProvider";
+"use client";
+
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useAuth } from "@/src/providers/AuthProvider";
+import { LoginPromptDialog } from "../shared/LoginDialog";
 
 export default function ProtectedRoute({
   children,
@@ -9,13 +11,6 @@ export default function ProtectedRoute({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      const currentPath = window.location.pathname;
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
-    }
-  }, [loading, user, router]);
 
   if (loading) {
     return (
@@ -26,7 +21,16 @@ export default function ProtectedRoute({
   }
 
   if (!user) {
-    return null;
+    return (
+      <LoginPromptDialog
+        open={true}
+        onCancel={() => router.back()}
+        title="Entre para acessar seu perfil"
+        description="Você precisa estar logado para ver e editar suas informações."
+        confirmText="Fazer login"
+        cancelText="Voltar ao início"
+      />
+    );
   }
 
   return <>{children}</>;
