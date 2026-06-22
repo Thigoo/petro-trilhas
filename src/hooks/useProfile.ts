@@ -1,49 +1,48 @@
-import { IProfile } from "@/src/types";
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../providers/AuthProvider";
+import { supabase } from "../lib/supabase";
+import { Profile } from "../types/user";
 
 export function useProfile() {
-  const { user, loading: authLoading } = useAuth();
-  const [profile, setProfile] = useState<IProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    async function loadProfileData() {
-      if (!user) {
-        setProfile(null);
-        setLoading(false);
-        return;
-      }
-
+  const {
+    data: profile,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", user!.id)
         .single();
 
-      if (error) {
-        console.error("Erro ao buscar perfil:", error.message);
-        setProfile(null);
-        setLoading(false);
-      } else {
-        setProfile(data);
-        if (data?.role === "admin") {
-          setIsAdmin(true);
-        }
-      }
-      setLoading(false);
-    }
+      if (error) throw error;
+      return data as Profile;
+    },
+    enabled: !!user,
+  });
 
-    loadProfileData();
-  }, [user]);
+  const isAdmin = profile?.role === "admin";
 
-  return {
-    user,
-    profile,
-    loading: authLoading || loading,
-    isLoggedIn: !!user,
-    isAdmin,
-  };
+  const { mutateAsync: updateProfile, isPending: saving } = useMutation({
+    mutationFn: async (updates: Partial<Omit<Profile, "id" | "role">>) => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user!.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as Profile;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["profile", user?.id], data);
+    },
+  });
+
+  return { profile, loading, saving, error, updateProfile, isAdmin };
 }
