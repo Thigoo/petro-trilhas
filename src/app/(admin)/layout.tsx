@@ -3,10 +3,11 @@
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/src/components/ui/sidebar";
 import { AdminSidebar } from "@/src/components/admin/AdminSidebar";
+import AdminRoute from "@/src/components/auth/AdminRoute";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <AdminRoute>
       <SidebarProvider>
         <AdminSidebar />
 
@@ -15,6 +16,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
       </SidebarProvider>
-    </>
+    </AdminRoute>
   );
 }
