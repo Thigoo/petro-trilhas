@@ -1,6 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
+import { FavoritesList } from "@/src/components/profile/FavoriteList";
 import { ProfileForm } from "@/src/components/profile/ProfileForm";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
 import { Button } from "@/src/components/ui/button";
@@ -97,8 +98,7 @@ export default function ProfilePage() {
             </TabsContent>
 
             <TabsContent value="favoritos" className="mt-6">
-              {/* <FavoritesList /> */}
-              <p>aqui virá os favoritos</p>
+              <FavoritesList />
             </TabsContent>
 
             <TabsContent value="eventos" className="mt-6">
