@@ -1,4 +1,3 @@
-// src/components/profile/AvatarUpload.tsx
 "use client";
 
 import { useRef, useState } from "react";
@@ -34,13 +33,13 @@ export function AvatarUpload({
       return;
     }
 
-    setPreview(URL.createObjectURL(file)); // feedback visual imediato
+    setPreview(URL.createObjectURL(file));
     await onUpload(file);
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="relative h-20 w-20 rounded-full overflow-hidden bg-emerald-100 ring-2 ring-emerald-600/20">
+    <div className="flex items-center gap-4 border rounded-lg p-4 bg-muted/20">
+      <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-muted ring-2 ring-medium-green/20">
         {preview ? (
           <Image
             src={preview}
@@ -51,7 +50,7 @@ export function AvatarUpload({
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-emerald-700">
+          <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-dark-green/20">
             {getPlaceholderAvatar(userName)}
           </div>
         )}

@@ -48,6 +48,8 @@ export default function ProfilePage() {
                   src={profile?.avatar_url}
                   alt={profile?.full_name || "Avatar"}
                   fill
+                  sizes="100%"
+                  loading="eager"
                   className="object-cover"
                 />
               ) : (
@@ -94,7 +96,7 @@ export default function ProfilePage() {
                 />
               )}
 
-              <div className="pt-6 border-t">
+              <div className="w-fit">
                 <Button
                   variant="destructive"
                   onClick={handleLogout}
