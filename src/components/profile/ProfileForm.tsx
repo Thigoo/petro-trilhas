@@ -12,20 +12,30 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import { AvatarUpload } from "./AvatarUpload";
 
 interface ProfileFormProps {
   profile: Profile;
   saving: boolean;
   onSave: (updates: Partial<Profile>) => Promise<Profile>;
+  onUpload: (file: File) => Promise<Profile>;
+  uploading: boolean;
 }
 
-export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
+export function ProfileForm({
+  profile,
+  saving,
+  onSave,
+  onUpload,
+  uploading,
+}: ProfileFormProps) {
   const [fullName, setFullName] = useState(profile.full_name ?? "");
   const [cidade, setCidade] = useState(profile.cidade ?? "");
   const [estado, setEstado] = useState(profile.estado ?? "");
   const [dificuldade, setDificuldade] = useState(
     profile.preferencia_dificuldade ?? "",
   );
+
   const [feedback, setFeedback] = useState<"success" | "error" | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,6 +116,12 @@ export function ProfileForm({ profile, saving, onSave }: ProfileFormProps) {
           Não foi possível salvar. Tente novamente.
         </p>
       )}
+
+      <AvatarUpload
+        userName={profile.full_name ?? ""}
+        uploading={uploading}
+        onUpload={onUpload}
+      />
 
       <Button type="submit" disabled={saving} className="w-full">
         {saving ? "Salvando..." : "Salvar alterações"}

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../providers/AuthProvider";
 import { supabase } from "../lib/supabase";
 import { Profile } from "../types/user";
+import { uploadAvatar } from "../lib/avatar";
 
 export function useProfile() {
   const { user } = useAuth();
@@ -44,5 +45,35 @@ export function useProfile() {
     },
   });
 
-  return { profile, loading, saving, error, updateProfile, isAdmin };
+  const { mutateAsync: updateAvatar, isPending: uploadingAvatar } = useMutation(
+    {
+      mutationFn: async (file: File) => {
+        const publicUrl = await uploadAvatar(user!.id, file);
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .update({ avatar_url: publicUrl })
+          .eq("id", user!.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data as Profile;
+      },
+      onSuccess: (data) => {
+        queryClient.setQueryData(["profile", user?.id], data);
+      },
+    },
+  );
+
+  return {
+    profile,
+    loading,
+    saving,
+    error,
+    updateProfile,
+    isAdmin,
+    updateAvatar,
+    uploadingAvatar,
+  };
 }

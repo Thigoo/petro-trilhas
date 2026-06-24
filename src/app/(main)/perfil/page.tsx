@@ -19,7 +19,14 @@ import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
-  const { profile, loading, saving, updateProfile } = useProfile();
+  const {
+    profile,
+    loading,
+    saving,
+    updateProfile,
+    updateAvatar,
+    uploadingAvatar,
+  } = useProfile();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -36,9 +43,9 @@ export default function ProfilePage() {
           {/* Header de identidade */}
           <div className="flex items-center gap-4 mb-8">
             <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden bg-emerald-100 ring-2 ring-emerald-600/20">
-              {user?.user_metadata?.avatar_url ? (
+              {profile?.avatar_url ? (
                 <Image
-                  src={user.user_metadata.avatar_url}
+                  src={profile?.avatar_url}
                   alt={profile?.full_name || "Avatar"}
                   fill
                   className="object-cover"
@@ -82,6 +89,8 @@ export default function ProfilePage() {
                   profile={profile}
                   saving={saving}
                   onSave={updateProfile}
+                  onUpload={updateAvatar}
+                  uploading={uploadingAvatar}
                 />
               )}
 

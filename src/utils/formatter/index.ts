@@ -1,28 +1,18 @@
-// import { ITrail } from "@/src/types";
+export function getPlaceholderAvatar(fullName: string) {
+  const palavras = fullName.trim().split(/\s+/);
+  const primeiraPalavra = palavras[0];
 
-// export function mapTrailToFormState(trail: ITrail): Partial<ITrailFormState> {
-//   return {
-//     nome: trail.nome,
-//     slug: trail.slug,
-//     dificuldade: trail.dificuldade,
-//     localizacao: trail.localizacao ?? "",
-//     descricao_curta: trail.descricao_curta ?? "",
-//     descricao: trail.descricao ?? "",
-//     fonte: trail.fonte ?? "",
-//     distancia_km: trail.distancia_km,
-//     tempo_estimado_min: trail.tempo_estimado_min,
-//     desnivel_m: trail.desnivel_m ?? "",
-//     altitude_max: trail.altitude_max ?? "",
+  if (!primeiraPalavra) return "";
 
-//     // O pulo do gato: Transforma o objeto GeoJSON em string para o Textarea
-//     geojson: trail.geojson ? JSON.stringify(trail.geojson, null, 2) : "",
+  const primeiraLetra = primeiraPalavra[0].toUpperCase();
+  if (palavras.length > 1) {
+    const sobrenome = palavras[palavras.length - 1];
+    return primeiraLetra + sobrenome[0].toUpperCase();
+  }
 
-//     // Imagens: No form, o arquivo File começa nulo na edição,
-//     // mas o preview recebe a URL que já existe no banco.
-//     imagem_url: null,
-//     imagem_preview: trail.imagem_url ?? "",
+  if (primeiraPalavra.length > 1) {
+    return primeiraLetra + primeiraPalavra[1].toUpperCase();
+  }
 
-//     imagens: [], // Files novos começam vazios
-//     galeria_previews: trail.imagens ?? [], // URLs existentes vão para o preview
-//   };
-// }
+  return primeiraLetra;
+}

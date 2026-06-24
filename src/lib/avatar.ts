@@ -1,0 +1,17 @@
+import { supabase } from "@/src/lib/supabase";
+
+export async function uploadAvatar(userId: string, file: File) {
+  const fileExt = file.name.split(".").pop();
+  const filePath = `${userId}/avatar.${fileExt}`;
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(filePath, file, {
+      upsert: true,
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
