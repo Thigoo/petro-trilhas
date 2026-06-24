@@ -13,6 +13,7 @@ import {
 } from "@/src/components/ui/tabs";
 import { useProfile } from "@/src/hooks/useProfile";
 import { useAuth } from "@/src/providers/AuthProvider";
+import { getPlaceholderAvatar } from "@/src/utils/formatter";
 import { Calendar, Heart, LogOut, Settings } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -54,7 +55,7 @@ export default function ProfilePage() {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-emerald-700">
-                  {(profile?.full_name || user?.email || "U")[0].toUpperCase()}
+                  {getPlaceholderAvatar(profile?.full_name || "")}
                 </div>
               )}
             </div>

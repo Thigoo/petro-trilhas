@@ -1,18 +1,18 @@
 export function getPlaceholderAvatar(fullName: string) {
-  const palavras = fullName.trim().split(/\s+/);
-  const primeiraPalavra = palavras[0];
+  const words = fullName.trim().split(/\s+/);
+  const firstWord = words[0];
 
-  if (!primeiraPalavra) return "";
+  if (!firstWord) return "";
 
-  const primeiraLetra = primeiraPalavra[0].toUpperCase();
-  if (palavras.length > 1) {
-    const sobrenome = palavras[palavras.length - 1];
-    return primeiraLetra + sobrenome[0].toUpperCase();
+  const fistLetter = firstWord[0].toUpperCase();
+  if (words.length > 1) {
+    const lastName = words[words.length - 1];
+    return fistLetter + lastName[0].toUpperCase();
   }
 
-  if (primeiraPalavra.length > 1) {
-    return primeiraLetra + primeiraPalavra[1].toUpperCase();
+  if (firstWord.length > 1) {
+    return fistLetter + firstWord[1].toUpperCase();
   }
 
-  return primeiraLetra;
+  return fistLetter;
 }
