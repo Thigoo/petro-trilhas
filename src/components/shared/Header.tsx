@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -18,19 +18,17 @@ export default function Header() {
   const GUIDE_URL =
     "https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf";
 
-  const navigation = [
-    { name: "Início", href: "/" },
-    { name: "Trilhas", href: "/trilhas" },
-    { name: "Perfil", href: "/perfil" },
-    { name: "Emergência", href: "/emergencia" },
-  ];
-
-  if (user && isAdmin) {
-    navigation.push({
-      name: "Admin",
-      href: "/trilhas-admin",
-    });
-  }
+  const navigation = useMemo(() => {
+    const base = [
+      { name: "Início", href: "/" },
+      { name: "Trilhas", href: "/trilhas" },
+      { name: "Perfil", href: "/perfil" },
+      { name: "Emergência", href: "/emergencia" },
+    ];
+    return isAdmin
+      ? [...base, { name: "Admin", href: "/trilhas-admin" }]
+      : base;
+  }, [isAdmin]);
 
   const getDesktopNavClasses = (href: string) =>
     `text-sm font-semibold transition-colors hover:text-medium-green ${

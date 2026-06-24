@@ -28,7 +28,7 @@ export default function ProtectedRoute({
         title="Entre para acessar seu perfil"
         description="Você precisa estar logado para ver e editar suas informações."
         confirmText="Fazer login"
-        cancelText="Voltar ao início"
+        cancelText="Voltar"
       />
     );
   }
