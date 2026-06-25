@@ -23,6 +23,7 @@ export default function Header() {
       { name: "Início", href: "/" },
       { name: "Trilhas", href: "/trilhas" },
       { name: "Perfil", href: "/perfil" },
+      { name: "Eventos", href: "/eventos" },
       { name: "Emergência", href: "/emergencia" },
     ];
     return isAdmin
