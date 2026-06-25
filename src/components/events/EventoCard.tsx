@@ -41,9 +41,12 @@ export function EventoCard({ evento }: { evento: Evento }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-base leading-tight">
+            <Link
+              href={`/eventos/${evento.id}`}
+              className="text-lg font-semibold"
+            >
               {evento.titulo}
-            </h3>
+            </Link>
             {vagasEsgotadas && (
               <Badge
                 variant="secondary"
