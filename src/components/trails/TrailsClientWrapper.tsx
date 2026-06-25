@@ -3,9 +3,9 @@
 import { Difficulty, ITrailMap, ITrail } from "@/src/types";
 import TrailCard from "./TrailCard";
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { getCoordinates } from "@/src/utils/getCoordinates";
 import TrailMap from "./TrailMapDynamic";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
   const [activeFilter, setActiveFilter] = useState<Difficulty>("todas");
@@ -49,21 +49,23 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
 
   return (
     <>
-      {/* Filtros */}
-      <div className="flex justify-center mb-6 md:mb-8">
-        <div className="flex gap-2 bg-white p-1.5 rounded-2xl border shadow-sm overflow-x-auto no-scrollbar">
-          {(["todas", "leve", "moderada", "difícil"] as const).map((d) => (
-            <Button
-              key={d}
-              variant={activeFilter === d ? "default" : "ghost"}
-              size="sm"
-              onClick={() => filtrarTrilhas(d)}
-              className="capitalize whitespace-nowrap"
-            >
-              {d === "todas" ? "Todas" : d}
-            </Button>
-          ))}
-        </div>
+      <div className="flex justify-center mb-6 md:mb-8 h-10">
+        <Tabs
+          value={activeFilter}
+          onValueChange={(value) => filtrarTrilhas(value as Difficulty)}
+        >
+          <TabsList className="bg-white rounded-lg border shadow-sm overflow-x-auto no-scrollbar text-muted-foreground">
+            {(["todas", "leve", "moderada", "difícil"] as const).map((d) => (
+              <TabsTrigger
+                key={d}
+                value={d}
+                className="capitalize whitespace-nowrap px-4 data-[state=active]:bg-dark-green data-[state=active]:text-white"
+              >
+                {d === "todas" ? "Todas" : d}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* Mapa + Cards */}
