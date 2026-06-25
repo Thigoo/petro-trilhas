@@ -32,7 +32,7 @@ export default function ProfilePage() {
       {loading ? (
         <LoadingScreen />
       ) : (
-        <div className="min-h-screen bg-slate-50 pb-12 text-muted-foreground">
+        <div className="bg-slate-50 text-muted-foreground">
           <div className="container mx-auto px-4 py-8 max-w-3xl">
             {/* Header de identidade */}
             <div className="flex items-center gap-4 mb-8">
