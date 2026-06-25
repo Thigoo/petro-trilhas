@@ -25,7 +25,7 @@ export function FavoriteTrailItem({ trail, onRemove }: FavoriteTrailItemProps) {
         className="flex items-center gap-3 flex-1 min-w-0"
       >
         <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-slate-100">
-          {trail.imagem_url && (
+          {trail.imagem_url ? (
             <Image
               src={trail.imagem_url}
               alt={trail.nome}
@@ -33,10 +33,14 @@ export function FavoriteTrailItem({ trail, onRemove }: FavoriteTrailItemProps) {
               className="object-cover"
               sizes="56px"
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-slate-800 to-slate-900">
+              <span className="text-3xl">🏔️</span>
+            </div>
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 ">
           <p className="font-medium text-sm truncate">{trail.nome}</p>
           <div className="flex items-center gap-2 mt-1">
             <Badge

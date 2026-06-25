@@ -11,7 +11,7 @@ export default async function TrailsPage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-dark-green">
             Explorar Trilhas
           </h1>
-          <p className="text-muted-foreground mt-1 text-lg">
+          <p className="text-muted-foreground mt-1 text-md">
             {allTrails.length} trilhas disponíveis em Petrópolis
           </p>
         </div>

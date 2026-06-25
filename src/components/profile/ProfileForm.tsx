@@ -64,6 +64,7 @@ export function ProfileForm({
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           placeholder="Seu nome completo"
+          className="bg-white"
         />
       </div>
 
@@ -75,6 +76,7 @@ export function ProfileForm({
             value={cidade}
             onChange={(e) => setCidade(e.target.value)}
             placeholder="Petrópolis"
+            className="bg-white"
           />
         </div>
         <div className="space-y-2">
@@ -85,6 +87,7 @@ export function ProfileForm({
             onChange={(e) => setEstado(e.target.value)}
             placeholder="RJ"
             maxLength={2}
+            className="bg-white"
           />
         </div>
       </div>
@@ -92,7 +95,7 @@ export function ProfileForm({
       <div className="space-y-2">
         <Label htmlFor="dificuldade">Nível de trilha preferido</Label>
         <Select value={dificuldade} onValueChange={setDificuldade}>
-          <SelectTrigger id="dificuldade">
+          <SelectTrigger className="bg-white" id="dificuldade">
             <SelectValue placeholder="Selecione" />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +110,7 @@ export function ProfileForm({
       </div>
 
       {feedback === "success" && (
-        <p className="text-sm text-emerald-600">
+        <p className="text-sm text-medium-green">
           Perfil atualizado com sucesso.
         </p>
       )}

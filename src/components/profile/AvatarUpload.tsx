@@ -38,7 +38,7 @@ export function AvatarUpload({
   };
 
   return (
-    <div className="flex items-center gap-4 border rounded-lg p-4 bg-muted/20">
+    <div className="flex items-center gap-4 border rounded-lg p-4 bg-white/20">
       <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-muted ring-2 ring-medium-green/20">
         {preview ? (
           <Image
@@ -67,7 +67,7 @@ export function AvatarUpload({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700"
+          className="flex items-center gap-2 text-sm font-medium text-medium-green/80 hover:text-dark-green transition-colors"
         >
           <Camera className="h-4 w-4" />
           Alterar foto

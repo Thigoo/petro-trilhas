@@ -50,15 +50,15 @@ const emergencyContacts = [
 
 export default function EmergenciaPage() {
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
+    <div className="min-h-screen bg-slate-50 pb-12 text-muted-foreground">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center">
             <Shield size={28} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Emergência</h1>
-            <p className="text-slate-600">Números e orientações rápidas</p>
+            <h1 className="text-2xl font-bold">Emergência</h1>
+            <p className="text-sm">Números e orientações rápidas</p>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ export default function EmergenciaPage() {
                 <div className="flex items-center gap-4">
                   <div className="text-red-600">{contact.icon}</div>
                   <div>
-                    <p className="font-medium text-slate-900">{contact.name}</p>
+                    <p className="font-medium">{contact.name}</p>
                     <p className="text-lg font-semibold text-red-600">
                       {contact.number}
                     </p>
@@ -108,7 +108,7 @@ export default function EmergenciaPage() {
           <Accordion type="single" collapsible className="space-y-3">
             <AccordionItem
               value="desorientacao"
-              className="border rounded-2xl px-2"
+              className="border rounded-2xl px-2 bg-white"
             >
               <AccordionTrigger>Desorientação ou Perda</AccordionTrigger>
               <AccordionContent className="text-slate-600">
@@ -117,7 +117,10 @@ export default function EmergenciaPage() {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="clima" className="border rounded-2xl px-2">
+            <AccordionItem
+              value="clima"
+              className="border rounded-2xl px-2 bg-white"
+            >
               <AccordionTrigger>Condições Climáticas Extremas</AccordionTrigger>
               <AccordionContent className="text-slate-600">
                 Neblina forte, chuva intensa ou raios são perigosos. Busque
@@ -126,7 +129,10 @@ export default function EmergenciaPage() {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="lesao" className="border rounded-2xl px-2">
+            <AccordionItem
+              value="lesao"
+              className="border rounded-2xl px-2 bg-white"
+            >
               <AccordionTrigger>Acidente ou Lesão</AccordionTrigger>
               <AccordionContent className="text-slate-600">
                 Avalie a gravidade. Se não conseguir andar, ligue imediatamente
