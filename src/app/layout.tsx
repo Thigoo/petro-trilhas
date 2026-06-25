@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../providers/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { QueryProvider } from "../providers/QueryProvider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
         <Analytics />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

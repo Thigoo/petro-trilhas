@@ -8,6 +8,7 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import { ITrail } from "@/src/types";
 import { Badge } from "../ui/badge";
+import { EventoBadge } from "../events/EventoBadge";
 
 interface CardTrailProps {
   trail: ITrail;
@@ -40,10 +41,11 @@ export default function TrailCard({ trail }: CardTrailProps) {
             )}
 
             {/* Badge de dificuldade sobre a imagem */}
-            <div className="absolute top-4 left-4">
+            <div className="absolute top-4 left-4 flex gap-2 items-center">
               <Badge className="capitalize text-muted-foreground font-medium shadow-md bg-white">
                 {trail.dificuldade}
               </Badge>
+              <EventoBadge trilhaId={trail.id} />
             </div>
 
             {/* Botão de favorito sobre a imagem */}
