@@ -14,9 +14,6 @@ import {
 import { Button } from "../ui/button";
 import { AvatarUpload } from "./AvatarUpload";
 import { LocationFields } from "./LocationFields";
-import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/src/providers/AuthProvider";
 
 interface ProfileFormProps {
   profile: Profile;
@@ -42,8 +39,6 @@ export function ProfileForm({
 
   const [feedback, setFeedback] = useState<"success" | "error" | null>(null);
 
-  const { signOut } = useAuth();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
@@ -60,13 +55,6 @@ export function ProfileForm({
     } catch {
       setFeedback("error");
     }
-  };
-
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/");
   };
 
   return (
@@ -123,19 +111,15 @@ export function ProfileForm({
         onUpload={onUpload}
       />
 
-      <Button
-        type="submit"
-        disabled={saving}
-        className="bg-medium-green w-full"
-      >
-        {saving ? "Salvando..." : "Salvar alterações"}
-      </Button>
-      {/* <div className="w-fit"> */}
-      <Button variant="destructive" onClick={handleLogout} className="w-full">
-        <LogOut className="mr-2 h-4 w-4" />
-        Sair da conta
-      </Button>
-      {/* </div> */}
+      <div className="flex gap-4 justify-center md:justify-start">
+        <Button
+          type="submit"
+          disabled={saving}
+          className="bg-medium-green p-4 w-full md:w-1/2"
+        >
+          {saving ? "Salvando..." : "Salvar alterações"}
+        </Button>
+      </div>
     </form>
   );
 }

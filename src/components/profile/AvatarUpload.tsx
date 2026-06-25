@@ -38,7 +38,7 @@ export function AvatarUpload({
   };
 
   return (
-    <div className="flex items-center gap-4 border rounded-lg p-4 bg-white/20">
+    <div className="flex items-center justify-center gap-6 border rounded-lg p-4 bg-white/20">
       <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-muted ring-2 ring-medium-green/20">
         {preview ? (
           <Image
