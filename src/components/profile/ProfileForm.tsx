@@ -13,6 +13,10 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { AvatarUpload } from "./AvatarUpload";
+import { LocationFields } from "./LocationFields";
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 interface ProfileFormProps {
   profile: Profile;
@@ -38,6 +42,8 @@ export function ProfileForm({
 
   const [feedback, setFeedback] = useState<"success" | "error" | null>(null);
 
+  const { signOut } = useAuth();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
@@ -55,6 +61,14 @@ export function ProfileForm({
       setFeedback("error");
     }
   };
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
@@ -68,29 +82,12 @@ export function ProfileForm({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="cidade">Cidade</Label>
-          <Input
-            id="cidade"
-            value={cidade}
-            onChange={(e) => setCidade(e.target.value)}
-            placeholder="Petrópolis"
-            className="bg-white"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="estado">Estado</Label>
-          <Input
-            id="estado"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
-            placeholder="RJ"
-            maxLength={2}
-            className="bg-white"
-          />
-        </div>
-      </div>
+      <LocationFields
+        cidade={cidade}
+        estado={estado}
+        onCidadeChange={setCidade}
+        onEstadoChange={setEstado}
+      />
 
       <div className="space-y-2">
         <Label htmlFor="dificuldade">Nível de trilha preferido</Label>
@@ -126,9 +123,19 @@ export function ProfileForm({
         onUpload={onUpload}
       />
 
-      <Button type="submit" disabled={saving} className="w-full">
+      <Button
+        type="submit"
+        disabled={saving}
+        className="bg-medium-green w-full"
+      >
         {saving ? "Salvando..." : "Salvar alterações"}
       </Button>
+      {/* <div className="w-fit"> */}
+      <Button variant="destructive" onClick={handleLogout} className="w-full">
+        <LogOut className="mr-2 h-4 w-4" />
+        Sair da conta
+      </Button>
+      {/* </div> */}
     </form>
   );
 }
