@@ -59,7 +59,7 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
               <TabsTrigger
                 key={d}
                 value={d}
-                className="capitalize whitespace-nowrap px-4 data-[state=active]:bg-dark-green data-[state=active]:text-white"
+                className="text-sm capitalize whitespace-nowrap px-4 data-[state=active]:bg-dark-green data-[state=active]:text-white"
               >
                 {d === "todas" ? "Todas" : d}
               </TabsTrigger>

@@ -40,10 +40,10 @@ export default function ProfilePage() {
       {loading ? (
         <LoadingScreen />
       ) : (
-        <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <div className="container flex-1 flex flex-col h-screen mx-auto px-4 py-8 max-w-3xl text-muted-foreground bg-slate-50">
           {/* Header de identidade */}
           <div className="flex items-center gap-4 mb-8">
-            <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden bg-emerald-100 ring-2 ring-emerald-600/20">
+            <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden bg-medium-green/20 ring-2 ring-medium-green">
               {profile?.avatar_url ? (
                 <Image
                   src={profile?.avatar_url}
@@ -54,7 +54,7 @@ export default function ProfilePage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-emerald-700">
+                <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-light-green">
                   {getPlaceholderAvatar(profile?.full_name || "")}
                 </div>
               )}
@@ -63,9 +63,7 @@ export default function ProfilePage() {
               <h1 className="text-2xl font-bold tracking-tight truncate">
                 {profile?.full_name || "Usuário Petro Trilhas"}
               </h1>
-              <p className="text-sm text-muted-foreground truncate">
-                {user?.email}
-              </p>
+              <p className="text-sm truncate">{user?.email}</p>
             </div>
           </div>
 
