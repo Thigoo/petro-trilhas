@@ -32,6 +32,7 @@ export function EventoCard({ evento }: { evento: Evento }) {
                 src={evento.trilhas.imagem_url}
                 alt={evento.trilhas.nome}
                 fill
+                sizes="56px"
                 className="object-cover"
               />
             </div>

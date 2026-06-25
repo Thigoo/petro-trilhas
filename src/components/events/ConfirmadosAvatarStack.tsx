@@ -44,6 +44,7 @@ export function ConfirmadosAvatarStack({
                 src={c.avatarUrl}
                 alt={c.nome ?? ""}
                 fill
+                sizes="36px"
                 className="object-cover"
               />
             ) : (
