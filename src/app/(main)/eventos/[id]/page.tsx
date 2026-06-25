@@ -47,6 +47,7 @@ export default function EventoDetalhePage() {
             src={evento.trilhas.imagem_url}
             alt={evento.trilhas.nome}
             fill
+            sizes="100%"
             className="object-cover"
           />
         </div>
@@ -133,6 +134,7 @@ export default function EventoDetalhePage() {
                       src={c.avatarUrl}
                       alt={c.nome ?? ""}
                       fill
+                      sizes="100%"
                       className="object-cover"
                     />
                   ) : (
