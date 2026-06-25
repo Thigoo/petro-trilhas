@@ -15,6 +15,8 @@ import ExpandableDescription from "@/src/components/shared/ExpandableDescription
 import BackButton from "@/src/components/shared/BackButton";
 import { getCoordinates } from "@/src/utils/getCoordinates";
 import TrailMap from "@/src/components/trails/TrailMapDynamic";
+import { EventoBadge } from "@/src/components/events/EventoBadge";
+import Link from "next/link";
 
 export async function generateMetadata({
   params,
@@ -112,13 +114,18 @@ export default async function TrilhaDetalhePage({
         )}
 
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-accent">
-          <div className="max-w-5xl mx-auto">
-            <Badge
-              variant="secondary"
-              className="mb-3 capitalize text-muted-foreground"
-            >
-              {trilha.dificuldade}
-            </Badge>
+          <div className="max-w-5xl mx-auto  ">
+            <div className="flex items-center gap-2 mb-3">
+              <Badge
+                variant="secondary"
+                className="capitalize text-muted-foreground"
+              >
+                {trilha.dificuldade}
+              </Badge>
+              <Link href={`/eventos`} className="flex items-center">
+                <EventoBadge trilhaId={trilha.id} />
+              </Link>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
               {trilha.nome}
             </h1>
