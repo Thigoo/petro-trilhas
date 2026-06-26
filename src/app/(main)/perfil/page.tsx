@@ -1,6 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/src/components/auth/ProtectedRoute";
+import { MeusEventosList } from "@/src/components/events/MeusEventosList";
 import { FavoritesList } from "@/src/components/profile/FavoriteList";
 import { ProfileForm } from "@/src/components/profile/ProfileForm";
 import LoadingScreen from "@/src/components/shared/LoadingScreen";
@@ -94,10 +95,7 @@ export default function ProfilePage() {
               </TabsContent>
 
               <TabsContent value="eventos" className="mt-6">
-                <div className="text-center py-16 text-muted-foreground">
-                  <Calendar className="h-10 w-10 mx-auto mb-3 opacity-40" />
-                  <p>Em breve você poderá acompanhar seus eventos aqui.</p>
-                </div>
+                <MeusEventosList />
               </TabsContent>
             </Tabs>
           </div>

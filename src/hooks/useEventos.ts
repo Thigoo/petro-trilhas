@@ -22,6 +22,11 @@ export interface Evento {
   };
 }
 
+interface ConfirmacaoComEvento {
+  created_at: string;
+  eventos: Evento | null;
+}
+
 export type NovoEvento = Omit<
   Evento,
   "id" | "status" | "criado_por" | "created_at" | "trilhas"
@@ -78,6 +83,30 @@ export function useEvento(eventoId: string | null) {
       return data as Evento;
     },
     enabled: !!eventoId,
+  });
+}
+
+export function useMeusEventos() {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ["eventos", "meus", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("evento_confirmacoes")
+        .select("created_at, eventos(*, trilhas(nome, slug, imagem_url))")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      const rows = data as unknown as ConfirmacaoComEvento[];
+
+      return rows
+        .map((row) => row.eventos)
+        .filter((evento): evento is Evento => evento !== null) as Evento[];
+    },
+    enabled: !!user,
   });
 }
 
