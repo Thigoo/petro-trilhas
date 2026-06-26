@@ -235,7 +235,7 @@ export default function LandingPage() {
       <footer className="bg-slate-900 text-slate-400 py-12">
         <div className="flex flex-col gap-2 max-w-6xl mx-auto px-6 text-center">
           <p>Petro Trilhas © 2026</p>
-          <a
+          {/* <a
             className="text-green-400 hover:text-slate-300 underline underline-offset-2"
             href="https://www.petropolis.rj.gov.br/turispetro/"
             target="_blank"
@@ -250,7 +250,7 @@ export default function LandingPage() {
             rel="noopener noreferrer"
           >
             Secretaria de Meio Ambiente
-          </a>
+          </a> */}
           <p className="text-sm mt-2">
             Feito com ❤️ para quem ama a serra imperial
           </p>
