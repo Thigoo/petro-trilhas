@@ -15,6 +15,7 @@ import {
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
 import { processGPX } from "@/src/actions/admin/trails";
+import { toast } from "sonner";
 
 interface TrailFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,6 +37,7 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
     descricao_curta: initialData?.descricao_curta || "",
     descricao: initialData?.descricao || "",
     fonte: initialData?.fonte || "",
+    // TODO: verificar manipulação de gpx, já que é um arquivo enviado via upload no front, qual o sentido de converter para texto? Valeria a pena salvar o arquivo no storage e o front pegar direto do storage?
     geojson: initialData?.geojson
       ? JSON.stringify(initialData.geojson, null, 2)
       : "",
@@ -142,7 +144,7 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
       await onSubmit(dataToSend);
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar trilha");
+      toast.error("Erro ao salvar trilha");
     } finally {
       setIsPending(false);
     }
@@ -155,6 +157,16 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
       }
     };
   }, [imagemPreview]);
+
+  useEffect(() => {
+    return () => {
+      galeriaPreviews.forEach((preview) => {
+        if (preview.startsWith("blob:")) {
+          URL.revokeObjectURL(preview);
+        }
+      });
+    };
+  }, [galeriaPreviews]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -363,12 +375,12 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
           />
 
           {imagemPreview && (
-            <div className="relative w-64 h-44 rounded-xl overflow-hidden border">
+            <div className="relative w-64 h-44 rounded-xl overflow-hidden border group">
               <Image
                 src={imagemPreview}
                 alt="Preview"
                 fill
-                sizes="(max-width: 768px) 100vw, 40vw"
+                sizes="56px"
                 className="object-cover"
               />
               <button
@@ -444,7 +456,7 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
             const response = await processGPX(uploadForm);
 
             if (!response.data) {
-              alert("Erro ao processar o arquivo GPX");
+              toast.error("Erro ao processar o arquivo GPX");
               return;
             }
 
@@ -453,11 +465,11 @@ export function TrailForm({ initialData, onSubmit }: TrailFormProps) {
                 ...prev,
                 geojson: JSON.stringify(response.data.geojson, null, 2),
               }));
-              alert(
+              toast.success(
                 `GPX processado! ${response.data.coordinatesCount} pontos e ${response.data.waypointsCount} POIs extraídos.`,
               );
             } else {
-              alert(response.message);
+              toast.error(response.message);
             }
           }}
         />

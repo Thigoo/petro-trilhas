@@ -15,6 +15,7 @@ import {
 } from "@/src/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/src/components/ui/dropdown-menu";
 import { deleteTrail } from "@/src/actions/admin/trails";
+import { toast } from "sonner";
 
 interface DeleteTrailDialogProps {
   id: string;
@@ -35,8 +36,10 @@ export function DeleteTrailDialog({
       try {
         await deleteTrail(id, slug);
         setOpen(false);
+        toast.success("Trilha excluida com sucesso!");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
+        toast.error("Erro ao excluir trilha.");
         console.error("Erro ao excluir trilha:", error);
       }
     });
