@@ -17,6 +17,7 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { toggleTrailPublishStatus } from "@/src/actions/admin/trails";
 import { DeleteTrailDialog } from "./DeleteTrailDialog";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<ITrail>[] = [
   {
@@ -142,8 +143,16 @@ export const columns: ColumnDef<ITrail>[] = [
 
             <DropdownMenuItem
               onClick={() => {
-                if (currentStatus !== undefined) {
-                  toggleTrailPublishStatus(trail.id, currentStatus);
+                try {
+                  if (currentStatus !== undefined) {
+                    toggleTrailPublishStatus(trail.id, currentStatus);
+                  }
+                  toast.success(
+                    `Trilha ${currentStatus ? "despublicada" : "publicada"} com sucesso!`,
+                  );
+                } catch (error: unknown) {
+                  toast.error("Erro ao alterar status.");
+                  console.error("Toggle Error:", error);
                 }
               }}
               className="cursor-pointer"

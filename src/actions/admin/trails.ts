@@ -242,7 +242,6 @@ export async function deleteTrail(id: string, slug: string) {
 export async function processGPX(formData: FormData) {
   const file = formData.get("gpx") as File;
 
-  console.log("Arquivo GPX:", file);
   const slug = formData.get("slug") as string;
 
   if (!file) {
