@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import { useAuth } from "../providers/AuthProvider";
+import { deleteEvento, updateEvento } from "../actions/admin/events";
+import { getEventoById } from "../api/events";
 
 export interface Evento {
   id: string;
@@ -27,10 +29,57 @@ interface ConfirmacaoComEvento {
   eventos: Evento | null;
 }
 
-export type NovoEvento = Omit<
-  Evento,
-  "id" | "status" | "criado_por" | "created_at" | "trilhas"
->;
+export interface NovoEvento {
+  titulo: string;
+  descricao?: string | null;
+  organizador_nome: string;
+  organizador_contato?: string | null;
+  data_hora: string;
+  vagas_limite?: number | null;
+  trilha_id?: string | null; // opcional
+  status?: "ativo" | "cancelado" | "concluido";
+}
+
+// Lista todas as trilhas para select de evento
+export function useTrilhasParaEventos() {
+  return useQuery({
+    queryKey: ["trilhas", "select"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("trilhas")
+        .select("id, nome, slug, dificuldade")
+        .eq("publicada", true)
+        .order("nome");
+
+      return data || [];
+    },
+  });
+}
+
+// Lista todos os eventos (ativos, cancelados e concluídos), com join da trilha
+export function useAdminEventos() {
+  return useQuery({
+    queryKey: ["admin", "eventos"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("eventos")
+        .select(
+          `
+          *,
+          trilhas (
+            nome,
+            slug,
+            imagem_url
+          )
+        `,
+        )
+        .order("data_hora", { ascending: false }); // mais recentes primeiro
+
+      if (error) throw error;
+      return data;
+    },
+  });
+}
 
 // Lista todos os eventos ativos, com dados básicos da trilha (pra tela geral de eventos)
 export function useEventos() {
@@ -72,16 +121,7 @@ export function useEventosPorTrilha(trilhaId: string | null) {
 export function useEvento(eventoId: string | null) {
   return useQuery({
     queryKey: ["eventos", eventoId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("eventos")
-        .select("*, trilhas(nome, slug, imagem_url)")
-        .eq("id", eventoId!)
-        .single();
-
-      if (error) throw error;
-      return data as Evento;
-    },
+    queryFn: () => getEventoById(eventoId!),
     enabled: !!eventoId,
   });
 }
@@ -149,5 +189,34 @@ export function useEventoMutations() {
     },
   });
 
-  return { criarEvento, criando, cancelarEvento, cancelando };
+  const { mutateAsync: editarEvento, isPending: editando } = useMutation({
+    mutationFn: ({
+      eventoId,
+      data,
+    }: {
+      eventoId: string;
+      data: Partial<NovoEvento>;
+    }) => updateEvento(eventoId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eventos"] });
+    },
+  });
+
+  const { mutateAsync: deletarEvento, isPending: deletando } = useMutation({
+    mutationFn: deleteEvento,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eventos"] });
+    },
+  });
+
+  return {
+    criarEvento,
+    criando,
+    cancelarEvento,
+    cancelando,
+    deletarEvento,
+    deletando,
+    editarEvento,
+    editando,
+  };
 }
