@@ -27,10 +27,57 @@ interface ConfirmacaoComEvento {
   eventos: Evento | null;
 }
 
-export type NovoEvento = Omit<
-  Evento,
-  "id" | "status" | "criado_por" | "created_at" | "trilhas"
->;
+export interface NovoEvento {
+  titulo: string;
+  descricao?: string | null;
+  organizador_nome: string;
+  organizador_contato?: string | null;
+  data_hora: string;
+  vagas_limite?: number | null;
+  trilha_id?: string | null; // opcional
+  status?: "ativo" | "cancelado" | "concluido";
+}
+
+// Lista todas as trilhas para select de evento
+export function useTrilhasParaEventos() {
+  return useQuery({
+    queryKey: ["trilhas", "select"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("trilhas")
+        .select("id, nome, slug, dificuldade")
+        .eq("publicada", true)
+        .order("nome");
+
+      return data || [];
+    },
+  });
+}
+
+// Lista todos os eventos (ativos, cancelados e concluídos), com join da trilha
+export function useAdminEventos() {
+  return useQuery({
+    queryKey: ["admin", "eventos"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("eventos")
+        .select(
+          `
+          *,
+          trilhas (
+            nome,
+            slug,
+            imagem_url
+          )
+        `,
+        )
+        .order("data_hora", { ascending: false }); // mais recentes primeiro
+
+      if (error) throw error;
+      return data;
+    },
+  });
+}
 
 // Lista todos os eventos ativos, com dados básicos da trilha (pra tela geral de eventos)
 export function useEventos() {
