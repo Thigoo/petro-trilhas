@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import { useAuth } from "../providers/AuthProvider";
+import { deleteEvento, updateEvento } from "../actions/admin/events";
+import { getEventoById } from "../api/events";
 
 export interface Evento {
   id: string;
@@ -119,16 +121,7 @@ export function useEventosPorTrilha(trilhaId: string | null) {
 export function useEvento(eventoId: string | null) {
   return useQuery({
     queryKey: ["eventos", eventoId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("eventos")
-        .select("*, trilhas(nome, slug, imagem_url)")
-        .eq("id", eventoId!)
-        .single();
-
-      if (error) throw error;
-      return data as Evento;
-    },
+    queryFn: () => getEventoById(eventoId!),
     enabled: !!eventoId,
   });
 }
@@ -196,5 +189,34 @@ export function useEventoMutations() {
     },
   });
 
-  return { criarEvento, criando, cancelarEvento, cancelando };
+  const { mutateAsync: editarEvento, isPending: editando } = useMutation({
+    mutationFn: ({
+      eventoId,
+      data,
+    }: {
+      eventoId: string;
+      data: Partial<NovoEvento>;
+    }) => updateEvento(eventoId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eventos"] });
+    },
+  });
+
+  const { mutateAsync: deletarEvento, isPending: deletando } = useMutation({
+    mutationFn: deleteEvento,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eventos"] });
+    },
+  });
+
+  return {
+    criarEvento,
+    criando,
+    cancelarEvento,
+    cancelando,
+    deletarEvento,
+    deletando,
+    editarEvento,
+    editando,
+  };
 }
