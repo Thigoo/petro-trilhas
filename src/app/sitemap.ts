@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { supabase } from "../lib/supabase";
 
-const BASE_URL = "https://petrotrilhas.vercel.app";
+const BASE_URL = "https://petro-trilhas.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: trilhas } = await supabase
