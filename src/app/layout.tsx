@@ -17,12 +17,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Petro Trilhas",
-  description: "Explore as trilhas de Petrópolis com segurança e informação.",
+  title: "Petro Trilhas, a natureza de Petrópolis na palma da sua mão",
+  description:
+    "Da caminhada leve em família à trilha que testa seus limites, encontre, planeje e viva as trilhas de Petrópolis com distância, dificuldade e clima em tempo real. A serra te espera.",
 
   openGraph: {
-    title: "Petro Trilhas",
-    description: "O guia completo das trilhas de Petrópolis",
+    title: "Petro Trilhas, a natureza de Petrópolis na palma da sua mão",
+    description:
+      "Encontre sua próxima trilha em Petrópolis: dados reais de distância e dificuldade, clima em tempo real e uma comunidade pra explorar a serra com você.",
     url: "https://petro-trilhas.vercel.app",
     siteName: "Petro Trilhas",
     locale: "pt_BR",
@@ -32,9 +34,17 @@ export const metadata: Metadata = {
         url: "https://petro-trilhas.vercel.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Petro Trilhas - Guia de Trilhas de Petrópolis",
+        alt: "Petro Trilhas, a natureza de Petrópolis na palma da sua mão",
       },
     ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Petro Trilhas, a natureza de Petrópolis na palma da sua mão",
+    description:
+      "Encontre sua próxima trilha em Petrópolis: distância, dificuldade e clima em tempo real.",
+    images: ["https://petro-trilhas.vercel.app/og-image.png"],
   },
 };
 
