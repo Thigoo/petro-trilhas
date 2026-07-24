@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://petro-trilhas.vercel.app/og-image.png",
+        url: "https://petro-trilhas.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Petro Trilhas - Guia de Trilhas de Petrópolis",
