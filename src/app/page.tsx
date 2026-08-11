@@ -7,7 +7,7 @@ import { Button } from "@/src/components/ui/button";
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-500 to-blue-500">
-      {/* Hero Section — sem alterações */}
+      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-[url('/hero-trilhas.jpg')] bg-cover bg-center">
           <div className="absolute inset-0 bg-black/65" />
@@ -43,12 +43,12 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce hidden md:block">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce md:block">
           ↓ Role para conhecer
         </div>
       </section>
 
-      {/* Bloco: Vitrine de trilhas — ponte entre o hero e os detalhes técnicos */}
+      {/* Bloco: Vitrine de trilhas */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -99,7 +99,7 @@ export default function LandingPage() {
               </div>
             </Link>
 
-            {/* Terceira trilha — placeholder até você ter uma terceira imagem */}
+            {/* Terceira trilha */}
             <Link
               href="/trilhas"
               className="group relative h-80 rounded-3xl overflow-hidden flex bg-slate-900 items-center justify-center"
@@ -118,7 +118,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Bloco: Mapas + Clima, lado a lado, assimétrico */}
+      {/* Bloco: Mapas + Clima */}
       <section className="py-24 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -145,7 +145,7 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* Visual — 5 colunas, cards sobrepostos */}
+            {/* colunas, cards sobrepostos */}
             <div className="md:col-span-5 relative h-80">
               <div className="absolute top-0 right-4 w-56 bg-slate-900 text-white rounded-2xl p-5 shadow-xl">
                 <MapPin className="h-5 w-5 text-green-400 mb-3" />
@@ -175,7 +175,7 @@ export default function LandingPage() {
         <div className="absolute -left-20 bottom-0 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <span className="text-sm font-semibold text-green-400 tracking-wide uppercase">
+          <span className="text-sm font-semibold text-medium-green tracking-wide uppercase">
             Você não precisa ir sozinho
           </span>
           <h2 className="text-4xl md:text-6xl font-bold mt-4 mb-8 leading-[1.1]">
@@ -199,7 +199,7 @@ export default function LandingPage() {
       </section>
 
       {/* Chamada para ação final */}
-      <section className="py-20 bg-green-700 text-white">
+      <section className="py-20 bg-medium-green text-white">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-4xl font-bold mb-6">
             Pronto para viver a serra com mais segurança e prazer?
