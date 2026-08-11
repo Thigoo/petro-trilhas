@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ITrailMap } from "@/src/types";
 import FavoriteButton from "@/src/components/shared/FavoriteButton";
 import Image from "next/image";
-import { Clock, MapPin, Play, Ruler } from "lucide-react";
+import { Clock, MapPin, Ruler } from "lucide-react";
 import TrailImageGallery from "@/src/components/trails/TrailImageGallery";
 import { ShareButton } from "@/src/components/trails/ShareTrailButton";
 
@@ -182,9 +182,9 @@ export default async function TrilhaDetalhePage({
             />
 
             {/* Ações da Trilha */}
-            <div className="pt-8 space-y-4">
+            <div className="pt-2 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Button
+                {/* <Button
                   size="lg"
                   className="h-14 text-base font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-lg shadow-emerald-500/30 transition-all duration-200"
                   disabled
@@ -192,7 +192,7 @@ export default async function TrilhaDetalhePage({
                   <Play className="mr-3 h-5 w-5" />
                   Iniciar Trilha
                   <span className="ml-2 text-xs opacity-75">(em breve)</span>
-                </Button>
+                </Button> */}
 
                 <Button
                   asChild

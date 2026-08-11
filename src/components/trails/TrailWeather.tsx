@@ -8,11 +8,9 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import {
-  Sun,
   CloudRain,
   Wind,
   Droplet,
-  AlertTriangle,
   ThermometerSun,
   Sunrise,
   Sunset,
@@ -155,7 +153,7 @@ export default function TrailWeather({
           </span>
         </div>
         {/* Aviso Inteligente */}
-        <div
+        {/* <div
           className={`p-4 rounded-2xl text-sm flex items-start gap-3 border ${
             weather.rainChance >= 70
               ? "bg-red-50 border-red-200 text-red-800"
@@ -178,7 +176,7 @@ export default function TrailWeather({
                 ? `Possibilidade de chuva.`
                 : `Boas condições climáticas para fazer a trilha.`}
           </span>
-        </div>
+        </div> */}
         {/* Forecast */}
         <div className="space-y-2">
           <h3 className="font-medium text-sm">
