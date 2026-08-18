@@ -2,8 +2,9 @@
 
 import { useFavorites } from "@/src/hooks/useFavorites";
 import { Button } from "@/src/components/ui/button";
-import { Star } from "lucide-react";
+import { Heart } from "lucide-react";
 import { LoginPromptDialog } from "./LoginDialog";
+import { cn } from "@/src/lib/utils";
 
 interface FavoriteButtonProps {
   trilhaId: string;
@@ -18,20 +19,27 @@ export default function FavoriteButton({ trilhaId }: FavoriteButtonProps) {
       <Button
         size="lg"
         variant="outline"
-        className="flex-1 text-md py-5"
         onClick={() => toggleFavorite(trilhaId)}
-      >
-        {isFavorite(trilhaId) ? (
-          <>
-            <Star className="mr-2 h-5 w-5 text-yellow-500 fill-current" />
-            Remover dos Favoritos
-          </>
-        ) : (
-          <>
-            <Star className="mr-2 h-5 w-5" />
-            Adicionar aos Favoritos
-          </>
+        aria-label={
+          isFavorite(trilhaId)
+            ? "Remover dos favoritos"
+            : "Adicionar aos favoritos"
+        }
+        className={cn(
+          "h-14 w-14 rounded-2xl border-2 shrink-0 transition-all",
+          isFavorite(trilhaId)
+            ? "bg-red-50 border-red-200 hover:bg-red-100"
+            : "hover:bg-muted",
         )}
+      >
+        <Heart
+          className={cn(
+            "h-5 w-5 transition-colors",
+            isFavorite(trilhaId)
+              ? "text-red-500 fill-current"
+              : "text-muted-foreground",
+          )}
+        />
       </Button>
       <LoginPromptDialog
         open={showLoginPrompt}

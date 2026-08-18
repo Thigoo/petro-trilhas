@@ -21,12 +21,13 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      size="lg"
+      variant="outline"
       onClick={handleShare}
-      className=" bg-white/90 backdrop-blur-sm hover:bg-white text-green-900 rounded-full shadow-sm w-10 h-10 cursor-pointer"
+      aria-label="Compartilhar trilha"
+      className="h-14 w-14 rounded-2xl border-2 shrink-0 hover:bg-muted transition-all"
     >
-      <Share2 className="h-5 w-5" />
+      <Share2 className="h-5 w-5 text-muted-foreground" />
     </Button>
   );
 }

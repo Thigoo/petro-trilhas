@@ -7,14 +7,15 @@ export default function BackButton() {
   const router = useRouter();
   return (
     <Button
-      variant="outline"
+      variant="ghost"
+      size="icon"
       onClick={() => router.back()}
-      className="z-20 absolute top-6 left-6 inline-flex items-center gap-2 px-4 py-2 
-                 bg-white/90 backdrop-blur-sm hover:text-medium-green text-dark-green 
-                 rounded-full shadow-sm transition-all font-medium text-sm"
+      aria-label="Voltar para trilhas"
+      className="z-20 absolute top-6 left-6 bg-white/90 backdrop-blur-sm hover:bg-white 
+             text-dark-green hover:text-medium-green rounded-full shadow-sm 
+             w-10 h-10 transition-all"
     >
-      <ArrowLeft className="h-4 w-4" />
-      Voltar para trilhas
+      <ArrowLeft className="h-5 w-5" />
     </Button>
   );
 }

@@ -17,6 +17,8 @@ import { getCoordinates } from "@/src/utils/getCoordinates";
 import TrailMap from "@/src/components/trails/TrailMapDynamic";
 import { EventoBadge } from "@/src/components/events/EventoBadge";
 import Link from "next/link";
+import { InfoCard } from "@/src/components/trails/InfoCard";
+import { formatarTempoEstimado } from "@/src/utils/formatter";
 
 export async function generateMetadata({
   params,
@@ -101,8 +103,8 @@ export default async function TrilhaDetalhePage({
       {/* Hero Section */}
       <div className="relative h-87.5 md:h-125 w-full overflow-hidden">
         <BackButton />
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
-        {trilha.imagem_url && (
+
+        {trilha.imagem_url ? (
           <Image
             src={trilha.imagem_url}
             alt={trilha.nome}
@@ -111,27 +113,38 @@ export default async function TrilhaDetalhePage({
             className="object-cover"
             priority
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-slate-800 to-slate-900">
+            <span className="text-6xl">🏔️</span>
+          </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-accent">
-          <div className="max-w-5xl mx-auto  ">
-            <div className="flex items-center gap-2 mb-3">
+        {/* Camadas de gradiente para profundidade e legibilidade */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-black/10" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/40 via-transparent to-transparent" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
               <Badge
                 variant="secondary"
                 className="capitalize text-muted-foreground"
               >
                 {trilha.dificuldade}
               </Badge>
-              <Link href={`/eventos`} className="flex items-center">
+              <Link href="/eventos">
                 <EventoBadge trilhaId={trilha.id} />
               </Link>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.05] text-white tracking-tight drop-shadow-sm">
               {trilha.nome}
             </h1>
+
             {trilha.localizacao && (
-              <p className="mt-3 flex items-center gap-2 text-lg">
-                <MapPin className="w-5 h-5" /> {trilha.localizacao}
+              <p className="mt-3 flex items-center gap-2 text-base md:text-lg text-white/85">
+                <MapPin className="w-5 h-5 shrink-0" />
+                {trilha.localizacao}
               </p>
             )}
           </div>
@@ -152,7 +165,7 @@ export default async function TrilhaDetalhePage({
               <InfoCard
                 icon={<Clock className="w-5 h-5" />}
                 label="Tempo estimado"
-                value={`${Math.floor(trilha.tempo_estimado_min / 60)}h ${trilha.tempo_estimado_min % 60}min`}
+                value={formatarTempoEstimado(trilha.tempo_estimado_min)}
               />
               {trilha.desnivel_m && (
                 <InfoCard
@@ -182,36 +195,23 @@ export default async function TrilhaDetalhePage({
             />
 
             {/* Ações da Trilha */}
-            <div className="pt-2 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* <Button
-                  size="lg"
-                  className="h-14 text-base font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-lg shadow-emerald-500/30 transition-all duration-200"
-                  disabled
-                >
-                  <Play className="mr-3 h-5 w-5" />
-                  Iniciar Trilha
-                  <span className="ml-2 text-xs opacity-75">(em breve)</span>
-                </Button> */}
-
+            <div className="pt-2 space-y-3">
+              <div className="flex gap-3">
                 <Button
                   asChild
                   size="lg"
-                  variant="outline"
-                  className="h-14 text-base font-semibold rounded-2xl border-2 bg-blue-100 text-blue-500 hover:bg-blue-200 hover:text-blue-500 transition-all"
+                  className="h-14 flex-1 text-base font-semibold rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white shadow-lg shadow-blue-500/25 transition-all duration-200"
                 >
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <MapPin className="mr-3 h-5 w-5" />
+                    <MapPin className="mr-2.5 h-5 w-5" />
                     Como Chegar
                   </a>
                 </Button>
-              </div>
 
-              <div className="flex gap-3 pt-2">
                 <FavoriteButton trilhaId={trilha.id} />
 
                 <ShareButton
@@ -221,6 +221,16 @@ export default async function TrilhaDetalhePage({
                   }
                 />
               </div>
+
+              {/* <Button
+    size="lg"
+    className="w-full h-14 text-base font-semibold rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-lg shadow-emerald-500/30 transition-all duration-200"
+    disabled
+  >
+    <Play className="mr-3 h-5 w-5" />
+    Iniciar Trilha
+    <span className="ml-2 text-xs opacity-75">(em breve)</span>
+  </Button> */}
             </div>
 
             {/* Seção de Clima */}
@@ -250,25 +260,6 @@ export default async function TrilhaDetalhePage({
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* Componente auxiliar */
-function InfoCard({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="bg-white rounded-2xl p-5 border shadow-sm text-muted-foreground">
-      <div className="text-medium-green mb-2">{icon}</div>
-      <p className="text-xs uppercase tracking-widest font-medium">{label}</p>
-      <p className="text-2xl font-semibold mt-1">{value}</p>
     </div>
   );
 }
