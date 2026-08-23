@@ -32,13 +32,13 @@ export default function TrailImageGallery({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold mb-4 text-slate-800">
+      <h2 className="text-2xl font-semibold mb-4 text-muted-foreground">
         Fotos da trilha
       </h2>
 
       {/* Carrossel */}
       <div
-        className="relative overflow-hidden rounded-3xl group"
+        className="relative overflow-hidden rounded-2xl group"
         ref={emblaRef}
       >
         <div className="flex">

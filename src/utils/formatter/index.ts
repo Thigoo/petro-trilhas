@@ -16,3 +16,12 @@ export function getPlaceholderAvatar(fullName: string) {
 
   return fistLetter;
 }
+
+export function formatarTempoEstimado(minutos: number): string {
+  const horas = Math.floor(minutos / 60);
+  const min = minutos % 60;
+
+  if (horas === 0) return `${min} min`;
+  if (min === 0) return `${horas} h`;
+  return `${horas} h ${min} min`;
+}

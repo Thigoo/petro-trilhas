@@ -49,17 +49,17 @@ export function TrailsClientWrapper({ trails }: { trails: ITrail[] }) {
 
   return (
     <>
-      <div className="flex justify-center mb-6 md:mb-8 h-10">
+      <div className="flex justify-center mb-6 md:mb-8">
         <Tabs
           value={activeFilter}
           onValueChange={(value) => filtrarTrilhas(value as Difficulty)}
         >
-          <TabsList className="bg-white rounded-lg border shadow-sm overflow-x-auto no-scrollbar text-muted-foreground">
+          <TabsList className="bg-white rounded-full border shadow-sm overflow-x-auto no-scrollbar px-1">
             {(["todas", "leve", "moderada", "difícil"] as const).map((d) => (
               <TabsTrigger
                 key={d}
                 value={d}
-                className="text-sm capitalize whitespace-nowrap px-4 data-[state=active]:bg-dark-green data-[state=active]:text-white"
+                className="text-sm capitalize whitespace-nowrap px-4 py-2 rounded-full flex items-center gap-1.5 transition-all data-[state=active]:bg-dark-green data-[state=active]:text-white"
               >
                 {d === "todas" ? "Todas" : d}
               </TabsTrigger>
