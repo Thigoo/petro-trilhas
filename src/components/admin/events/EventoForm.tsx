@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -19,79 +18,108 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { Evento, useTrilhasParaEventos } from "@/src/hooks/useEventos";
+import { Separator } from "../../ui/separator";
 
 interface EventoFormProps {
   mode: "create" | "edit";
-  initialData?: Evento;
-  onSubmit: (data: FormData) => Promise<void>;
+  initialData?: Partial<Evento>;
+  onSubmit: (formData: FormData) => Promise<void>;
+  isPending?: boolean;
 }
 
 export default function EventoForm({
   mode,
   initialData,
   onSubmit,
+  isPending = false,
 }: EventoFormProps) {
-  const [isPending, setIsPending] = useState(false);
   const { data: trilhas, isLoading: carregandoTrilhas } =
     useTrilhasParaEventos();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsPending(true);
-
     const formData = new FormData(e.currentTarget);
     await onSubmit(formData);
-    setIsPending(false);
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {mode === "create" ? "Novo Evento" : "Editar Evento"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <Label htmlFor="titulo">Título do Evento *</Label>
-              <Input
-                id="titulo"
-                name="titulo"
-                defaultValue={initialData?.titulo}
-                required
-              />
+    <form onSubmit={handleSubmit} className="space-y-6 pb-24 md:pb-0">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {mode === "create" ? "Novo Evento" : "Editar Evento"}
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-8">
+          {/* Seção: Informações Básicas */}
+          <section className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              Informações Básicas
+            </h3>
+
+            <div className="space-y-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="titulo">Título do Evento *</Label>
+                <Input
+                  id="titulo"
+                  name="titulo"
+                  defaultValue={initialData?.titulo}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="descricao">Descrição</Label>
+                <Textarea
+                  id="descricao"
+                  name="descricao"
+                  defaultValue={initialData?.descricao || ""}
+                  rows={5}
+                />
+              </div>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Seção: Data, Vagas e Trilha */}
+          <section className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              Detalhes do Evento
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="data_hora">Data e Hora *</Label>
+                <Input
+                  id="data_hora"
+                  name="data_hora"
+                  type="datetime-local"
+                  defaultValue={initialData?.data_hora?.slice(0, 16)}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="vagas_limite">
+                  Vagas (deixe vazio para ilimitado)
+                </Label>
+                <Input
+                  id="vagas_limite"
+                  name="vagas_limite"
+                  type="number"
+                  min={1}
+                  defaultValue={initialData?.vagas_limite || ""}
+                />
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="data_hora">Data e Hora *</Label>
-              <Input
-                id="data_hora"
-                name="data_hora"
-                type="datetime-local"
-                defaultValue={initialData?.data_hora?.slice(0, 16)}
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="vagas_limite">
-                Vagas (deixe vazio para ilimitado)
-              </Label>
-              <Input
-                id="vagas_limite"
-                name="vagas_limite"
-                type="number"
-                defaultValue={initialData?.vagas_limite || ""}
-              />
-            </div>
-
-            <div className="md:col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Label htmlFor="trilha_id">Trilha (opcional)</Label>
               <Select
                 name="trilha_id"
-                defaultValue={initialData?.trilha_id || ""}
+                defaultValue={initialData?.trilha_id || "none"}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione uma trilha (opcional)" />
@@ -118,57 +146,77 @@ export default function EventoForm({
                 </SelectContent>
               </Select>
             </div>
+          </section>
 
-            <div className="md:col-span-2">
-              <Label htmlFor="organizador_nome">Nome do Organizador *</Label>
-              <Input
-                id="organizador_nome"
-                name="organizador_nome"
-                defaultValue={initialData?.organizador_nome}
-                required
-              />
+          <Separator />
+
+          {/* Seção: Organizador */}
+          <section className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              Organizador
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="organizador_nome">Nome do Organizador *</Label>
+                <Input
+                  id="organizador_nome"
+                  name="organizador_nome"
+                  defaultValue={initialData?.organizador_nome}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Label htmlFor="organizador_contato">
+                  Contato do Organizador
+                </Label>
+                <Input
+                  id="organizador_contato"
+                  name="organizador_contato"
+                  defaultValue={initialData?.organizador_contato || ""}
+                  placeholder="WhatsApp, email, etc."
+                />
+              </div>
             </div>
+          </section>
 
-            <div className="md:col-span-2">
-              <Label htmlFor="organizador_contato">
-                Contato do Organizador
-              </Label>
-              <Input
-                id="organizador_contato"
-                name="organizador_contato"
-                defaultValue={initialData?.organizador_contato || ""}
-                placeholder="WhatsApp, email, etc."
-              />
-            </div>
+          {/* Status só existe em modo edição — não faz sentido escolher status ao criar */}
+          {mode === "edit" && (
+            <>
+              <Separator />
+              <section className="space-y-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  Status
+                </h3>
 
-            <div className="md:col-span-2">
-              <Label htmlFor="descricao">Descrição</Label>
-              <Textarea
-                id="descricao"
-                name="descricao"
-                defaultValue={initialData?.descricao || ""}
-                rows={5}
-              />
-            </div>
+                <div className="max-w-xs">
+                  <Select
+                    name="status"
+                    defaultValue={initialData?.status || "ativo"}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ativo">Ativo</SelectItem>
+                      <SelectItem value="cancelado">Cancelado</SelectItem>
+                      <SelectItem value="concluido">Concluído</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </section>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select
-                name="status"
-                defaultValue={initialData?.status || "ativo"}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ativo">Ativo</SelectItem>
-                  <SelectItem value="cancelado">Cancelado</SelectItem>
-                  <SelectItem value="concluido">Concluído</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
+      {/* Submit — sticky no mobile, inline no desktop */}
+      <div
+        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-4px_12px_rgba(0,0,0,0.05)]
+                   md:static md:p-0 md:border-0 md:shadow-none z-30"
+      >
+        <div className="max-w-3xl mx-auto">
           <Button
             type="submit"
             size="lg"
@@ -181,8 +229,8 @@ export default function EventoForm({
                 ? "Criar Evento"
                 : "Salvar Alterações"}
           </Button>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </form>
   );
 }
