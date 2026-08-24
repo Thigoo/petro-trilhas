@@ -6,7 +6,7 @@ import { getEventoById } from "../api/events";
 
 export interface Evento {
   id: string;
-  trilha_id: string;
+  trilha_id?: string;
   titulo: string;
   descricao: string | null;
   organizador_nome: string;

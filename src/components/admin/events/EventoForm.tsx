@@ -11,12 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
+import { Card, CardContent } from "@/src/components/ui/card";
 import { Evento, useTrilhasParaEventos } from "@/src/hooks/useEventos";
 import { Separator } from "../../ui/separator";
 
@@ -43,13 +38,13 @@ export default function EventoForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 pb-24 md:pb-0">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle>
             {mode === "create" ? "Novo Evento" : "Editar Evento"}
           </CardTitle>
-        </CardHeader>
+        </CardHeader> */}
 
         <CardContent className="space-y-8">
           {/* Seção: Informações Básicas */}
@@ -58,8 +53,8 @@ export default function EventoForm({
               Informações Básicas
             </h3>
 
-            <div className="space-y-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <Label htmlFor="titulo">Título do Evento *</Label>
                 <Input
                   id="titulo"
@@ -69,7 +64,7 @@ export default function EventoForm({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <Label htmlFor="descricao">Descrição</Label>
                 <Textarea
                   id="descricao"
@@ -89,8 +84,8 @@ export default function EventoForm({
               Detalhes do Evento
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <Label htmlFor="data_hora">Data e Hora *</Label>
                 <Input
                   id="data_hora"
@@ -101,7 +96,7 @@ export default function EventoForm({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <Label htmlFor="vagas_limite">
                   Vagas (deixe vazio para ilimitado)
                 </Label>
@@ -115,7 +110,7 @@ export default function EventoForm({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4 ">
               <Label htmlFor="trilha_id">Trilha (opcional)</Label>
               <Select
                 name="trilha_id"
@@ -156,8 +151,8 @@ export default function EventoForm({
               Organizador
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4 ">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="organizador_nome">Nome do Organizador *</Label>
                 <Input
                   id="organizador_nome"
@@ -167,7 +162,7 @@ export default function EventoForm({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="organizador_contato">
                   Contato do Organizador
                 </Label>
@@ -212,24 +207,14 @@ export default function EventoForm({
       </Card>
 
       {/* Submit — sticky no mobile, inline no desktop */}
-      <div
-        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-4px_12px_rgba(0,0,0,0.05)]
-                   md:static md:p-0 md:border-0 md:shadow-none z-30"
-      >
-        <div className="max-w-3xl mx-auto">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={isPending}
-            className="w-full"
-          >
-            {isPending
-              ? "Salvando..."
-              : mode === "create"
-                ? "Criar Evento"
-                : "Salvar Alterações"}
-          </Button>
-        </div>
+      <div className="max-w-3xl mx-auto">
+        <Button type="submit" size="lg" disabled={isPending} className="w-full">
+          {isPending
+            ? "Salvando..."
+            : mode === "create"
+              ? "Criar Evento"
+              : "Salvar Alterações"}
+        </Button>
       </div>
     </form>
   );
