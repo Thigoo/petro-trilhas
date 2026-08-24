@@ -9,7 +9,7 @@ export default async function EventosAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Eventos</h1>
           <p className="text-muted-foreground">
