@@ -5,6 +5,7 @@ import { supabase } from "@/src/lib/supabase";
 import { trailSchema } from "@/src/validations/trail";
 import { revalidatePath } from "next/cache";
 import { XMLParser } from "fast-xml-parser";
+import { sendNovaTrilhaEmail } from "@/src/lib/email/sendNovaTrilhaEmail";
 
 export async function registerTrail(formData: FormData) {
   const rawEntries = Object.fromEntries(formData.entries());
@@ -186,12 +187,24 @@ export async function toggleTrailPublishStatus(
   currentStatus: boolean,
 ) {
   try {
-    const { error } = await supabase
+    const novoStatus = !currentStatus;
+
+    const { data: trail, error } = await supabase
       .from("trilhas")
-      .update({ publicada: !currentStatus })
-      .eq("id", id);
+      .update({ publicada: novoStatus })
+      .eq("id", id)
+      .select()
+      .single();
 
     if (error) throw error;
+
+    // Só notifica quando a trilha está SENDO publicada agora (false -> true),
+    // nunca ao despublicar.
+    if (novoStatus === true && process.env.SEND_EMAIL === "true") {
+      sendNovaTrilhaEmail(trail).catch((err) =>
+        console.error("[email] erro inesperado no envio de notificação:", err),
+      );
+    }
 
     revalidatePath("/trilhas");
     revalidatePath("/trilhas-admin");
