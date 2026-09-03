@@ -149,10 +149,10 @@ export default function LandingPage() {
             <div className="md:col-span-5 relative h-80">
               <div className="absolute top-0 right-4 w-56 bg-slate-900 text-white rounded-2xl p-5 shadow-xl">
                 <MapPin className="h-5 w-5 text-green-400 mb-3" />
-                <p className="text-sm text-slate-300">Pedra do Sino</p>
-                <p className="text-2xl font-bold">9.2 km</p>
+                <p className="text-sm text-slate-300">Pedra do Retiro</p>
+                <p className="text-2xl font-bold">5.1 km</p>
                 <p className="text-xs text-slate-400 mt-1">
-                  Difícil · 5h estimadas
+                  Moderada · 3h estimadas
                 </p>
               </div>
 

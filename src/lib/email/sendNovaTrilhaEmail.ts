@@ -1,5 +1,6 @@
 import NovaTrilhaEmail from "@/src/emails/novaTrilha";
 import { resend } from "../resend";
+import { BASE_URL } from "@/src/constants";
 
 interface Trilha {
   nome: string;
@@ -23,7 +24,7 @@ export async function sendNovaTrilhaEmail(trilha: Trilha) {
     react: NovaTrilhaEmail({
       nomeTrilha: trilha.nome,
       dificuldade: trilha.dificuldade,
-      urlTrilha: `https://petrotrilhas.vercel.app/trilhas/${trilha.slug}`,
+      urlTrilha: `${BASE_URL}/trilhas/${trilha.slug}`,
       urlImagem: trilha.imagem_url,
     }),
   });

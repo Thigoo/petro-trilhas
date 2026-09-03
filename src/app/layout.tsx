@@ -5,6 +5,7 @@ import { AuthProvider } from "../providers/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { QueryProvider } from "../providers/QueryProvider";
 import { Toaster } from "sonner";
+import { BASE_URL } from "../constants";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -17,34 +18,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Petro Trilhas | Trilhas de Petrópolis num só lugar",
+  title: "Petro Trilhas | A natureza de Petrópolis na palma da sua mão",
   description:
-    "Da caminhada leve em família à trilha que desafia. Distância, dificuldade e clima em tempo real. A serra te espera.",
+    "Explore as trilhas de Petrópolis em um só lugar. Descubra caminhos, cachoeiras e paisagens da serra com informações sobre distância, dificuldade, duração, localização e clima.",
 
   openGraph: {
-    title: "Petro Trilhas | Trilhas de Petrópolis num só lugar",
+    title: "Petro Trilhas | A natureza de Petrópolis na palma da sua mão",
     description:
-      "Encontre sua próxima trilha em Petrópolis com dados reais e clima em tempo real.",
-    url: "https://petro-trilhas.vercel.app",
+      "Explore as trilhas de Petrópolis em um só lugar. Descubra caminhos, cachoeiras e paisagens da serra com informações sobre distância, dificuldade, duração, localização e clima.",
+    url: BASE_URL,
     siteName: "Petro Trilhas",
     locale: "pt_BR",
     type: "website",
     images: [
       {
-        url: "https://petro-trilhas.vercel.app/og-image.jpg",
+        url: `${BASE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "Petro Trilhas - Guia de Trilhas de Petrópolis",
+        alt: "Petro Trilhas - A natureza de Petrópolis na palma da sua mão",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Petro Trilhas | Trilhas de Petrópolis num só lugar",
+    title: "Petro Trilhas | A natureza de Petrópolis na palma da sua mão",
     description:
-      "Encontre sua próxima trilha em Petrópolis com dados reais e clima em tempo real.",
-    images: ["https://petro-trilhas.vercel.app/og-image.jpg"],
+      "Explore as trilhas de Petrópolis em um só lugar. Descubra caminhos, cachoeiras e paisagens da serra com informações sobre distância, dificuldade, duração, localização e clima.",
+    images: [`${BASE_URL}/og-image.jpg`],
   },
 };
 
