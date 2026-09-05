@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { QueryProvider } from "../providers/QueryProvider";
 import { Toaster } from "sonner";
 import { BASE_URL } from "../constants";
+import MicrosoftClarity from "../components/analytics/MicrodoftClarity";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -64,6 +65,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
+        <MicrosoftClarity />
         <Analytics />
         <Toaster richColors position="top-center" />
       </body>
