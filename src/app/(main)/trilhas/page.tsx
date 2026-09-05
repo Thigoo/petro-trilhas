@@ -1,5 +1,12 @@
 import { TrailsClientWrapper } from "@/src/components/trails/TrailsClientWrapper";
 import { getPublishedTrails } from "@/src/api/trails";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Trilhas em Petrópolis",
+  description:
+    "Encontre trilhas em Petrópolis para diferentes níveis de experiência. Explore percursos, descubra novos lugares e aproveite a natureza da cidade.",
+};
 
 export default async function TrailsPage() {
   const allTrails = await getPublishedTrails();

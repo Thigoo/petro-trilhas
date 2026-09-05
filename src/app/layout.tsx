@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: "Petro Trilhas | A natureza de Petrópolis na palma da sua mão",
   description:
     "Explore as trilhas de Petrópolis em um só lugar. Descubra caminhos, cachoeiras e paisagens da serra com informações sobre distância, dificuldade, duração, localização e clima.",

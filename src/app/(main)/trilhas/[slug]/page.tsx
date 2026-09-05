@@ -19,6 +19,7 @@ import { EventoBadge } from "@/src/components/events/EventoBadge";
 import Link from "next/link";
 import { InfoCard } from "@/src/components/trails/InfoCard";
 import { formatarTempoEstimado } from "@/src/utils/formatter";
+import { BASE_URL } from "@/src/constants";
 
 export async function generateMetadata({
   params,
@@ -35,21 +36,23 @@ export async function generateMetadata({
   }
 
   const description =
-    trilha.descricao_curta || trilha.descricao?.substring(0, 155) || "";
+    trilha.descricao_curta ||
+    `${trilha.nome} em Petrópolis. Veja distância, dificuldade, duração, desnível, localização e informações sobre o percurso.`;
 
   return {
-    title: `${trilha.nome} | Petro Trilhas`,
-    description: description,
+    metadataBase: new URL(BASE_URL),
+    title: `${trilha.nome} em Petrópolis | Petro Trilhas`,
+    description,
 
     openGraph: {
-      title: trilha.nome,
-      description: description,
+      title: `${trilha.nome} em Petrópolis | Petro Trilhas`,
+      description,
       images: [
         {
           url: trilha.imagem_url || "/og-image.jpg",
           width: 1200,
           height: 630,
-          alt: trilha.nome,
+          alt: `${trilha.nome} em Petrópolis`,
         },
       ],
       type: "article",

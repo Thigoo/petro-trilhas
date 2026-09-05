@@ -56,11 +56,13 @@ export default function LandingPage() {
               Onde a aventura começa
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mt-3 mb-4">
-              Conheça a serra de Petrópolis
+              Descubra as trilhas de Petrópolis
             </h2>
             <p className="text-lg text-slate-600 max-w-xl mx-auto">
               De caminhadas leves em família a trilhas que desafiam quem já tem
-              experiência. A serra tem espaço pra todo mundo.
+              experiência, a serra tem espaço pra todo mundo. Encontre trilhas
+              em Petrópolis de diferentes níveis de dificuldade e descubra novos
+              caminhos para explorar a natureza da cidade.
             </p>
           </div>
 
