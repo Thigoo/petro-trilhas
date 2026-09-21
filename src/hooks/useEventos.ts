@@ -90,7 +90,7 @@ export function useEventos() {
         .from("eventos")
         .select("*, trilhas(nome, slug, imagem_url)")
         .eq("status", "ativo")
-        .order("data_hora", { ascending: true });
+        .order("data_hora", { ascending: false });
 
       if (error) throw error;
       return data as Evento[];
