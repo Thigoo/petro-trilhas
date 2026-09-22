@@ -22,6 +22,7 @@ export interface Evento {
     slug: string;
     imagem_url: string | null;
   };
+  preco?: number;
 }
 
 interface ConfirmacaoComEvento {
