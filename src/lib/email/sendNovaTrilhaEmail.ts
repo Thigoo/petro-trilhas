@@ -1,6 +1,7 @@
 import NovaTrilhaEmail from "@/src/emails/novaTrilha";
 import { resend } from "../resend";
 import { BASE_URL } from "@/src/constants";
+import { getAllUserEmails } from "./getRecipienteEmails";
 
 interface Trilha {
   nome: string;
@@ -10,16 +11,17 @@ interface Trilha {
 }
 
 export async function sendNovaTrilhaEmail(trilha: Trilha) {
-  // const emails = await getAllUserEmails();
+  const emails = await getAllUserEmails();
 
-  // if (emails.length === 0) {
-  //   console.warn("[email] Nenhum destinatário encontrado, pulando envio.");
-  //   return;
-  // }
+  if (emails.length === 0) {
+    console.warn("[email] Nenhum destinatário encontrado, pulando envio.");
+    return;
+  }
 
   const { error } = await resend.emails.send({
-    from: "Petro Trilhas <onboarding@resend.dev>", // trocar pelo domínio verificado depois
-    to: "thiagomvk08@gmail.com", // aqui entra os emails cadastrados
+    from: "Petro Trilhas <notificacoes@mail.petrotrilhas.com.br>",
+    to: "notificacoes@mail.petrotrilhas.com.br",
+    bcc: emails,
     subject: `Tem trilha nova no Petro Trilhas!`,
     react: NovaTrilhaEmail({
       nomeTrilha: trilha.nome,
