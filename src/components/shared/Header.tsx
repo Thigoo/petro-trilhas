@@ -16,8 +16,8 @@ import { useProfile } from "@/src/hooks/useProfile";
 import { AppLogo } from "./AppLogo";
 import { Button } from "../ui/button";
 
-const GUIDE_URL =
-  "https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf";
+// const GUIDE_URL =
+//   "https://www.petropolis.rj.gov.br/turispetro/downloads/Guias_Ecoturismo.pdf";
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -111,14 +111,9 @@ export default function Header() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild>
-                  <a
-                    href={GUIDE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cursor-pointer"
-                  >
+                  <Link href="/guias" className="cursor-pointer">
                     Encontre seu guia
-                  </a>
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -134,14 +129,12 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <a
-                href={GUIDE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/guias"
                 className="text-sm font-semibold text-muted-foreground transition-colors hover:text-medium-green"
               >
                 Encontre seu guia
-              </a>
+              </Link>
               <Link href="/login">
                 <Button
                   size="sm"
@@ -212,15 +205,13 @@ export default function Header() {
               Emergência
             </Link>
 
-            <a
-              href={GUIDE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/guias"
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-medium-green"
               onClick={toggleMenu}
-              className="rounded-md px-3 py-2 text-base font-medium text-muted-foreground hover:bg-accent hover:text-medium-green"
             >
               Encontre seu guia
-            </a>
+            </Link>
 
             {!user && (
               <Link href="/login" onClick={toggleMenu}>
