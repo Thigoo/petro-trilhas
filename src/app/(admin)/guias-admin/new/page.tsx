@@ -14,6 +14,7 @@ export default function GuiasNewPage() {
       await criarGuia(formData);
       toast.success("Guia cadastrado com sucesso!");
       router.push("/guias-admin");
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast.error("Erro ao cadastrar guia");
