@@ -28,3 +28,8 @@ export type Guia = {
   created_at: string;
   updated_at: string;
 };
+
+export type NovoGuia = Omit<
+  Guia,
+  "id" | "created_at" | "updated_at" | "criado_por"
+>;

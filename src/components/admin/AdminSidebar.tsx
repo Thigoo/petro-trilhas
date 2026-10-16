@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/src/components/ui/sidebar";
-import { Map, LogOut, Mountain, Calendar } from "lucide-react";
+import { Map, LogOut, Mountain, Calendar, Footprints } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -28,6 +28,11 @@ const menuItems = [
     title: "Eventos",
     url: "/eventos-admin",
     icon: Calendar,
+  },
+  {
+    title: "Guias",
+    url: "/guias-admin",
+    icon: Footprints,
   },
   //   {
   //     title: "Usuários",
