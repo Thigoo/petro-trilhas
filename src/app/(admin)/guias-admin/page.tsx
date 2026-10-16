@@ -6,7 +6,6 @@ import AdminGuiaCard from "@/src/components/admin/guias/AdminGuiaCard";
 
 export default async function GuiasAdminPage() {
   const guias = await getAllGuiasAdmin();
-  console.log("Guias:", guias);
 
   return (
     <div className="space-y-6">

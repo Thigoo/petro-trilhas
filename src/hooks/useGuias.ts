@@ -96,13 +96,13 @@ export function useGuiaMutations() {
     mutationFn: async ({
       guiaId,
       formData,
-      fotoUrlAtual,
     }: {
       guiaId: string;
       formData: FormData;
-      fotoUrlAtual?: string | null;
     }) => {
-      let fotoUrl = fotoUrlAtual || null;
+      const fotoUrlAtual = (formData.get("foto_url_atual") as string) || null;
+      let fotoUrl = fotoUrlAtual;
+
       const fotoFile = formData.get("foto") as File | null;
 
       if (fotoFile instanceof File && fotoFile.size > 0) {
@@ -115,6 +115,21 @@ export function useGuiaMutations() {
 
         fotoUrl = supabase.storage.from("guias").getPublicUrl(filePath)
           .data.publicUrl;
+
+        if (fotoUrlAtual) {
+          const marker = "/object/public/guias/";
+          const idx = fotoUrlAtual.indexOf(marker);
+          if (idx !== -1) {
+            const oldPath = fotoUrlAtual.slice(idx + marker.length);
+            const { error: removeError } = await supabase.storage
+              .from("guias")
+              .remove([oldPath]);
+
+            if (removeError) {
+              console.error("Erro ao remover foto antiga:", removeError);
+            }
+          }
+        }
       }
 
       const { data, error } = await supabase
@@ -147,9 +162,33 @@ export function useGuiaMutations() {
   });
 
   const { mutateAsync: deletarGuia, isPending: deletando } = useMutation({
-    mutationFn: async (guiaId: string) => {
+    mutationFn: async ({
+      guiaId,
+      fotoUrl,
+    }: {
+      guiaId: string;
+      fotoUrl?: string | null;
+    }) => {
       const { error } = await supabase.from("guias").delete().eq("id", guiaId);
       if (error) throw error;
+
+      if (fotoUrl) {
+        const marker = "/object/public/guias/";
+        const idx = fotoUrl.indexOf(marker);
+        if (idx !== -1) {
+          const path = fotoUrl.slice(idx + marker.length);
+          const { error: removeError } = await supabase.storage
+            .from("guias")
+            .remove([path]);
+
+          if (removeError) {
+            console.error(
+              "Erro ao remover foto do guia deletado:",
+              removeError,
+            );
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["guias"] });
