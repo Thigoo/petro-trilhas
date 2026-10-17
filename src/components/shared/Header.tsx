@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, User, LogOut, ShieldCheck, Phone } from "lucide-react";
+import { Menu, X, User, LogOut, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +30,7 @@ export default function Header() {
       { name: "Início", href: "/" },
       { name: "Trilhas", href: "/trilhas" },
       { name: "Eventos", href: "/eventos" },
+      { name: "Guias", href: "/guias" },
     ],
     [],
   );
@@ -75,13 +76,13 @@ export default function Header() {
 
           <div className="h-5 w-px bg-border" />
 
-          <Link
+          {/* <Link
             href="/emergencia"
             className="flex items-center gap-1.5 text-sm font-semibold text-red-600 transition-colors hover:text-red-700"
           >
             <Phone className="h-3.5 w-3.5" />
             Emergência
-          </Link>
+          </Link> */}
 
           {user ? (
             <DropdownMenu>
@@ -110,14 +111,6 @@ export default function Header() {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem asChild>
-                  <Link href="/guias" className="cursor-pointer">
-                    Encontre seu guia
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
                 <DropdownMenuItem
                   onClick={() => signOut()}
                   className="cursor-pointer text-destructive focus:text-destructive"
@@ -128,28 +121,22 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <>
-              <Link
-                href="/guias"
-                className="text-sm font-semibold text-muted-foreground transition-colors hover:text-medium-green"
-              >
-                Encontre seu guia
-              </Link>
-              <Link href="/login">
-                <Button
-                  size="sm"
-                  className="bg-medium-green hover:bg-dark-green"
-                >
-                  Entrar
-                </Button>
-              </Link>
-            </>
+            <Link href="/login">
+              <Button size="sm" className="bg-medium-green hover:bg-dark-green">
+                Entrar
+              </Button>
+            </Link>
           )}
         </nav>
 
         {/* Mobile Toggle */}
         <div className="md:hidden">
-          <Button variant="ghost" size="icon" onClick={toggleMenu}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleMenu}
+            aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+          >
             {isMenuOpen ? (
               <X className="h-6 w-6" />
             ) : (
@@ -174,44 +161,51 @@ export default function Header() {
               </Link>
             ))}
 
-            {user && (
-              <Link
-                href="/perfil"
-                onClick={toggleMenu}
-                className={getMobileNavClasses("/perfil")}
-              >
-                Meu perfil
-              </Link>
-            )}
-
-            {isAdmin && (
-              <Link
-                href="/trilhas-admin"
-                onClick={toggleMenu}
-                className={getMobileNavClasses("/trilhas-admin")}
-              >
-                Administração
-              </Link>
-            )}
-
             <div className="my-2 border-t" />
 
-            <Link
+            {/* <Link
               href="/emergencia"
               onClick={toggleMenu}
               className="rounded-md px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50 flex items-center gap-2"
             >
               <Phone className="h-4 w-4" />
               Emergência
-            </Link>
+            </Link> */}
 
-            <Link
-              href="/guias"
-              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-medium-green"
-              onClick={toggleMenu}
-            >
-              Encontre seu guia
-            </Link>
+            {user && (
+              <>
+                <div className="my-2 border-t" />
+
+                <Link
+                  href="/perfil"
+                  onClick={toggleMenu}
+                  className={getMobileNavClasses("/perfil")}
+                >
+                  Meu perfil
+                </Link>
+
+                {isAdmin && (
+                  <Link
+                    href="/trilhas-admin"
+                    onClick={toggleMenu}
+                    className={getMobileNavClasses("/trilhas-admin")}
+                  >
+                    Administração
+                  </Link>
+                )}
+
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    signOut();
+                    toggleMenu();
+                  }}
+                  className="mt-2 w-full"
+                >
+                  Sair
+                </Button>
+              </>
+            )}
 
             {!user && (
               <Link href="/login" onClick={toggleMenu}>
@@ -219,19 +213,6 @@ export default function Header() {
                   Entrar
                 </Button>
               </Link>
-            )}
-
-            {user && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  signOut();
-                  toggleMenu();
-                }}
-                className="mt-2 w-full"
-              >
-                Sair
-              </Button>
             )}
           </nav>
         </div>
