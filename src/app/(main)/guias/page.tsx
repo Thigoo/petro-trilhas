@@ -14,7 +14,6 @@ export default async function GuiasPage() {
     .order("nome", { ascending: true });
 
   if (error) {
-    // trata erro conforme padrão do projeto (log, fallback de UI, etc.)
     throw new Error("Não foi possível carregar os guias.");
   }
 
